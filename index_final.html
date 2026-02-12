@@ -74,6 +74,12 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+    
+    .messages::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
     }
     
     .message {
@@ -365,14 +371,57 @@
           </div>
         `;
       } else {
-        // 处理普通文本消息
-        const formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                       .replace(/\n/g, '<br>');
-        messageDiv.innerHTML = `
-          <div style="font-size: 14px;">
-            ${formattedContent}
-          </div>
-        `;
+        // 检查是否包含图表数据
+        if (content.includes('[CHART:') && content.includes(':END_CHART]')) {
+          // 提取图表数据
+          const chartMatch = content.match(/\[CHART:(.*?)\]/);
+          if (chartMatch) {
+            try {
+              const chartData = JSON.parse(decodeURIComponent(chartMatch[1]));
+              const formattedContent = content.replace(/\[CHART:.*?\]/g, '').replace(/:END_CHART]/g, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+              
+              messageDiv.innerHTML = `
+                <div style="font-size: 14px;">
+                  ${formattedContent}
+                  <div style="margin-top: 16px;">
+                    <img src="data:image/png;base64,${chartData.image}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);" />
+                  </div>
+                </div>
+              `;
+            } catch (e) {
+              // 如果解析失败，显示普通文本
+              const formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+              messageDiv.innerHTML = `
+                <div style="font-size: 14px;">
+                  ${formattedContent}
+                </div>
+              `;
+            }
+          } else {
+            // 普通文本消息
+            const formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            messageDiv.innerHTML = `
+              <div style="font-size: 14px;">
+                ${formattedContent}
+              </div>
+            `;
+          }
+        } else {
+          // 普通文本消息，检测文件路径并添加点击事件
+          let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+          
+          // 检测文件路径（Windows路径）
+          const filePathRegex = /([A-Z]:\\[^\s<>"|?*]+)/g;
+          formattedContent = formattedContent.replace(filePathRegex, (match) => {
+            return `<a href="#" onclick="openFile('${match}')" style="color: #58a6ff; text-decoration: underline; cursor: pointer;">${match}</a>`;
+          });
+          
+          messageDiv.innerHTML = `
+            <div style="font-size: 14px;">
+              ${formattedContent}
+            </div>
+          `;
+        }
       }
       
       messagesDiv.appendChild(messageDiv);
@@ -387,6 +436,18 @@
       
       // 返回消息元素，以便后续操作
       return messageDiv;
+    }
+    
+    // 打开文件
+    async function openFile(filePath) {
+      try {
+        const result = await window.electronAPI.openFile(filePath);
+        if (!result.success) {
+          alert('打开文件失败: ' + result.error);
+        }
+      } catch (error) {
+        alert('打开文件失败: ' + error.message);
+      }
     }
     
     // 更新状态
@@ -496,8 +557,28 @@
             path: result
           };
           selectedFiles.push(file);
+          
+          // 如果是Excel文件，读取内容
+          if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+            addMessage('ai', '📖 正在读取Excel文件: ' + file.name + '...');
+            
+            // 调用后端读取Excel
+            const excelResult = await window.electronAPI.readExcelFile(file.path);
+            if (excelResult.success) {
+              excelDataList.push({
+                fileName: file.name,
+                data: excelResult.data,
+                columns: excelResult.columns
+              });
+              addMessage('ai', '✅ Excel文件已读取: ' + file.name + '\n列名: ' + excelResult.columns.join(', ') + '\n数据行数: ' + excelResult.data.length);
+            } else {
+              addMessage('ai', '❌ 读取Excel文件失败: ' + excelResult.error);
+            }
+          } else {
+            addMessage('ai', '✅ 文件已上传: ' + file.name);
+          }
+          
           updateFileList();
-          addMessage('ai', '✅ 文件已上传: ' + file.name);
         }
       } catch (error) {
         console.error('上传文件失败:', error);

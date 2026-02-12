@@ -364,7 +364,7 @@
       <div class="chat-panel">
         <div class="chat-messages" id="chat-messages">
           <div class="message ai-message">
-            你好！请上传Excel文件并告诉我你想要分析的内容�?          </div>
+            你好！请上传Excel文件并告诉我你想要分析的内容�?          </div>
         </div>
         <div class="chat-input-area">
           <div class="file-list" id="file-list">
@@ -376,8 +376,8 @@
               <span class="upload-icon">📁</span>
               <span class="upload-text">上传Excel</span>
             </label>
-            <textarea class="chat-input" id="chat-input" placeholder="输入你的分析需�?.."></textarea>
-            <button class="send-btn" id="send-btn" onclick="sendMessage()">发�?/button>
+            <textarea class="chat-input" id="chat-input" placeholder="输入你的分析需�?.."></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()">发�?/button>
           </div>
         </div>
       </div>
@@ -385,25 +385,25 @@
   </div>
 
   <script>
-    // Excel服务，使用xlsx库处理文�?    class ExcelService {
+    // Excel服务，使用xlsx库处理文�?    class ExcelService {
       static readExcelData(file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = function(e) {
             try {
-              // 模拟解析Excel数据，实际应用中会使用xlsx�?              const data = new Uint8Array(e.target.result);
+              // 模拟解析Excel数据，实际应用中会使用xlsx�?              const data = new Uint8Array(e.target.result);
               
               // 模拟解析结果，包含实际的列名
               const mockData = Array.from({ length: 10 }, (_, i) => ({
                 id: i + 1,
                 name: `项目${i + 1}`,
                 value: Math.floor(Math.random() * 1000) + 100,
-                category: ['A�?, 'B�?, 'C�?][Math.floor(Math.random() * 3)],
+                category: ['A�?, 'B�?, 'C�?][Math.floor(Math.random() * 3)],
                 date: new Date(Date.now() - Math.random() * 10000000000).toISOString().split('T')[0]
               }));
               
               // 模拟列名
-              const columnNames = ['ID', '项目名称', '数�?, '类别', '日期'];
+              const columnNames = ['ID', '项目名称', '数�?, '类别', '日期'];
               
               resolve({
                 success: true,
@@ -435,7 +435,7 @@
           await new Promise(resolve => setTimeout(resolve, 1500));
           return {
             success: true,
-            content: `我已经分析了你的Excel数据，包�?${data.length} 条记录。\n\n**数据概览**：\n- 最大值：${Math.max(...data.map(item => item.value))}\n- 最小值：${Math.min(...data.map(item => item.value))}\n- 平均值：${Math.round(data.reduce((sum, item) => sum + item.value, 0) / data.length)}\n\n**分析结果**：\n数据呈现正态分布，建议重点关注值较高的记录。\n\n**建议**：\n可以进一步分析数据的趋势和相关性，以获得更深入的洞察。`
+            content: `我已经分析了你的Excel数据，包�?${data.length} 条记录。\n\n**数据概览**：\n- 最大值：${Math.max(...data.map(item => item.value))}\n- 最小值：${Math.min(...data.map(item => item.value))}\n- 平均值：${Math.round(data.reduce((sum, item) => sum + item.value, 0) / data.length)}\n\n**分析结果**：\n数据呈现正态分布，建议重点关注值较高的记录。\n\n**建议**：\n可以进一步分析数据的趋势和相关性，以获得更深入的洞察。`
           };
         } catch (error) {
           return {
@@ -484,19 +484,19 @@
           let content = `我已经分析了你的 ${dataList.length} 个Excel文件，总共包含 ${totalRecords} 条记录。\n\n`;
           
           // 添加每个文件的统计信息，基于实际列名
-          content += '**各文件统计信�?*：\n';
+          content += '**各文件统计信�?*：\n';
           fileStats.forEach((stat, index) => {
             content += `${index + 1}. ${stat.name}\n`;
             content += `- 记录数：${stat.records}\n`;
             content += `- 数据列：${stat.columnNames.join(', ')}\n`;
-            content += `- ${stat.columnNames[2]}（数值）统计：最大�?{stat.max}，最小�?{stat.min}，平均�?{stat.avg}\n`;
-            content += `- ${stat.columnNames[3]}（类别）分布�?{Object.entries(stat.categoryCount).map(([k, v]) => `${k}:${v}个`).join(', ')}\n\n`;
+            content += `- ${stat.columnNames[2]}（数值）统计：最大�?{stat.max}，最小�?{stat.min}，平均�?{stat.avg}\n`;
+            content += `- ${stat.columnNames[3]}（类别）分布�?{Object.entries(stat.categoryCount).map(([k, v]) => `${k}:${v}个`).join(', ')}\n\n`;
           });
           
           // 添加联合分析结果
           content += '**联合分析结果**：\n';
-          content += `- 数据总量�?{totalRecords} 条\n`;
-          content += `- 文件数量�?{dataList.length} 个\n`;
+          content += `- 数据总量�?{totalRecords} 条\n`;
+          content += `- 文件数量�?{dataList.length} 个\n`;
           content += `- 平均每个文件记录数：${Math.round(totalRecords / dataList.length)}\n\n`;
           
           content += '**分析结果**：\n';
@@ -522,7 +522,7 @@
       }
     }
 
-    // 大模型交互服�?- 支持与大模型的通信和多轮对�?    class LLMService {
+    // 大模型交互服�?- 支持与大模型的通信和多轮对�?    class LLMService {
       constructor(config = {}) {
         this.apiKey = config.apiKey || '';
         this.apiEndpoint = config.apiEndpoint || 'https://api.openai.com/v1/chat/completions';
@@ -534,19 +534,19 @@
         this.systemPrompt = config.systemPrompt || this.getDefaultSystemPrompt();
       }
 
-      // 获取默认系统提示�?      getDefaultSystemPrompt() {
-        return `你是一个专业的办公智能助手，可以帮助用户处理各种办公任务�?
-你的能力包括�?1. 分析Excel数据，提供数据洞察和建议
-2. 处理文档，提取关键信�?3. 管理邮件，帮助撰写和发送邮�?4. 生成报告，总结工作内容
-5. 回答问题，提供专业建�?
-当用户提出请求时，你应该�?1. 理解用户的意图和需�?2. 分析可用的工具和资源
+      // 获取默认系统提示�?      getDefaultSystemPrompt() {
+        return `你是一个专业的办公智能助手，可以帮助用户处理各种办公任务�?
+你的能力包括�?1. 分析Excel数据，提供数据洞察和建议
+2. 处理文档，提取关键信�?3. 管理邮件，帮助撰写和发送邮�?4. 生成报告，总结工作内容
+5. 回答问题，提供专业建�?
+当用户提出请求时，你应该�?1. 理解用户的意图和需�?2. 分析可用的工具和资源
 3. 制定执行计划
-4. 调用相应的工具完成任�?5. 将结果以清晰易懂的方式呈现给用户
+4. 调用相应的工具完成任�?5. 将结果以清晰易懂的方式呈现给用户
 
 如果需要更多信息或资源，请主动询问用户。`;
       }
 
-      // 设置系统提示�?      setSystemPrompt(prompt) {
+      // 设置系统提示�?      setSystemPrompt(prompt) {
         this.systemPrompt = prompt;
       }
 
@@ -555,7 +555,7 @@
         this.tools.push(tool);
       }
 
-      // 发送消息到大模�?      async sendMessage(userMessage, context = {}) {
+      // 发送消息到大模�?      async sendMessage(userMessage, context = {}) {
         try {
           // 构建消息历史
           const messages = [
@@ -591,16 +591,16 @@
 
           return result;
         } catch (error) {
-          console.error('调用大模型失�?', error);
-          throw new Error(`调用大模型失�? ${error.message}`);
+          console.error('调用大模型失�?', error);
+          throw new Error(`调用大模型失�? ${error.message}`);
         }
       }
 
-      // 格式化消�?      formatMessage(message, context) {
+      // 格式化消�?      formatMessage(message, context) {
         let formattedMessage = message;
 
-        // 添加上下文信�?        if (context.files && context.files.length > 0) {
-          formattedMessage += `\n\n可用文件�?{context.files.map(f => f.name).join(', ')}`;
+        // 添加上下文信�?        if (context.files && context.files.length > 0) {
+          formattedMessage += `\n\n可用文件�?{context.files.map(f => f.name).join(', ')}`;
         }
 
         if (context.dataList && context.dataList.length > 0) {
@@ -621,22 +621,22 @@
         // 简单的关键词匹配，模拟大模型的响应
         if (lastUserMessage.includes('分析') && lastUserMessage.includes('Excel')) {
           return {
-            content: '我可以帮你分析Excel数据。请告诉我你想要分析的具体内容，比如数据统计、趋势分析、相关性分析等�?,
+            content: '我可以帮你分析Excel数据。请告诉我你想要分析的具体内容，比如数据统计、趋势分析、相关性分析等�?,
             toolCalls: []
           };
         } else if (lastUserMessage.includes('生成') && lastUserMessage.includes('报告')) {
           return {
-            content: '我可以帮你生成报告。请提供报告的主题、格式要求，以及需要包含的内容�?,
+            content: '我可以帮你生成报告。请提供报告的主题、格式要求，以及需要包含的内容�?,
             toolCalls: []
           };
-        } else if (lastUserMessage.includes('发�?) && lastUserMessage.includes('邮件')) {
+        } else if (lastUserMessage.includes('发�?) && lastUserMessage.includes('邮件')) {
           return {
-            content: '我可以帮你发送邮件。请提供收件人、邮件主题和邮件内容�?,
+            content: '我可以帮你发送邮件。请提供收件人、邮件主题和邮件内容�?,
             toolCalls: []
           };
         } else {
           return {
-            content: '我理解你的需求。让我帮你处理这个任务。请提供更多详细信息，以便我能够更好地帮助你�?,
+            content: '我理解你的需求。让我帮你处理这个任务。请提供更多详细信息，以便我能够更好地帮助你�?,
             toolCalls: []
           };
         }
@@ -687,7 +687,7 @@
         while (turn < maxTurns) {
           turn++;
 
-          // 发送消息到大模�?          const response = await this.sendMessage(currentMessage, context);
+          // 发送消息到大模�?          const response = await this.sendMessage(currentMessage, context);
           results.push({
             turn: turn,
             type: 'llm_response',
@@ -703,13 +703,13 @@
               results: toolResults
             });
 
-            // 将工具执行结果发送回大模�?            const toolSummary = toolResults.map(r => 
+            // 将工具执行结果发送回大模�?            const toolSummary = toolResults.map(r => 
               `${r.name}: ${r.status === 'success' ? '成功' : '失败'} - ${r.status === 'success' ? JSON.stringify(r.result) : r.error}`
             ).join('\n');
             
             currentMessage = `工具执行结果：\n${toolSummary}\n\n请基于这些结果继续处理任务。`;
           } else {
-            // 没有工具调用，对话结�?            break;
+            // 没有工具调用，对话结�?            break;
           }
         }
 
@@ -734,17 +734,17 @@
 
     function openFileDialog() {
       const fileInput = document.getElementById('file-input');
-      // 重置input的值，确保每次点击都能触发onchange事件，即使选择相同的文�?      fileInput.value = '';
+      // 重置input的值，确保每次点击都能触发onchange事件，即使选择相同的文�?      fileInput.value = '';
       fileInput.click();
     }
 
     function handleFileSelect(event) {
-      console.log('handleFileSelect函数被调�?);
+      console.log('handleFileSelect函数被调�?);
       try {
         const files = event.target.files;
-        console.log('获取到文�?', files);
+        console.log('获取到文�?', files);
         if (files.length > 0) {
-          addMessage('ai', '读取文件�?..');
+          addMessage('ai', '读取文件�?..');
           
           // 模拟读取文件
           setTimeout(async () => {
@@ -768,8 +768,8 @@
               updateFileList();
               addMessage('ai', `文件已上传并读取成功，共 ${selectedFiles.length} 个文件。现在可以输入你的分析需求了。`);
             } catch (error) {
-              console.error('处理文件时出�?', error);
-              addMessage('ai', `处理文件时出�? ${error.message}`);
+              console.error('处理文件时出�?', error);
+              addMessage('ai', `处理文件时出�? ${error.message}`);
             }
           }, 1000);
         }
@@ -813,32 +813,32 @@
       excelDataList = [];
       columnNamesList = [];
       updateFileList();
-      addMessage('ai', '所有文件已清空�?);
+      addMessage('ai', '所有文件已清空�?);
     }
 
     function generateNewExcel(fileStats, options = {}) {
       return new Promise((resolve, reject) => {
         try {
-          console.log('开始生成Excel文件，文件统�?', fileStats, '选项:', options);
+          console.log('开始生成Excel文件，文件统�?', fileStats, '选项:', options);
           
-          // 模拟生成Excel文件，实际应用中会使用xlsx�?          const timestamp = new Date().getTime();
+          // 模拟生成Excel文件，实际应用中会使用xlsx�?          const timestamp = new Date().getTime();
           const filename = options.filename || `分析结果_${timestamp}.xlsx`;
-          const newExcelPath = `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${filename}`;
+          const newExcelPath = `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${filename}`;
           
           console.log('生成文件路径:', newExcelPath);
           
-          // 合并所有文件的数据，保持列名一�?          const mergedData = [];
-          let allColumnNames = options.columns || ['ID', '项目名称', '数�?, '类别', '日期', '来源文件'];
+          // 合并所有文件的数据，保持列名一�?          const mergedData = [];
+          let allColumnNames = options.columns || ['ID', '项目名称', '数�?, '类别', '日期', '来源文件'];
           
-          // 如果用户指定了自定义列名，则使用用户指定的列�?          if (options.customColumns) {
+          // 如果用户指定了自定义列名，则使用用户指定的列�?          if (options.customColumns) {
             allColumnNames = options.customColumns;
           }
           
-          // 支持列映射功�?          const columnMapping = options.columnMapping || {};
+          // 支持列映射功�?          const columnMapping = options.columnMapping || {};
           
           fileStats.forEach((stat, fileIndex) => {
             const data = excelDataList[fileIndex];
-            console.log(`处理文件 ${fileIndex}:`, stat.name, '数据�?', data.length);
+            console.log(`处理文件 ${fileIndex}:`, stat.name, '数据�?', data.length);
             data.forEach(item => {
               const rowData = {
                 id: item.id,
@@ -849,20 +849,20 @@
                 source: stat.name
               };
               
-              // 应用列映�?              Object.keys(columnMapping).forEach(sourceCol => {
+              // 应用列映�?              Object.keys(columnMapping).forEach(sourceCol => {
                 const targetCol = columnMapping[sourceCol];
                 if (rowData.hasOwnProperty(sourceCol)) {
                   rowData[targetCol] = rowData[sourceCol];
                 }
               });
               
-              // 如果用户指定了数据转换规则，则应用转�?              if (options.transformRules) {
+              // 如果用户指定了数据转换规则，则应用转�?              if (options.transformRules) {
                 Object.keys(options.transformRules).forEach(key => {
                   if (rowData.hasOwnProperty(key)) {
                     const rule = options.transformRules[key];
                     switch (rule.type) {
                       case 'format':
-                        // 应用格式化规�?                        if (rule.pattern) {
+                        // 应用格式化规�?                        if (rule.pattern) {
                           rowData[key] = rule.pattern.replace('{value}', rowData[key]);
                         }
                         break;
@@ -911,7 +911,7 @@
                         }
                         break;
                       case 'dateFormat':
-                        // 应用日期格式化规�?                        if (rule.format) {
+                        // 应用日期格式化规�?                        if (rule.format) {
                           const date = new Date(rowData[key]);
                           switch (rule.format) {
                             case 'YYYY-MM-DD':
@@ -1017,12 +1017,12 @@
           let excelContent = allColumnNames.join(',') + '\n';
           filteredData.forEach(item => {
             const row = allColumnNames.map(col => {
-              // 根据列名获取对应的数�?              switch (col) {
+              // 根据列名获取对应的数�?              switch (col) {
                 case 'ID':
                   return item.id;
                 case '项目名称':
                   return item.name;
-                case '数�?:
+                case '数�?:
                   return item.value;
                 case '类别':
                   return item.category;
@@ -1059,12 +1059,12 @@
             type: 'file'
           });
           
-          // 显示生成成功的详细信�?          let successMessage = `Excel文件生成成功！\n\n`;
+          // 显示生成成功的详细信�?          let successMessage = `Excel文件生成成功！\n\n`;
           successMessage += `文件名称: ${filename}\n`;
           successMessage += `保存路径: ${newExcelPath}\n`;
-          successMessage += `原始数据�? ${mergedData.length} 条记录\n`;
+          successMessage += `原始数据�? ${mergedData.length} 条记录\n`;
           successMessage += `过滤后数据量: ${filteredData.length} 条记录\n`;
-          successMessage += `包含�? ${allColumnNames.join(', ')}\n`;
+          successMessage += `包含�? ${allColumnNames.join(', ')}\n`;
           
           if (options.transformRules) {
             successMessage += `\n应用了数据转换规则\n`;
@@ -1075,7 +1075,7 @@
           }
           
           if (options.sortBy) {
-            successMessage += `\n应用了数据排�? ${options.sortBy.field} ${options.sortBy.order || 'asc'}\n`;
+            successMessage += `\n应用了数据排�? ${options.sortBy.field} ${options.sortBy.order || 'asc'}\n`;
           }
           
           if (options.calculatedColumns) {
@@ -1094,7 +1094,7 @@
       });
     }
     
-    // 打开文件的函�?    function openFile(filePath) {
+    // 打开文件的函�?    function openFile(filePath) {
       console.log('打开文件:', filePath);
       
       // 尝试使用系统默认程序打开文件
@@ -1107,18 +1107,18 @@
             } else {
               addMessage('ai', `打开文件失败: ${result}`, { type: 'error' });
               addMessage('ai', `文件路径: ${filePath}`, { type: 'info' });
-              addMessage('ai', '请在文件资源管理器中打开此文�?, { type: 'info' });
+              addMessage('ai', '请在文件资源管理器中打开此文�?, { type: 'info' });
             }
           });
         } catch (error) {
           console.error('打开文件异常:', error);
           addMessage('ai', `文件路径: ${filePath}`, { type: 'info' });
-          addMessage('ai', '请在文件资源管理器中打开此文�?, { type: 'info' });
+          addMessage('ai', '请在文件资源管理器中打开此文�?, { type: 'info' });
         }
       } else {
         // 浏览器环境下显示文件路径
         addMessage('ai', `文件路径: ${filePath}`, { type: 'info' });
-        addMessage('ai', '请在文件资源管理器中打开此文�?, { type: 'info' });
+        addMessage('ai', '请在文件资源管理器中打开此文�?, { type: 'info' });
       }
     }
 
@@ -1129,26 +1129,26 @@
     // 记忆系统 - 智能体的核心组件之一
     class MemorySystem {
       constructor() {
-        this.shortTermMemory = []; // 短期记忆，存储最近的对话和事�?        this.longTermMemory = new Map(); // 长期记忆，存储重要的信息
+        this.shortTermMemory = []; // 短期记忆，存储最近的对话和事�?        this.longTermMemory = new Map(); // 长期记忆，存储重要的信息
         this.episodicMemory = []; // 情景记忆，存储特定场景的记忆
         this.semanticMemory = new Map(); // 语义记忆，存储事实和概念
         this.proceduralMemory = new Map(); // 程序记忆，存储如何执行任务的记忆
-        this.maxShortTermMemorySize = 50; // 短期记忆最大容�?        this.initializeSemanticMemory();
+        this.maxShortTermMemorySize = 50; // 短期记忆最大容�?        this.initializeSemanticMemory();
         this.initializeProceduralMemory();
       }
       
-      // 初始化语义记�?      initializeSemanticMemory() {
-        this.semanticMemory.set('excel_file_format', 'Excel文件格式包括.xlsx�?xls');
+      // 初始化语义记�?      initializeSemanticMemory() {
+        this.semanticMemory.set('excel_file_format', 'Excel文件格式包括.xlsx�?xls');
         this.semanticMemory.set('data_analysis', '数据分析是指对数据进行统计、汇总和可视化的过程');
-        this.semanticMemory.set('data_cleaning', '数据清洗是指处理数据中的空值、重复值和异常�?);
+        this.semanticMemory.set('data_cleaning', '数据清洗是指处理数据中的空值、重复值和异常�?);
         this.semanticMemory.set('data_visualization', '数据可视化是指将数据转化为图表等视觉形式');
         this.semanticMemory.set('pivot_table', '数据透视表是一种交互式的表格，可以对数据进行多维度分析');
       }
       
-      // 初始化程序记�?      initializeProceduralMemory() {
+      // 初始化程序记�?      initializeProceduralMemory() {
         this.proceduralMemory.set('read_excel', '读取Excel文件的步骤：1. 选择文件 2. 解析文件 3. 提取数据');
-        this.proceduralMemory.set('analyze_data', '分析数据的步骤：1. 了解数据结构 2. 执行统计分析 3. 生成可视化结�?4. 提供洞察');
-        this.proceduralMemory.set('generate_excel', '生成Excel文件的步骤：1. 准备数据 2. 设置格式 3. 写入文件 4. 保存到指定路�?);
+        this.proceduralMemory.set('analyze_data', '分析数据的步骤：1. 了解数据结构 2. 执行统计分析 3. 生成可视化结�?4. 提供洞察');
+        this.proceduralMemory.set('generate_excel', '生成Excel文件的步骤：1. 准备数据 2. 设置格式 3. 写入文件 4. 保存到指定路�?);
       }
       
       // 添加短期记忆
@@ -1274,24 +1274,24 @@
         return results.sort((a, b) => b.timestamp - a.timestamp);
       }
       
-      // 计算记忆优先�?      calculatePriority(content, type) {
+      // 计算记忆优先�?      calculatePriority(content, type) {
         let priority = 0.5;
         
-        // 根据类型调整优先�?        if (type === 'error') priority = 0.9;
+        // 根据类型调整优先�?        if (type === 'error') priority = 0.9;
         if (type === 'success') priority = 0.7;
         if (type === 'question') priority = 0.8;
         
         // 根据内容长度和重要性调整优先级
         if (content.length > 100) priority += 0.1;
-        if (content.includes('重要') || content.includes('紧�?)) priority += 0.2;
+        if (content.includes('重要') || content.includes('紧�?)) priority += 0.2;
         
         return Math.min(priority, 1.0);
       }
       
       // 计算情绪 valence
       calculateEmotionalValence(outcome) {
-        const positiveWords = ['成功', '完成', '�?, '优秀', '满意', '正确'];
-        const negativeWords = ['失败', '错误', '问题', '异常', '不满�?, '错误'];
+        const positiveWords = ['成功', '完成', '�?, '优秀', '满意', '正确'];
+        const negativeWords = ['失败', '错误', '问题', '异常', '不满�?, '错误'];
         
         let valence = 0;
         
@@ -1308,7 +1308,7 @@
       
       // 遗忘机制
       forget(force = false) {
-        // 遗忘低优先级的短期记�?        if (force || this.shortTermMemory.length > this.maxShortTermMemorySize * 0.8) {
+        // 遗忘低优先级的短期记�?        if (force || this.shortTermMemory.length > this.maxShortTermMemorySize * 0.8) {
           this.shortTermMemory.sort((a, b) => a.priority - b.priority);
           this.shortTermMemory = this.shortTermMemory.slice(Math.floor(this.shortTermMemory.length * 0.3));
         }
@@ -1337,7 +1337,7 @@
       }
     }
     
-    // 对话上下文管�?    class ConversationContext {
+    // 对话上下文管�?    class ConversationContext {
       constructor() {
         this.contexts = new Map();
         this.currentIntent = null;
@@ -1347,7 +1347,7 @@
       
       addMessage(message, sender) {
         this.conversationHistory.push({ message, sender, timestamp: new Date() });
-        // 保持对话历史不超�?0�?        if (this.conversationHistory.length > 50) {
+        // 保持对话历史不超�?0�?        if (this.conversationHistory.length > 50) {
           this.conversationHistory.shift();
         }
       }
@@ -1378,23 +1378,23 @@
       }
     }
     
-    // 创建对话上下文实�?    const conversationContext = new ConversationContext();
+    // 创建对话上下文实�?    const conversationContext = new ConversationContext();
     
     // 规划系统 - 智能体的核心组件之一
     class PlanningSystem {
       constructor(memorySystem) {
         this.memorySystem = memorySystem;
-        this.plans = new Map(); // 存储当前活跃的计�?        this.planTemplates = new Map(); // 存储计划模板
+        this.plans = new Map(); // 存储当前活跃的计�?        this.planTemplates = new Map(); // 存储计划模板
         this.executionHistory = []; // 存储执行历史
         this.initializePlanTemplates();
       }
       
-      // 初始化计划模�?      initializePlanTemplates() {
+      // 初始化计划模�?      initializePlanTemplates() {
         // Excel相关计划模板
         this.planTemplates.set('excel_analysis', {
           id: 'excel_analysis',
           name: 'Excel数据分析',
-          description: '分析Excel文件数据并提供洞�?,
+          description: '分析Excel文件数据并提供洞�?,
           steps: [
             {
               id: 'read_excel',
@@ -1406,21 +1406,21 @@
             {
               id: 'analyze_data',
               name: '分析数据',
-              description: '执行统计分析和数据处�?,
+              description: '执行统计分析和数据处�?,
               required: true,
               tools: ['data_analyzer']
             },
             {
               id: 'visualize_data',
-              name: '数据可视�?,
-              description: '生成数据可视化图�?,
+              name: '数据可视�?,
+              description: '生成数据可视化图�?,
               required: false,
               tools: ['data_analyzer']
             },
             {
               id: 'generate_report',
               name: '生成分析报告',
-              description: '生成详细的分析报�?,
+              description: '生成详细的分析报�?,
               required: true,
               tools: ['excel_writer']
             }
@@ -1444,7 +1444,7 @@
             {
               id: 'clean_data',
               name: '清洗数据',
-              description: '处理空值、重复值和异常�?,
+              description: '处理空值、重复值和异常�?,
               required: true,
               tools: ['data_cleaner']
             },
@@ -1457,7 +1457,7 @@
             },
             {
               id: 'export_cleaned',
-              name: '导出清洗后数�?,
+              name: '导出清洗后数�?,
               description: '导出清洗后的Excel文件',
               required: true,
               tools: ['excel_writer']
@@ -1482,14 +1482,14 @@
             {
               id: 'prepare_export',
               name: '准备导出数据',
-              description: '准备要导出的数据和格�?,
+              description: '准备要导出的数据和格�?,
               required: true,
               tools: ['data_transformer']
             },
             {
               id: 'generate_excel',
               name: '生成Excel文件',
-              description: '生成新的Excel文件并保�?,
+              description: '生成新的Excel文件并保�?,
               required: true,
               tools: ['excel_writer']
             },
@@ -1513,7 +1513,7 @@
             {
               id: 'assess_task',
               name: '评估任务',
-              description: '评估任务类型和需�?,
+              description: '评估任务类型和需�?,
               required: true,
               tools: ['system_info']
             },
@@ -1606,7 +1606,7 @@
           throw new Error(`计划 ${planId} 不存在`);
         }
         
-        // 更新计划状�?        plan.status = 'in_progress';
+        // 更新计划状�?        plan.status = 'in_progress';
         plan.startTime = new Date();
         
         try {
@@ -1630,7 +1630,7 @@
                 // 记录成功执行
                 this.recordExecution(plan, step, 'success', stepResult);
                 
-                // 添加到记忆系�?                this.memorySystem.addShortTermMemory(
+                // 添加到记忆系�?                this.memorySystem.addShortTermMemory(
                   `步骤 ${step.name} 执行成功: ${JSON.stringify(stepResult)}`,
                   'success'
                 );
@@ -1643,7 +1643,7 @@
                 // 记录执行失败
                 this.recordExecution(plan, step, 'failed', error.message);
                 
-                // 添加到记忆系�?                this.memorySystem.addShortTermMemory(
+                // 添加到记忆系�?                this.memorySystem.addShortTermMemory(
                   `步骤 ${step.name} 执行失败: ${error.message}`,
                   'error'
                 );
@@ -1664,7 +1664,7 @@
           // 记录成功执行
           this.recordExecution(plan, null, 'success', '计划执行完成');
           
-          // 添加到记忆系�?          this.memorySystem.addShortTermMemory(
+          // 添加到记忆系�?          this.memorySystem.addShortTermMemory(
             `计划 ${plan.name} 执行成功，耗时 ${plan.actualTime}ms`,
             'success'
           );
@@ -1683,7 +1683,7 @@
           // 记录执行失败
           this.recordExecution(plan, null, 'failed', error.message);
           
-          // 添加到记忆系�?          this.memorySystem.addShortTermMemory(
+          // 添加到记忆系�?          this.memorySystem.addShortTermMemory(
             `计划 ${plan.name} 执行失败: ${error.message}`,
             'error'
           );
@@ -1718,7 +1718,7 @@
       async executeReadExcel(step, plan, toolManager, options = {}) {
         const excelReader = toolManager.getTool('excel_reader');
         if (!excelReader) {
-          throw new Error('Excel读取工具不可�?);
+          throw new Error('Excel读取工具不可�?);
         }
         
         // 模拟执行
@@ -1733,7 +1733,7 @@
       async executeAnalyzeData(step, plan, toolManager, options = {}) {
         const dataAnalyzer = toolManager.getTool('data_analyzer');
         if (!dataAnalyzer) {
-          throw new Error('数据分析工具不可�?);
+          throw new Error('数据分析工具不可�?);
         }
         
         // 模拟执行
@@ -1751,7 +1751,7 @@
       async executeGenerateReport(step, plan, toolManager, options = {}) {
         const excelWriter = toolManager.getTool('excel_writer');
         if (!excelWriter) {
-          throw new Error('Excel写入工具不可�?);
+          throw new Error('Excel写入工具不可�?);
         }
         
         // 模拟执行
@@ -1768,7 +1768,7 @@
       async executeCleanData(step, plan, toolManager, options = {}) {
         const dataCleaner = toolManager.getTool('data_cleaner');
         if (!dataCleaner) {
-          throw new Error('数据清洗工具不可�?);
+          throw new Error('数据清洗工具不可�?);
         }
         
         // 模拟执行
@@ -1787,7 +1787,7 @@
       async executeGenerateExcel(step, plan, toolManager, options = {}) {
         const excelWriter = toolManager.getTool('excel_writer');
         if (!excelWriter) {
-          throw new Error('Excel写入工具不可�?);
+          throw new Error('Excel写入工具不可�?);
         }
         
         // 模拟执行
@@ -1820,7 +1820,7 @@
       
       // 评估风险等级
       assessRiskLevel(goal, context) {
-        let riskLevel = 1; // 1-低风�? 2-中风�? 3-高风�?        
+        let riskLevel = 1; // 1-低风�? 2-中风�? 3-高风�?        
         // 根据目标评估风险
         if (goal.includes('删除') || goal.includes('修改')) {
           riskLevel = 3;
@@ -1828,7 +1828,7 @@
           riskLevel = 2;
         }
         
-        // 根据上下文评估风�?        if (context.fileStats && context.fileStats.length > 10) {
+        // 根据上下文评估风�?        if (context.fileStats && context.fileStats.length > 10) {
           riskLevel = Math.max(riskLevel, 2);
         }
         
@@ -1861,7 +1861,7 @@
       
       // 从执行中学习
       learnFromExecution(plan) {
-        // 分析执行结果并学�?        if (plan.status === 'completed') {
+        // 分析执行结果并学�?        if (plan.status === 'completed') {
           // 学习成功经验
           const successInsights = {
             planId: plan.id,
@@ -1872,7 +1872,7 @@
             timestamp: new Date()
           };
           
-          // 更新计划模板的估计时�?          const template = this.planTemplates.get(plan.templateId);
+          // 更新计划模板的估计时�?          const template = this.planTemplates.get(plan.templateId);
           if (template) {
             // 调整估计时间
             template.estimatedTime = Math.round(
@@ -1880,7 +1880,7 @@
             );
           }
           
-          // 添加到记忆系�?          this.memorySystem.addLongTermMemory(
+          // 添加到记忆系�?          this.memorySystem.addLongTermMemory(
             `success_${plan.templateId}_${Date.now()}`,
             JSON.stringify(successInsights),
             { type: 'success', templateId: plan.templateId }
@@ -1894,7 +1894,7 @@
             timestamp: new Date()
           };
           
-          // 添加到记忆系�?          this.memorySystem.addLongTermMemory(
+          // 添加到记忆系�?          this.memorySystem.addLongTermMemory(
             `failure_${plan.templateId}_${Date.now()}`,
             JSON.stringify(failureInsights),
             { type: 'failure', templateId: plan.templateId }
@@ -1907,7 +1907,7 @@
         return this.plans.get(planId);
       }
       
-      // 获取所有计�?      getPlans(status = null) {
+      // 获取所有计�?      getPlans(status = null) {
         const plans = Array.from(this.plans.values());
         if (status) {
           return plans.filter(plan => plan.status === status);
@@ -1924,9 +1924,9 @@
           plan.actualTime = plan.endTime - plan.startTime;
           
           // 记录取消
-          this.recordExecution(plan, null, 'cancelled', '计划已取�?);
+          this.recordExecution(plan, null, 'cancelled', '计划已取�?);
           
-          // 添加到记忆系�?          this.memorySystem.addShortTermMemory(
+          // 添加到记忆系�?          this.memorySystem.addShortTermMemory(
             `计划 ${plan.name} 已取消`,
             'info'
           );
@@ -1959,36 +1959,36 @@
       // 优化步骤顺序
       optimizeStepOrder(plan) {
         // 基于执行历史优化步骤顺序
-        // 这里简化处理，实际可以根据依赖关系和执行时间进行更复杂的优�?        return plan;
+        // 这里简化处理，实际可以根据依赖关系和执行时间进行更复杂的优�?        return plan;
       }
     }
     
-    // 反思系�?- 智能体的核心组件之一
+    // 反思系�?- 智能体的核心组件之一
     class ReflectionSystem {
       constructor(memorySystem) {
         this.memorySystem = memorySystem;
-        this.reflections = []; // 存储反思记�?        this.learningGoals = new Set(); // 存储学习目标
+        this.reflections = []; // 存储反思记�?        this.learningGoals = new Set(); // 存储学习目标
         this.improvementAreas = new Map(); // 存储改进领域
         this.selfAssessmentHistory = []; // 存储自我评估历史
         this.feedbackHistory = []; // 存储用户反馈历史
         this.initializeLearningGoals();
       }
       
-      // 初始化学习目�?      initializeLearningGoals() {
+      // 初始化学习目�?      initializeLearningGoals() {
         this.learningGoals.add('提高Excel数据分析能力');
         this.learningGoals.add('改进对话交互体验');
-        this.learningGoals.add('增强上下文理解能�?);
+        this.learningGoals.add('增强上下文理解能�?);
         this.learningGoals.add('优化任务执行效率');
         this.learningGoals.add('提高问题解决能力');
       }
       
-      // 进行反�?      reflectOnExperience(experience, context = {}) {
+      // 进行反�?      reflectOnExperience(experience, context = {}) {
         const reflectionId = `ref_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
         // 分析体验
         const analysis = this.analyzeExperience(experience, context);
         
-        // 生成反�?        const reflection = {
+        // 生成反�?        const reflection = {
           id: reflectionId,
           experience,
           context,
@@ -2000,9 +2000,9 @@
           confidence: this.calculateConfidence(analysis)
         };
         
-        // 存储反�?        this.reflections.push(reflection);
+        // 存储反�?        this.reflections.push(reflection);
         
-        // 限制反思记录大�?        if (this.reflections.length > 50) {
+        // 限制反思记录大�?        if (this.reflections.length > 50) {
           this.reflections = this.reflections.slice(-50);
         }
         
@@ -2012,8 +2012,8 @@
         // 学习改进
         this.learnFromReflection(reflection);
         
-        // 添加到记忆系�?        this.memorySystem.addShortTermMemory(
-          `反�? ${reflection.insights[0] || '对体验进行了反�?}`,
+        // 添加到记忆系�?        this.memorySystem.addShortTermMemory(
+          `反�? ${reflection.insights[0] || '对体验进行了反�?}`,
           'reflection'
         );
         
@@ -2031,7 +2031,7 @@
         // 情感分析
         const emotionalValence = this.calculateEmotionalValence(experience);
         
-        // 上下文分�?        const contextAnalysis = this.analyzeContext(context);
+        // 上下文分�?        const contextAnalysis = this.analyzeContext(context);
         
         // 模式识别
         const patterns = this.identifyPatterns(experience, context);
@@ -2068,8 +2068,8 @@
       
       // 评估成功
       evaluateSuccess(experience) {
-        const successWords = ['成功', '完成', '�?, '优秀', '满意', '正确'];
-        const failureWords = ['失败', '错误', '问题', '异常', '不满�?, '错误'];
+        const successWords = ['成功', '完成', '�?, '优秀', '满意', '正确'];
+        const failureWords = ['失败', '错误', '问题', '异常', '不满�?, '错误'];
         
         let successScore = 0;
         
@@ -2086,8 +2086,8 @@
       
       // 计算情感 valence
       calculateEmotionalValence(experience) {
-        const positiveWords = ['成功', '完成', '�?, '优秀', '满意', '正确', '喜欢', '开�?, '高兴'];
-        const negativeWords = ['失败', '错误', '问题', '异常', '不满�?, '错误', '不喜�?, '伤心', '生气'];
+        const positiveWords = ['成功', '完成', '�?, '优秀', '满意', '正确', '喜欢', '开�?, '高兴'];
+        const negativeWords = ['失败', '错误', '问题', '异常', '不满�?, '错误', '不喜�?, '伤心', '生气'];
         
         let valence = 0;
         
@@ -2102,7 +2102,7 @@
         return valence;
       }
       
-      // 分析上下�?      analyzeContext(context) {
+      // 分析上下�?      analyzeContext(context) {
         const analysis = {};
         
         if (context.fileStats) {
@@ -2150,10 +2150,10 @@
         return patterns;
       }
       
-      // 计算复杂�?      calculateComplexity(experience, context = {}) {
-        let complexity = 1; // 1-简�? 2-中等, 3-复杂
+      // 计算复杂�?      calculateComplexity(experience, context = {}) {
+        let complexity = 1; // 1-简�? 2-中等, 3-复杂
         
-        // 根据体验长度评估复杂�?        if (experience.length > 200) complexity = 3;
+        // 根据体验长度评估复杂�?        if (experience.length > 200) complexity = 3;
         else if (experience.length > 100) complexity = 2;
         
         // 根据上下文评估复杂度
@@ -2175,10 +2175,10 @@
           insights.push('任务执行成功，总结成功经验');
           
           if (analysis.duration < 1000) {
-            insights.push('任务执行速度快，效率�?);
+            insights.push('任务执行速度快，效率�?);
           }
         } else {
-          insights.push('任务执行失败，需要分析失败原�?);
+          insights.push('任务执行失败，需要分析失败原�?);
           
           if (analysis.duration > 10000) {
             insights.push('任务执行时间过长，可能存在性能问题');
@@ -2186,7 +2186,7 @@
         }
         
         if (analysis.experienceType === 'excel_analysis') {
-          insights.push('Excel数据分析是核心功能，需要持续优�?);
+          insights.push('Excel数据分析是核心功能，需要持续优�?);
         }
         
         if (analysis.contextAnalysis.fileCount > 5) {
@@ -2196,13 +2196,13 @@
         return insights;
       }
       
-      // 识别改进�?      identifyImprovements(analysis) {
+      // 识别改进�?      identifyImprovements(analysis) {
         const improvements = [];
         
-        // 基于分析识别改进�?        if (!analysis.success) {
+        // 基于分析识别改进�?        if (!analysis.success) {
           improvements.push({
             area: 'task_execution',
-            description: '提高任务执行成功�?,
+            description: '提高任务执行成功�?,
             priority: 1,
             actions: ['分析失败原因', '优化执行流程', '增加错误处理']
           });
@@ -2222,7 +2222,7 @@
             area: 'dialogue',
             description: '改进对话交互体验',
             priority: 2,
-            actions: ['提高意图识别准确�?, '增强上下文理�?, '优化响应生成']
+            actions: ['提高意图识别准确�?, '增强上下文理�?, '优化响应生成']
           });
         }
         
@@ -2231,7 +2231,7 @@
             area: 'excel_skills',
             description: '增强Excel分析能力',
             priority: 3,
-            actions: ['增加分析类型', '优化数据处理', '提高可视化质�?]
+            actions: ['增加分析类型', '优化数据处理', '提高可视化质�?]
           });
         }
         
@@ -2261,19 +2261,19 @@
       
       // 从反思中学习
       learnFromReflection(reflection) {
-        // 基于反思更新学习目�?        this.updateLearningGoals(reflection);
+        // 基于反思更新学习目�?        this.updateLearningGoals(reflection);
         
-        // 基于反思更新记�?        this.updateMemoryFromReflection(reflection);
+        // 基于反思更新记�?        this.updateMemoryFromReflection(reflection);
         
-        // 基于反思生成行动计�?        this.generateActionPlan(reflection);
+        // 基于反思生成行动计�?        this.generateActionPlan(reflection);
       }
       
       // 更新学习目标
       updateLearningGoals(reflection) {
-        // 基于反思的改进点更新学习目�?        reflection.improvements.forEach(improvement => {
+        // 基于反思的改进点更新学习目�?        reflection.improvements.forEach(improvement => {
           switch (improvement.area) {
             case 'task_execution':
-              this.learningGoals.add('提高任务执行可靠�?);
+              this.learningGoals.add('提高任务执行可靠�?);
               break;
             case 'performance':
               this.learningGoals.add('优化系统性能');
@@ -2307,7 +2307,7 @@
         reflection.improvements.forEach(improvement => {
           this.memorySystem.addProceduralMemory(
             `improvement_${improvement.area}`,
-            `改进${improvement.description}的步�? ${improvement.actions.join('; ')}`
+            `改进${improvement.description}的步�? ${improvement.actions.join('; ')}`
           );
         });
       }
@@ -2380,7 +2380,7 @@
           this.selfAssessmentHistory = this.selfAssessmentHistory.slice(-20);
         }
         
-        // 添加到记忆系�?        this.memorySystem.addLongTermMemory(
+        // 添加到记忆系�?        this.memorySystem.addLongTermMemory(
           `self_assessment_${assessmentId}`,
           JSON.stringify(assessment),
           { type: 'self_assessment' }
@@ -2389,7 +2389,7 @@
         return assessment;
       }
       
-      // 评估技�?      assessSkills() {
+      // 评估技�?      assessSkills() {
         return {
           excelAnalysis: Math.random() * 0.3 + 0.7, // 70-100%
           dataCleaning: Math.random() * 0.3 + 0.6, // 60-90%
@@ -2447,7 +2447,7 @@
         const strengths = [];
         
         if (assessments.skills.excelAnalysis > 0.8) {
-          strengths.push('Excel分析能力�?);
+          strengths.push('Excel分析能力�?);
         }
         
         if (assessments.performance.successRate > 0.9) {
@@ -2459,7 +2459,7 @@
         }
         
         if (assessments.learning.knowledgeAcquisition > 0.8) {
-          strengths.push('知识获取能力�?);
+          strengths.push('知识获取能力�?);
         }
         
         return strengths;
@@ -2470,19 +2470,19 @@
         const weaknesses = [];
         
         if (assessments.skills.dataCleaning < 0.7) {
-          weaknesses.push('数据清洗能力需要提�?);
+          weaknesses.push('数据清洗能力需要提�?);
         }
         
         if (assessments.performance.executionSpeed < 0.7) {
-          weaknesses.push('任务执行速度需要优�?);
+          weaknesses.push('任务执行速度需要优�?);
         }
         
         if (assessments.dialogue.contextUnderstanding < 0.7) {
-          weaknesses.push('上下文理解能力需要增�?);
+          weaknesses.push('上下文理解能力需要增�?);
         }
         
         if (assessments.learning.adaptation < 0.7) {
-          weaknesses.push('适应能力需要提�?);
+          weaknesses.push('适应能力需要提�?);
         }
         
         return weaknesses;
@@ -2514,12 +2514,12 @@
           this.feedbackHistory = this.feedbackHistory.slice(-50);
         }
         
-        // 基于反馈进行反�?        this.reflectOnExperience(`用户反馈: ${feedback}`, {
+        // 基于反馈进行反�?        this.reflectOnExperience(`用户反馈: ${feedback}`, {
           ...context,
           feedbackAnalysis: analysis
         });
         
-        // 添加到记忆系�?        this.memorySystem.addShortTermMemory(
+        // 添加到记忆系�?        this.memorySystem.addShortTermMemory(
           `用户反馈: ${feedback}`,
           analysis.sentiment === 'positive' ? 'success' : 'error'
         );
@@ -2537,7 +2537,7 @@
         // 主题识别
         const topics = this.identifyFeedbackTopics(feedback);
         
-        // 优先级评�?        const priority = this.assessFeedbackPriority(feedback, sentiment);
+        // 优先级评�?        const priority = this.assessFeedbackPriority(feedback, sentiment);
         
         return {
           sentiment,
@@ -2550,8 +2550,8 @@
       
       // 分析情感
       analyzeSentiment(feedback) {
-        const positiveWords = ['�?, '优秀', '满意', '喜欢', '�?, '�?, '�?, '准确'];
-        const negativeWords = ['�?, '�?, '错误', '不满�?, '不喜�?, '失败', '问题'];
+        const positiveWords = ['�?, '优秀', '满意', '喜欢', '�?, '�?, '�?, '准确'];
+        const negativeWords = ['�?, '�?, '错误', '不满�?, '不喜�?, '失败', '问题'];
         
         let positiveCount = 0;
         let negativeCount = 0;
@@ -2583,7 +2583,7 @@
         return topics.length > 0 ? topics : ['general'];
       }
       
-      // 评估反馈优先�?      assessFeedbackPriority(feedback, sentiment) {
+      // 评估反馈优先�?      assessFeedbackPriority(feedback, sentiment) {
         if (sentiment === 'negative' && (feedback.includes('错误') || feedback.includes('失败'))) {
           return 1; // 高优先级
         } else if (sentiment === 'negative') {
@@ -2595,12 +2595,12 @@
         }
       }
       
-      // 评估紧急�?      assessUrgency(feedback) {
-        return feedback.includes('紧�?) || feedback.includes('立刻') || feedback.includes('马上');
+      // 评估紧急�?      assessUrgency(feedback) {
+        return feedback.includes('紧�?) || feedback.includes('立刻') || feedback.includes('马上');
       }
       
-      // 判断是否可操�?      isActionable(feedback) {
-        const actionableWords = ['希望', '建议', '需�?, '应该', '可以', '更好', '改进'];
+      // 判断是否可操�?      isActionable(feedback) {
+        const actionableWords = ['希望', '建议', '需�?, '应该', '可以', '更好', '改进'];
         return actionableWords.some(word => feedback.includes(word));
       }
       
@@ -2628,17 +2628,17 @@
         return actions;
       }
       
-      // 计算置信�?      calculateConfidence(analysis) {
+      // 计算置信�?      calculateConfidence(analysis) {
         let confidence = 0.5;
         
-        // 基于分析结果计算置信�?        if (analysis.success) confidence += 0.2;
+        // 基于分析结果计算置信�?        if (analysis.success) confidence += 0.2;
         if (analysis.patterns.length > 0) confidence += 0.1;
         if (analysis.contextAnalysis.fileCount) confidence += 0.1;
         
         return Math.min(confidence, 1.0);
       }
       
-      // 获取反思记�?      getReflections(limit = 10) {
+      // 获取反思记�?      getReflections(limit = 10) {
         return this.reflections.slice(-limit);
       }
       
@@ -2898,18 +2898,18 @@
           }
         });
         
-        // 计算器工�?        this.tools.set('calculator', {
+        // 计算器工�?        this.tools.set('calculator', {
           name: 'calculator',
           description: '执行数学计算',
           parameters: {
             expression: {
               type: 'string',
-              description: '数学表达�?
+              description: '数学表达�?
             }
           },
           execute: async (params) => {
-            // 模拟计算�?            try {
-              // 简单的表达式计�?              const result = eval(params.expression);
+            // 模拟计算�?            try {
+              // 简单的表达式计�?              const result = eval(params.expression);
               return {
                 success: true,
                 message: '计算完成',
@@ -2979,7 +2979,7 @@
             }
             return {
               success: false,
-              message: '钉钉发送失�? 缺少bot实例'
+              message: '钉钉发送失�? 缺少bot实例'
             };
           }
         });
@@ -3238,9 +3238,9 @@
     }
     
     // ====================
-    // Clawbot风格的通用机器人框�?    // ====================
+    // Clawbot风格的通用机器人框�?    // ====================
     
-    // 任务管理�?    class TaskManager {
+    // 任务管理�?    class TaskManager {
       constructor() {
         this.tasks = new Map();
         this.activeTasks = new Set();
@@ -3304,9 +3304,9 @@
       }
     }
     
-    // 自主思考系�?    class ThoughtProcess {
+    // 自主思考系�?    class ThoughtProcess {
       static async generateThought(prompt, context) {
-        // 模拟自主思考过�?        return new Promise((resolve) => {
+        // 模拟自主思考过�?        return new Promise((resolve) => {
           setTimeout(() => {
             resolve({
               reasoning: `基于用户输入"${prompt}"，我需要分析用户的意图并生成相应的执行计划。考虑到上下文信息，用户可能需要进行Excel相关操作。`,
@@ -3346,7 +3346,7 @@
         // 模拟发送消息到钉钉
         console.log('发送消息到钉钉:', message, options);
         
-        // 实际应用中，这里会调用钉钉API发送消�?        // const response = await fetch(`https://oapi.dingtalk.com/robot/send?access_token=${this.token}`, {
+        // 实际应用中，这里会调用钉钉API发送消�?        // const response = await fetch(`https://oapi.dingtalk.com/robot/send?access_token=${this.token}`, {
         //   method: 'POST',
         //   headers: {
         //     'Content-Type': 'application/json'
@@ -3365,7 +3365,7 @@
         // 模拟响应
         return {
           success: true,
-          message: '消息发送成�?,
+          message: '消息发送成�?,
           data: {
             messageId: `msg_${Date.now()}`,
             timestamp: new Date().toISOString()
@@ -3374,10 +3374,10 @@
       }
       
       async receive() {
-        // 模拟从钉钉接收消�?        console.log('从钉钉接收消�?);
+        // 模拟从钉钉接收消�?        console.log('从钉钉接收消�?);
         
         // 实际应用中，这里会设置webhook接收钉钉消息
-        // 由于是本地应用，这里只返回模拟数�?        
+        // 由于是本地应用，这里只返回模拟数�?        
         return {
           success: true,
           messages: []
@@ -3399,16 +3399,16 @@
         const lowerMessage = message.toLowerCase();
         
         // 首先处理问候和状态询问类问题
-        const greetingKeywords = ['你好', '您好', '�?, 'hello', 'hi'];
-        const statusKeywords = ['能听�?, '听到说话', '在吗', '在不�?, '是否在线', '是否工作', '正常�?, '运行�?];
-        const helpKeywords = ['帮助', '功能', '怎么�?, '使用方法', '教程'];
+        const greetingKeywords = ['你好', '您好', '�?, 'hello', 'hi'];
+        const statusKeywords = ['能听�?, '听到说话', '在吗', '在不�?, '是否在线', '是否工作', '正常�?, '运行�?];
+        const helpKeywords = ['帮助', '功能', '怎么�?, '使用方法', '教程'];
         
         // 检查是否是问候语
         for (const keyword of greetingKeywords) {
           if (lowerMessage.includes(keyword)) {
             return {
               type: 'greeting',
-              description: '问�?,
+              description: '问�?,
               action: 'greet',
               confidence: 0.9,
               priority: 0
@@ -3416,11 +3416,11 @@
           }
         }
         
-        // 检查是否是状态询�?        for (const keyword of statusKeywords) {
+        // 检查是否是状态询�?        for (const keyword of statusKeywords) {
           if (lowerMessage.includes(keyword)) {
             return {
               type: 'status_inquiry',
-              description: '状态询�?,
+              description: '状态询�?,
               action: 'status_check',
               confidence: 0.9,
               priority: 0
@@ -3441,34 +3441,34 @@
           }
         }
         
-        // 定义意图类型和对应的关键�?        const intents = {
+        // 定义意图类型和对应的关键�?        const intents = {
           // Excel相关意图
           'data_analysis': {
-            keywords: ['分析', '统计', '计算', '汇�?, '概览', '查看数据', '数据情况', '数据统计', '数据汇�?],
+            keywords: ['分析', '统计', '计算', '汇�?, '概览', '查看数据', '数据情况', '数据统计', '数据汇�?],
             description: '数据分析',
             action: 'analyze',
             priority: 1
           },
           'data_cleaning': {
-            keywords: ['清洗', '清理', '去重', '删除重复', '处理空�?, '填充空�?, '标准�?, '数据清洗', '数据清理'],
+            keywords: ['清洗', '清理', '去重', '删除重复', '处理空�?, '填充空�?, '标准�?, '数据清洗', '数据清理'],
             description: '数据清洗',
             action: 'clean',
             priority: 2
           },
           'data_transform': {
-            keywords: ['转换', '格式�?, '统一格式', '日期格式', '数值格�?, '文本格式', '数据转换', '数据格式�?],
+            keywords: ['转换', '格式�?, '统一格式', '日期格式', '数值格�?, '文本格式', '数据转换', '数据格式�?],
             description: '数据转换',
             action: 'transform',
             priority: 2
           },
           'data_filter': {
-            keywords: ['筛�?, '过滤', '查询', '查找', '搜索', '提取', '条件', '数据筛�?, '数据过滤'],
-            description: '数据筛�?,
+            keywords: ['筛�?, '过滤', '查询', '查找', '搜索', '提取', '条件', '数据筛�?, '数据过滤'],
+            description: '数据筛�?,
             action: 'filter',
             priority: 2
           },
           'data_sort': {
-            keywords: ['排序', '升序', '降序', '排列', '�?..排序', '数据排序'],
+            keywords: ['排序', '升序', '降序', '排列', '�?..排序', '数据排序'],
             description: '数据排序',
             action: 'sort',
             priority: 2
@@ -3480,7 +3480,7 @@
             priority: 2
           },
           'data_split': {
-            keywords: ['拆分', '分割', '分离', '分组', '�?..拆分', '数据拆分'],
+            keywords: ['拆分', '分割', '分离', '分组', '�?..拆分', '数据拆分'],
             description: '数据拆分',
             action: 'split',
             priority: 2
@@ -3492,55 +3492,55 @@
             priority: 1
           },
           'data_modify': {
-            keywords: ['修改', '编辑', '更新', '更改', '调整', '原文�?, '修改excel', '编辑excel', '更新excel'],
+            keywords: ['修改', '编辑', '更新', '更改', '调整', '原文�?, '修改excel', '编辑excel', '更新excel'],
             description: '原Excel修改',
             action: 'modify',
             priority: 1
           },
           'data_pivot': {
-            keywords: ['透视', '透视�?, '交叉�?, '汇总表', '分组统计', '数据透视'],
+            keywords: ['透视', '透视�?, '交叉�?, '汇总表', '分组统计', '数据透视'],
             description: '数据透视',
             action: 'pivot',
             priority: 2
           },
           'data_visualization': {
-            keywords: ['图表', '可视�?, '画图', '绘图', '柱状�?, '折线�?, '饼图', '散点�?, '热力�?, '数据可视�?, '数据图表'],
-            description: '数据可视�?,
+            keywords: ['图表', '可视�?, '画图', '绘图', '柱状�?, '折线�?, '饼图', '散点�?, '热力�?, '数据可视�?, '数据图表'],
+            description: '数据可视�?,
             action: 'visualize',
             priority: 1
           },
           'data_statistics': {
-            keywords: ['统计', '均�?, '中位�?, '标准�?, '方差', '偏度', '峰度', '分布', '直方�?, '箱线�?, '描述性统�?],
-            description: '描述性统�?,
+            keywords: ['统计', '均�?, '中位�?, '标准�?, '方差', '偏度', '峰度', '分布', '直方�?, '箱线�?, '描述性统�?],
+            description: '描述性统�?,
             action: 'statistics',
             priority: 2
           },
           'data_correlation': {
-            keywords: ['相关', '相关�?, '关联', '关系', '相关系数', '相关矩阵', '相关性分�?],
-            description: '相关性分�?,
+            keywords: ['相关', '相关�?, '关联', '关系', '相关系数', '相关矩阵', '相关性分�?],
+            description: '相关性分�?,
             action: 'correlation',
             priority: 2
           },
           'data_trend': {
-            keywords: ['趋势', '移动平均', '季节�?, '时间序列', '预测', '趋势�?, '趋势分析'],
+            keywords: ['趋势', '移动平均', '季节�?, '时间序列', '预测', '趋势�?, '趋势分析'],
             description: '趋势分析',
             action: 'trend',
             priority: 2
           },
           'data_anomaly': {
-            keywords: ['异常', '异常�?, '离群�?, '异常检�?, '异常识别', '异常分析'],
-            description: '异常检�?,
+            keywords: ['异常', '异常�?, '离群�?, '异常检�?, '异常识别', '异常分析'],
+            description: '异常检�?,
             action: 'anomaly',
             priority: 2
           },
           'data_formula': {
-            keywords: ['公式', '计算', '函数', '求和', '平均�?, '最大�?, '最小�?, '计数', 'excel公式', '数据公式'],
+            keywords: ['公式', '计算', '函数', '求和', '平均�?, '最大�?, '最小�?, '计数', 'excel公式', '数据公式'],
             description: '公式计算',
             action: 'formula',
             priority: 2
           },
           'data_validation': {
-            keywords: ['验证', '检�?, '校验', '数据类型', '格式验证', '业务规则', '数据验证'],
+            keywords: ['验证', '检�?, '校验', '数据类型', '格式验证', '业务规则', '数据验证'],
             description: '数据验证',
             action: 'validate',
             priority: 2
@@ -3552,26 +3552,26 @@
             priority: 2
           },
           'data_deliverable': {
-            keywords: ['交付�?, '导出�?, '生成�?, '转换�?, 'pdf', 'csv', 'txt', 'word', '文档', '生成报告'],
-            description: '生成其他交付�?,
+            keywords: ['交付�?, '导出�?, '生成�?, '转换�?, 'pdf', 'csv', 'txt', 'word', '文档', '生成报告'],
+            description: '生成其他交付�?,
             action: 'deliverable',
             priority: 1
           },
           'ai_interaction': {
-            keywords: ['大模�?, 'ai', '人工智能', '智能分析', '模型输出', 'ai分析', '智能助手'],
-            description: '大模型交�?,
+            keywords: ['大模�?, 'ai', '人工智能', '智能分析', '模型输出', 'ai分析', '智能助手'],
+            description: '大模型交�?,
             action: 'ai_interaction',
             priority: 1
           },
           // 运营人员常用的Excel操作
           'pivot_table': {
-            keywords: ['透视�?, '数据透视', '交叉�?, '汇总表', '数据汇�?, '创建透视�?],
-            description: '创建数据透视�?,
+            keywords: ['透视�?, '数据透视', '交叉�?, '汇总表', '数据汇�?, '创建透视�?],
+            description: '创建数据透视�?,
             action: 'pivot_table',
             priority: 1
           },
           'conditional_formatting': {
-            keywords: ['条件格式', '条件格式�?, '高亮', '突出显示', '颜色标记', '设置条件格式'],
+            keywords: ['条件格式', '条件格式�?, '高亮', '突出显示', '颜色标记', '设置条件格式'],
             description: '设置条件格式',
             action: 'conditional_formatting',
             priority: 2
@@ -3583,7 +3583,7 @@
             priority: 1
           },
           'data_validation_rule': {
-            keywords: ['数据验证', '数据有效�?, '输入验证', '验证规则', '设置数据验证'],
+            keywords: ['数据验证', '数据有效�?, '输入验证', '验证规则', '设置数据验证'],
             description: '设置数据验证',
             action: 'data_validation_rule',
             priority: 2
@@ -3595,25 +3595,25 @@
             priority: 2
           },
           'sumif': {
-            keywords: ['sumif', '条件求和', '按条件求�?, 'sumif函数'],
+            keywords: ['sumif', '条件求和', '按条件求�?, 'sumif函数'],
             description: '使用SUMIF函数',
             action: 'sumif',
             priority: 2
           },
           'countif': {
-            keywords: ['countif', '条件计数', '按条件计�?, 'countif函数'],
+            keywords: ['countif', '条件计数', '按条件计�?, 'countif函数'],
             description: '使用COUNTIF函数',
             action: 'countif',
             priority: 2
           },
           'averageif': {
-            keywords: ['averageif', '条件平均�?, '按条件求平均', 'averageif函数'],
+            keywords: ['averageif', '条件平均�?, '按条件求平均', 'averageif函数'],
             description: '使用AVERAGEIF函数',
             action: 'averageif',
             priority: 2
           },
           'chart_creation': {
-            keywords: ['创建图表', '图表制作', '数据可视�?, '画图', '绘制图表', '生成图表'],
+            keywords: ['创建图表', '图表制作', '数据可视�?, '画图', '绘制图表', '生成图表'],
             description: '创建图表',
             action: 'chart_creation',
             priority: 1
@@ -3630,9 +3630,9 @@
             action: 'data_export',
             priority: 1
           },
-          // 运营人员常用的分析功�?          'sales_analysis': {
-            keywords: ['销售分�?, '销售额分析', '销售数�?, '销售趋�?, '销售报�?, '销售统�?, '销售业�?],
-            description: '销售数据分�?,
+          // 运营人员常用的分析功�?          'sales_analysis': {
+            keywords: ['销售分�?, '销售额分析', '销售数�?, '销售趋�?, '销售报�?, '销售统�?, '销售业�?],
+            description: '销售数据分�?,
             action: 'sales_analysis',
             priority: 1
           },
@@ -3643,7 +3643,7 @@
             priority: 1
           },
           'inventory_analysis': {
-            keywords: ['库存分析', '库存数据', '库存管理', '库存报表', '库存状�?, '库存统计', '库存监控'],
+            keywords: ['库存分析', '库存数据', '库存管理', '库存报表', '库存状�?, '库存统计', '库存监控'],
             description: '库存分析',
             action: 'inventory_analysis',
             priority: 1
@@ -3669,7 +3669,7 @@
             priority: 1
           },
           'email_management': {
-            keywords: ['邮件', '发送邮�?, '查看邮件', '搜索邮件', '邮件管理', '发邮�?, '邮件处理'],
+            keywords: ['邮件', '发送邮�?, '查看邮件', '搜索邮件', '邮件管理', '发邮�?, '邮件处理'],
             description: '邮件管理',
             action: 'email_manage',
             priority: 1
@@ -3687,7 +3687,7 @@
             priority: 1
           },
           'calculation': {
-            keywords: ['计算', '计算�?, '数学', '加减乘除', '求和', '平均�?, '计算工具'],
+            keywords: ['计算', '计算�?, '数学', '加减乘除', '求和', '平均�?, '计算工具'],
             description: '数学计算',
             action: 'calculate',
             priority: 2
@@ -3699,19 +3699,19 @@
             priority: 2
           },
           'dingtalk_integration': {
-            keywords: ['钉钉', '发送到钉钉', '钉钉消息', '钉钉集成', '钉钉机器�?],
+            keywords: ['钉钉', '发送到钉钉', '钉钉消息', '钉钉集成', '钉钉机器�?],
             description: '钉钉集成',
             action: 'dingtalk_integrate',
             priority: 1
           },
           'system_information': {
-            keywords: ['系统', '系统信息', '电脑信息', '环境信息', '系统状�?],
+            keywords: ['系统', '系统信息', '电脑信息', '环境信息', '系统状�?],
             description: '系统信息',
             action: 'system_info',
             priority: 2
           },
           'general_office': {
-            keywords: ['办公', '办公�?, '办公工具', '办公自动�?, '办公助手'],
+            keywords: ['办公', '办公�?, '办公工具', '办公自动�?, '办公助手'],
             description: '办公通用',
             action: 'general_office',
             priority: 1
@@ -3735,17 +3735,17 @@
           }
         }
         
-        // 如果有匹配的意图，按优先级和置信度排�?        if (matchedIntents.length > 0) {
+        // 如果有匹配的意图，按优先级和置信度排�?        if (matchedIntents.length > 0) {
           matchedIntents.sort((a, b) => {
-            // 先按优先级排�?            if (a.priority !== b.priority) {
+            // 先按优先级排�?            if (a.priority !== b.priority) {
               return a.priority - b.priority;
             }
-            // 再按置信度排�?            return b.confidence - a.confidence;
+            // 再按置信度排�?            return b.confidence - a.confidence;
           });
           return matchedIntents[0];
         }
         
-        // 默认意图为数据分�?        return {
+        // 默认意图为数据分�?        return {
           type: 'data_analysis',
           description: '数据分析',
           action: 'analyze',
@@ -3764,7 +3764,7 @@
         const position = message.toLowerCase().indexOf(keyword);
         const positionWeight = position === 0 ? 1.5 : (position < messageLength * 0.3 ? 1.2 : 1.0);
         
-        // 关键词完整性权�?        const isExactMatch = message.toLowerCase() === keyword;
+        // 关键词完整性权�?        const isExactMatch = message.toLowerCase() === keyword;
         const exactMatchWeight = isExactMatch ? 2.0 : 1.0;
         
         // 计算最终置信度
@@ -3778,54 +3778,54 @@
           'status_inquiry': '是的，我能听到您说话，系统运行正常。我是您的办公通用助手，随时为您服务。请问您需要什么帮助？',
           'help_request': '我是您的办公通用助手，主要功能包括：\n1. Excel文件上传和分析\n2. 文档处理和转换\n3. 邮件管理和发送\n4. 日程安排和任务管理\n5. 网络搜索和计算工具\n6. 钉钉消息发送和集成\n7. 系统信息查询\n\n请问您需要具体的什么帮助？',
           
-          // Excel相关意图提示�?          'data_analysis': '我已识别到您需要进行数据分析操作。接下来我将分析您的Excel数据，提供详细的统计信息和洞察。\n\n作为运营人员，您希望重点了解哪些业务指标或数据维度？例如销售趋势、用户行为、库存状况等�?,
-          'data_cleaning': '我已识别到您需要进行数据清洗操作。接下来我将帮您清洗数据，处理空值、重复值和异常值。\n\n请告诉我您希望如何处理这些问题，例如填充空值的方式、删除重复值的条件等�?,
-          'data_transform': '我已识别到您需要进行数据转换操作。接下来我将帮您转换数据格式，统一日期、数值和文本格式。\n\n请告诉我您希望转换哪些列，以及目标格式是什么�?,
-          'data_filter': '我已识别到您需要进行数据筛选操作。接下来我将帮您筛选数据，根据您提供的条件提取符合要求的数据。\n\n请告诉我具体的筛选条件，例如数值范围、文本包含内容、日期区间等�?,
-          'data_sort': '我已识别到您需要进行数据排序操作。接下来我将帮您排序数据，按照您指定的列和顺序进行排列。\n\n请告诉我排序的列名和顺序（升序或降序）�?,
-          'data_merge': '我已识别到您需要进行数据合并操作。接下来我将帮您合并多个Excel文件，可以横向或纵向合并。\n\n请告诉我合并的方式，以及是否有特定的键列用于匹配数据�?,
-          'data_split': '我已识别到您需要进行数据拆分操作。接下来我将帮您拆分数据，根据条件、列或随机方式进行拆分。\n\n请告诉我拆分的方式和具体要求�?,
-          'data_export': '我已识别到您需要进行数据导出操作。接下来我将帮您生成新的Excel文件，包含分析结果或处理后的数据。\n\n请告诉我您希望导出哪些数据，以及是否需要特定的文件名或格式�?,
-          'data_modify': '我已识别到您需要进行原Excel文件修改操作。接下来我将帮您修改原Excel文件，根据您的要求更新数据。\n\n请告诉我您希望如何修改数据，例如更新特定列的值、调整公式等�?,
-          'data_pivot': '我已识别到您需要进行数据透视操作。接下来我将帮您创建数据透视表，进行多维度数据汇总。\n\n请告诉我您希望以哪些列为行字段、列字段和值字段，以及值字段的汇总方式（求和、计数、平均值等）�?,
-          'data_visualization': '我已识别到您需要进行数据可视化操作。接下来我将帮您创建数据可视化图表，支持多种图表类型。\n\n请告诉我您希望创建什么类型的图表，以及用于图表的数据范围和维度�?,
-          'data_statistics': '我已识别到您需要进行描述性统计操作。接下来我将为您提供描述性统计分析，包括均值、中位数、标准差等统计指标。\n\n请告诉我您希望分析哪些列的数据�?,
-          'data_correlation': '我已识别到您需要进行相关性分析操作。接下来我将帮您分析数据之间的相关性，计算相关系数矩阵。\n\n请告诉我您希望分析哪些列之间的相关性�?,
-          'data_trend': '我已识别到您需要进行趋势分析操作。接下来我将帮您分析数据趋势，包括移动平均、趋势线和季节性分析。\n\n请告诉我您希望分析哪些列的趋势，以及时间范围�?,
-          'data_anomaly': '我已识别到您需要进行异常检测操作。接下来我将帮您检测数据中的异常值，使用统计方法识别离群点。\n\n请告诉我您希望分析哪些列的数据，以及对异常值的处理方式�?,
-          'data_formula': '我已识别到您需要进行公式计算操作。接下来我将帮您应用公式和计算，支持各种数学、统计和文本函数。\n\n请告诉我您希望应用什么公式，以及应用的范围�?,
-          'data_validation': '我已识别到您需要进行数据验证操作。接下来我将帮您验证数据，检查数据类型、格式和业务规则。\n\n请告诉我您希望验证哪些方面的数据，以及验证规则是什么�?,
-          'data_sampling': '我已识别到您需要进行数据采样操作。接下来我将帮您进行数据采样，支持随机、分层和时间序列采样。\n\n请告诉我您希望使用什么采样方法，以及采样比例或数量�?,
-          'data_deliverable': '我已识别到您需要生成其他交付件操作。接下来我将帮您生成其他类型的交付件，如PDF、CSV、TXT等。\n\n请告诉我您希望生成什么类型的文件，以及包含什么内容�?,
-          'ai_interaction': '我已识别到您需要与大模型交互操作。接下来我将帮您与大模型交互，根据模型输出修改Excel文件。\n\n作为运营人员，您希望如何利用AI能力来提升Excel处理效率�?,
+          // Excel相关意图提示�?          'data_analysis': '我已识别到您需要进行数据分析操作。接下来我将分析您的Excel数据，提供详细的统计信息和洞察。\n\n作为运营人员，您希望重点了解哪些业务指标或数据维度？例如销售趋势、用户行为、库存状况等�?,
+          'data_cleaning': '我已识别到您需要进行数据清洗操作。接下来我将帮您清洗数据，处理空值、重复值和异常值。\n\n请告诉我您希望如何处理这些问题，例如填充空值的方式、删除重复值的条件等�?,
+          'data_transform': '我已识别到您需要进行数据转换操作。接下来我将帮您转换数据格式，统一日期、数值和文本格式。\n\n请告诉我您希望转换哪些列，以及目标格式是什么�?,
+          'data_filter': '我已识别到您需要进行数据筛选操作。接下来我将帮您筛选数据，根据您提供的条件提取符合要求的数据。\n\n请告诉我具体的筛选条件，例如数值范围、文本包含内容、日期区间等�?,
+          'data_sort': '我已识别到您需要进行数据排序操作。接下来我将帮您排序数据，按照您指定的列和顺序进行排列。\n\n请告诉我排序的列名和顺序（升序或降序）�?,
+          'data_merge': '我已识别到您需要进行数据合并操作。接下来我将帮您合并多个Excel文件，可以横向或纵向合并。\n\n请告诉我合并的方式，以及是否有特定的键列用于匹配数据�?,
+          'data_split': '我已识别到您需要进行数据拆分操作。接下来我将帮您拆分数据，根据条件、列或随机方式进行拆分。\n\n请告诉我拆分的方式和具体要求�?,
+          'data_export': '我已识别到您需要进行数据导出操作。接下来我将帮您生成新的Excel文件，包含分析结果或处理后的数据。\n\n请告诉我您希望导出哪些数据，以及是否需要特定的文件名或格式�?,
+          'data_modify': '我已识别到您需要进行原Excel文件修改操作。接下来我将帮您修改原Excel文件，根据您的要求更新数据。\n\n请告诉我您希望如何修改数据，例如更新特定列的值、调整公式等�?,
+          'data_pivot': '我已识别到您需要进行数据透视操作。接下来我将帮您创建数据透视表，进行多维度数据汇总。\n\n请告诉我您希望以哪些列为行字段、列字段和值字段，以及值字段的汇总方式（求和、计数、平均值等）�?,
+          'data_visualization': '我已识别到您需要进行数据可视化操作。接下来我将帮您创建数据可视化图表，支持多种图表类型。\n\n请告诉我您希望创建什么类型的图表，以及用于图表的数据范围和维度�?,
+          'data_statistics': '我已识别到您需要进行描述性统计操作。接下来我将为您提供描述性统计分析，包括均值、中位数、标准差等统计指标。\n\n请告诉我您希望分析哪些列的数据�?,
+          'data_correlation': '我已识别到您需要进行相关性分析操作。接下来我将帮您分析数据之间的相关性，计算相关系数矩阵。\n\n请告诉我您希望分析哪些列之间的相关性�?,
+          'data_trend': '我已识别到您需要进行趋势分析操作。接下来我将帮您分析数据趋势，包括移动平均、趋势线和季节性分析。\n\n请告诉我您希望分析哪些列的趋势，以及时间范围�?,
+          'data_anomaly': '我已识别到您需要进行异常检测操作。接下来我将帮您检测数据中的异常值，使用统计方法识别离群点。\n\n请告诉我您希望分析哪些列的数据，以及对异常值的处理方式�?,
+          'data_formula': '我已识别到您需要进行公式计算操作。接下来我将帮您应用公式和计算，支持各种数学、统计和文本函数。\n\n请告诉我您希望应用什么公式，以及应用的范围�?,
+          'data_validation': '我已识别到您需要进行数据验证操作。接下来我将帮您验证数据，检查数据类型、格式和业务规则。\n\n请告诉我您希望验证哪些方面的数据，以及验证规则是什么�?,
+          'data_sampling': '我已识别到您需要进行数据采样操作。接下来我将帮您进行数据采样，支持随机、分层和时间序列采样。\n\n请告诉我您希望使用什么采样方法，以及采样比例或数量�?,
+          'data_deliverable': '我已识别到您需要生成其他交付件操作。接下来我将帮您生成其他类型的交付件，如PDF、CSV、TXT等。\n\n请告诉我您希望生成什么类型的文件，以及包含什么内容�?,
+          'ai_interaction': '我已识别到您需要与大模型交互操作。接下来我将帮您与大模型交互，根据模型输出修改Excel文件。\n\n作为运营人员，您希望如何利用AI能力来提升Excel处理效率�?,
           
-          // 运营人员常用的Excel操作提示�?          'pivot_table': '我已识别到您需要创建数据透视表操作。接下来我将帮您创建数据透视表，进行多维度数据汇总。\n\n作为运营人员，您希望通过透视表分析哪些业务维度？例如按地区、产品类别、时间段等进行销售汇总�?,
-          'conditional_formatting': '我已识别到您需要设置条件格式操作。接下来我将帮您设置条件格式，突出显示符合特定条件的数据。\n\n请告诉我您的条件格式规则，例如销售额大于10000显示绿色，库存不足显示红色等�?,
-          'batch_operation': '我已识别到您需要进行批量操作。接下来我将帮您进行批量操作，如批量修改、更新或删除数据。\n\n请告诉我您的批量操作需求，例如批量更新产品价格、批量标记状态等�?,
-          'data_validation_rule': '我已识别到您需要设置数据验证规则操作。接下来我将帮您设置数据验证规则，确保数据输入的准确性。\n\n请告诉我您的验证规则，例如数值范围、下拉列表选项、日期格式等�?,
-          'vlookup': '我已识别到您需要使用VLOOKUP函数操作。接下来我将帮您使用VLOOKUP函数查找和匹配数据。\n\n请告诉我查找的条件列、查找范围和返回的列，例如根据产品ID查找产品名称�?,
-          'sumif': '我已识别到您需要使用SUMIF函数操作。接下来我将帮您使用SUMIF函数进行条件求和。\n\n请告诉我求和的范围、条件列和条件值，例如计算某地区的总销售额�?,
-          'countif': '我已识别到您需要使用COUNTIF函数操作。接下来我将帮您使用COUNTIF函数进行条件计数。\n\n请告诉我计数的范围、条件列和条件值，例如统计某状态的订单数量�?,
-          'averageif': '我已识别到您需要使用AVERAGEIF函数操作。接下来我将帮您使用AVERAGEIF函数进行条件平均值计算。\n\n请告诉我计算的范围、条件列和条件值，例如计算某类产品的平均价格�?,
-          'chart_creation': '我已识别到您需要创建图表操作。接下来我将帮您创建数据可视化图表。\n\n请告诉我您希望创建什么类型的图表，以及用于图表的数据范围和维度，例如销售趋势折线图、产品类别分布饼图等�?,
-          'data_import': '我已识别到您需要进行数据导入操作。接下来我将帮您导入数据到Excel文件中。\n\n请告诉我您希望导入的数据来源和格式，例如CSV文件、文本文件、数据库等�?,
-          'data_export': '我已识别到您需要进行数据导出操作。接下来我将帮您导出Excel数据到其他格式。\n\n请告诉我您希望导出的格式和范围，例如导出为CSV文件、PDF报告等�?,
+          // 运营人员常用的Excel操作提示�?          'pivot_table': '我已识别到您需要创建数据透视表操作。接下来我将帮您创建数据透视表，进行多维度数据汇总。\n\n作为运营人员，您希望通过透视表分析哪些业务维度？例如按地区、产品类别、时间段等进行销售汇总�?,
+          'conditional_formatting': '我已识别到您需要设置条件格式操作。接下来我将帮您设置条件格式，突出显示符合特定条件的数据。\n\n请告诉我您的条件格式规则，例如销售额大于10000显示绿色，库存不足显示红色等�?,
+          'batch_operation': '我已识别到您需要进行批量操作。接下来我将帮您进行批量操作，如批量修改、更新或删除数据。\n\n请告诉我您的批量操作需求，例如批量更新产品价格、批量标记状态等�?,
+          'data_validation_rule': '我已识别到您需要设置数据验证规则操作。接下来我将帮您设置数据验证规则，确保数据输入的准确性。\n\n请告诉我您的验证规则，例如数值范围、下拉列表选项、日期格式等�?,
+          'vlookup': '我已识别到您需要使用VLOOKUP函数操作。接下来我将帮您使用VLOOKUP函数查找和匹配数据。\n\n请告诉我查找的条件列、查找范围和返回的列，例如根据产品ID查找产品名称�?,
+          'sumif': '我已识别到您需要使用SUMIF函数操作。接下来我将帮您使用SUMIF函数进行条件求和。\n\n请告诉我求和的范围、条件列和条件值，例如计算某地区的总销售额�?,
+          'countif': '我已识别到您需要使用COUNTIF函数操作。接下来我将帮您使用COUNTIF函数进行条件计数。\n\n请告诉我计数的范围、条件列和条件值，例如统计某状态的订单数量�?,
+          'averageif': '我已识别到您需要使用AVERAGEIF函数操作。接下来我将帮您使用AVERAGEIF函数进行条件平均值计算。\n\n请告诉我计算的范围、条件列和条件值，例如计算某类产品的平均价格�?,
+          'chart_creation': '我已识别到您需要创建图表操作。接下来我将帮您创建数据可视化图表。\n\n请告诉我您希望创建什么类型的图表，以及用于图表的数据范围和维度，例如销售趋势折线图、产品类别分布饼图等�?,
+          'data_import': '我已识别到您需要进行数据导入操作。接下来我将帮您导入数据到Excel文件中。\n\n请告诉我您希望导入的数据来源和格式，例如CSV文件、文本文件、数据库等�?,
+          'data_export': '我已识别到您需要进行数据导出操作。接下来我将帮您导出Excel数据到其他格式。\n\n请告诉我您希望导出的格式和范围，例如导出为CSV文件、PDF报告等�?,
           
           // 运营人员常用的分析功能提示词
-          'sales_analysis': '我已识别到您需要进行销售数据分析操作。接下来我将帮您分析销售数据，包括销售额、订单数、客单价等关键指标。\n\n作为运营人员，您希望重点关注哪些销售维度？例如按地区、产品、时间段的销售表现，或者销售趋势分析�?,
-          'user_analysis': '我已识别到您需要进行用户行为分析操作。接下来我将帮您分析用户行为数据，包括用户活跃度、转化率、复购率等指标。\n\n作为运营人员，您希望了解哪些用户行为特征？例如新老用户分布、用户留存情况、用户购买偏好等�?,
-          'inventory_analysis': '我已识别到您需要进行库存分析操作。接下来我将帮您分析库存数据，包括库存水平、周转率、缺货率等指标。\n\n作为运营人员，您希望重点关注哪些库存问题？例如低库存预警、高库存滞销、库存周转优化等�?,
-          'marketing_analysis': '我已识别到您需要进行营销效果分析操作。接下来我将帮您分析营销效果数据，包括活动效果、ROI、获客成本等指标。\n\n作为运营人员，您希望评估哪些营销活动的效果？例如不同渠道的转化情况、活动期间的销售增长、营销投入产出比等�?,
-          'customer_segmentation': '我已识别到您需要进行客户分群分析操作。接下来我将帮您进行客户分群分析，根据客户价值、行为特征等维度进行分类。\n\n作为运营人员，您希望如何划分客户群体？例如根据消费金额、购买频率、产品偏好等维度进行细分�?,
+          'sales_analysis': '我已识别到您需要进行销售数据分析操作。接下来我将帮您分析销售数据，包括销售额、订单数、客单价等关键指标。\n\n作为运营人员，您希望重点关注哪些销售维度？例如按地区、产品、时间段的销售表现，或者销售趋势分析�?,
+          'user_analysis': '我已识别到您需要进行用户行为分析操作。接下来我将帮您分析用户行为数据，包括用户活跃度、转化率、复购率等指标。\n\n作为运营人员，您希望了解哪些用户行为特征？例如新老用户分布、用户留存情况、用户购买偏好等�?,
+          'inventory_analysis': '我已识别到您需要进行库存分析操作。接下来我将帮您分析库存数据，包括库存水平、周转率、缺货率等指标。\n\n作为运营人员，您希望重点关注哪些库存问题？例如低库存预警、高库存滞销、库存周转优化等�?,
+          'marketing_analysis': '我已识别到您需要进行营销效果分析操作。接下来我将帮您分析营销效果数据，包括活动效果、ROI、获客成本等指标。\n\n作为运营人员，您希望评估哪些营销活动的效果？例如不同渠道的转化情况、活动期间的销售增长、营销投入产出比等�?,
+          'customer_segmentation': '我已识别到您需要进行客户分群分析操作。接下来我将帮您进行客户分群分析，根据客户价值、行为特征等维度进行分类。\n\n作为运营人员，您希望如何划分客户群体？例如根据消费金额、购买频率、产品偏好等维度进行细分�?,
           
-          // 办公通用意图提示�?          'document_processing': '我已识别到您需要进行文档处理操作。接下来我将帮您处理文档文件，支持读取、编辑和转换等操作。\n\n请告诉我您希望对文档进行什么操作，以及具体的文档文件�?,
-          'email_management': '我已识别到您需要进行邮件管理操作。接下来我将帮您处理邮件，支持发送、读取和搜索等功能。\n\n请告诉我您希望进行什么邮件操作，以及相关的邮件信息�?,
-          'schedule_management': '我已识别到您需要进行日程管理操作。接下来我将帮您管理日程安排，支持创建、更新、删除和查看等功能。\n\n请告诉我您希望进行什么日程操作，以及相关的日程信息�?,
-          'task_management': '我已识别到您需要进行任务管理操作。接下来我将帮您管理任务，支持创建、完成、列出和优先级设置等功能。\n\n请告诉我您希望进行什么任务操作，以及相关的任务信息�?,
-          'calculation': '我已识别到您需要进行数学计算操作。接下来我将帮您执行数学计算，支持基本的加减乘除和复杂的数学表达式。\n\n请告诉我您希望计算的数学表达式�?,
-          'web_search': '我已识别到您需要进行网络搜索操作。接下来我将帮您执行网络搜索，获取相关信息。\n\n请告诉我您希望搜索的关键词或问题�?,
-          'dingtalk_integration': '我已识别到您需要进行钉钉集成操作。接下来我将帮您发送消息到钉钉，支持文本消息和@提及功能。\n\n请告诉我您希望发送的消息内容，以及相关的发送选项�?,
-          'system_information': '我已识别到您需要获取系统信息操作。接下来我将帮您获取当前系统的相关信息，包括操作系统、浏览器等。\n\n系统信息将很快显示给您�?,
+          // 办公通用意图提示�?          'document_processing': '我已识别到您需要进行文档处理操作。接下来我将帮您处理文档文件，支持读取、编辑和转换等操作。\n\n请告诉我您希望对文档进行什么操作，以及具体的文档文件�?,
+          'email_management': '我已识别到您需要进行邮件管理操作。接下来我将帮您处理邮件，支持发送、读取和搜索等功能。\n\n请告诉我您希望进行什么邮件操作，以及相关的邮件信息�?,
+          'schedule_management': '我已识别到您需要进行日程管理操作。接下来我将帮您管理日程安排，支持创建、更新、删除和查看等功能。\n\n请告诉我您希望进行什么日程操作，以及相关的日程信息�?,
+          'task_management': '我已识别到您需要进行任务管理操作。接下来我将帮您管理任务，支持创建、完成、列出和优先级设置等功能。\n\n请告诉我您希望进行什么任务操作，以及相关的任务信息�?,
+          'calculation': '我已识别到您需要进行数学计算操作。接下来我将帮您执行数学计算，支持基本的加减乘除和复杂的数学表达式。\n\n请告诉我您希望计算的数学表达式�?,
+          'web_search': '我已识别到您需要进行网络搜索操作。接下来我将帮您执行网络搜索，获取相关信息。\n\n请告诉我您希望搜索的关键词或问题�?,
+          'dingtalk_integration': '我已识别到您需要进行钉钉集成操作。接下来我将帮您发送消息到钉钉，支持文本消息和@提及功能。\n\n请告诉我您希望发送的消息内容，以及相关的发送选项�?,
+          'system_information': '我已识别到您需要获取系统信息操作。接下来我将帮您获取当前系统的相关信息，包括操作系统、浏览器等。\n\n系统信息将很快显示给您�?,
           'general_office': '我已识别到您需要办公通用服务。作为您的办公助手，我可以帮助您处理Excel分析、文档管理、邮件发送、日程安排等多种办公任务。\n\n请问您具体需要什么办公服务？'
         };
         
@@ -3838,26 +3838,26 @@
           'sales_analysis': [
             '您希望分析哪个时间段的销售数据？',
             '您关注哪些产品类别的销售表现？',
-            '您需要按哪些维度进行销售汇总？（如地区、渠道、客户类型等�?
+            '您需要按哪些维度进行销售汇总？（如地区、渠道、客户类型等�?
           ],
           'user_analysis': [
             '您希望分析多长时间范围内的用户行为？',
-            '您关注哪些用户行为指标？（如注册、活跃、购买、留存等�?,
+            '您关注哪些用户行为指标？（如注册、活跃、购买、留存等�?,
             '您需要按哪些维度对用户进行细分？'
           ],
           'inventory_analysis': [
-            '您希望分析哪些产品的库存状况�?,
+            '您希望分析哪些产品的库存状况�?,
             '您关注的库存指标有哪些？（如库存水平、周转率、缺货率等）',
             '您需要设置什么样的库存预警阈值？'
           ],
           'marketing_analysis': [
             '您希望评估哪些营销活动的效果？',
             '您关注的营销指标有哪些？（如点击率、转化率、ROI等）',
-            '您需要对比不同营销渠道的表现吗�?
+            '您需要对比不同营销渠道的表现吗�?
           ],
           'customer_segmentation': [
             '您希望基于哪些维度进行客户分群？',
-            '您需要将客户分为几个等级�?,
+            '您需要将客户分为几个等级�?,
             '您对不同客户群体有什么运营策略？'
           ],
           'pivot_table': [
@@ -3866,41 +3866,41 @@
             '您希望对哪些字段进行汇总计算？'
           ],
           'chart_creation': [
-            '您希望创建什么类型的图表？（如柱状图、折线图、饼图等�?,
+            '您希望创建什么类型的图表？（如柱状图、折线图、饼图等�?,
             '您希望图表展示哪些数据系列？',
-            '您需要为图表添加什么样的标题和标签�?
+            '您需要为图表添加什么样的标题和标签�?
           ],
           'data_export': [
-            '您希望导出为什么格式的文件�?,
-            '您需要导出哪些数据列�?,
+            '您希望导出为什么格式的文件�?,
+            '您需要导出哪些数据列�?,
             '您对导出文件的命名有什么要求？'
           ],
           
           // 办公通用意图后续问题
           'document_processing': [
             '您希望处理什么类型的文档？（如Word、PDF等）',
-            '您需要对文档进行什么具体操作？（如读取、编辑、转换等�?,
-            '您有特定的文档处理要求吗�?
+            '您需要对文档进行什么具体操作？（如读取、编辑、转换等�?,
+            '您有特定的文档处理要求吗�?
           ],
           'email_management': [
             '您希望发送邮件给哪些收件人？',
             '邮件的主题和内容是什么？',
-            '您需要添加附件吗�?
+            '您需要添加附件吗�?
           ],
           'schedule_management': [
-            '您希望创建什么类型的日程？（如会议、提醒等�?,
+            '您希望创建什么类型的日程？（如会议、提醒等�?,
             '日程的时间和地点是什么？',
             '您需要邀请其他人参加吗？'
           ],
           'task_management': [
             '任务的具体内容是什么？',
             '任务的截止日期是什么时候？',
-            '任务的优先级是什么？（高、中、低�?
+            '任务的优先级是什么？（高、中、低�?
           ],
           'calculation': [
-            '您需要计算什么数学表达式�?,
+            '您需要计算什么数学表达式�?,
             '计算结果需要保留几位小数？',
-            '您需要进行其他相关计算吗�?
+            '您需要进行其他相关计算吗�?
           ],
           'web_search': [
             '您希望搜索什么具体内容？',
@@ -3908,7 +3908,7 @@
             '您对搜索结果有什么特定要求？'
           ],
           'dingtalk_integration': [
-            '您希望发送什么内容到钉钉�?,
+            '您希望发送什么内容到钉钉�?,
             '您需要@特定人员吗？',
             '您希望以什么格式发送消息？'
           ],
@@ -3924,12 +3924,12 @@
     }
 
     function sendMessage() {
-      console.log('sendMessage函数被调�?);
+      console.log('sendMessage函数被调�?);
       try {
         const input = document.getElementById('chat-input');
         console.log('获取到chat-input元素:', input);
         const message = input.value.trim();
-        console.log('获取到消�?', message);
+        console.log('获取到消�?', message);
         if (message) {
           // 添加消息到对话上下文
           conversationContext.addMessage(message, 'user');
@@ -3947,7 +3947,7 @@
               sendBtn.disabled = false;
               return;
             } else {
-              addMessage('ai', '文件索引无效，请输入正确的文件编号�?);
+              addMessage('ai', '文件索引无效，请输入正确的文件编号�?);
               sendBtn.disabled = false;
               return;
             }
@@ -3966,25 +3966,25 @@
           }
 
           if (excelDataList.length === 0) {
-            addMessage('ai', 'Excel数据未加载，请重新上传文�?);
+            addMessage('ai', 'Excel数据未加载，请重新上传文�?);
             sendBtn.disabled = false;
             return;
           }
           
-          // 使用Python智能体处理消�?          addMessage('ai', '正在分析您的请求...', { type: 'loading' });
+          // 使用Python智能体处理消�?          addMessage('ai', '正在分析您的请求...', { type: 'loading' });
           
           setTimeout(async () => {
             try {
-              // 构建上下�?              const context = {
+              // 构建上下�?              const context = {
                 files: selectedFiles.map(f => f.name),
                 data: excelDataList,
                 fileList: selectedFiles,
                 columnNamesList: columnNamesList
               };
               
-              // 调用Python智能�?              const result = await window.electronAPI.callPythonAgent(message, context);
+              // 调用Python智能�?              const result = await window.electronAPI.callPythonAgent(message, context);
               
-              console.log('Python智能体执行结�?', result);
+              console.log('Python智能体执行结�?', result);
               
               // 显示结果
               if (result.success) {
@@ -3997,7 +3997,7 @@
               }
               
             } catch (error) {
-              console.error('Python智能体执行失�?', error);
+              console.error('Python智能体执行失�?', error);
               addMessage('ai', `操作失败: ${error.message}`, { type: 'error' });
             }
             const sendBtn = document.getElementById('send-btn');
@@ -4007,7 +4007,7 @@
         }
       } catch (error) {
         console.error('sendMessage函数出错:', error);
-        addMessage('ai', `发送消息出�? ${error.message}`);
+        addMessage('ai', `发送消息出�? ${error.message}`);
         const sendBtn = document.getElementById('send-btn');
         if (sendBtn) {
           sendBtn.disabled = false;
@@ -4123,7 +4123,7 @@
           await performDataImport(message);
           break;
         
-        // 运营人员常用的分析功�?        case 'sales_analysis':
+        // 运营人员常用的分析功�?        case 'sales_analysis':
           await performSalesAnalysis(message);
           break;
         case 'user_analysis':
@@ -4179,11 +4179,11 @@
     }
     
     async function performDataAnalysis(message) {
-      addMessage('ai', '分析�?..', { type: 'loading' });
+      addMessage('ai', '分析�?..', { type: 'loading' });
       const result = await MockAIService.analyzeMultipleExcel(excelDataList, selectedFiles, columnNamesList, message);
       if (result.success) {
         addMessage('ai', result.content);
-        addMessage('ai', '数据可视�?, {
+        addMessage('ai', '数据可视�?, {
           type: 'chart',
           chartData: excelDataList,
           columnNamesList: columnNamesList
@@ -4207,118 +4207,118 @@
         addMessage('ai', '正在生成Excel文件...', { type: 'loading' });
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        addMessage('ai', '正在创建新的Excel文件并准备下�?..', { type: 'loading' });
+        addMessage('ai', '正在创建新的Excel文件并准备下�?..', { type: 'loading' });
         await new Promise(resolve => setTimeout(resolve, 500));
         
         const result = await generateNewExcel(fileStats);
-        addMessage('ai', `Excel文件生成完成！\n\n文件名称: ${result.filename}\n保存路径: ${result.path}\n记录�? ${result.records} 条`, { type: 'success' });
-        addMessage('ai', '文件已成功下载到您的桌面，您可以直接打开查看�?, { type: 'info' });
+        addMessage('ai', `Excel文件生成完成！\n\n文件名称: ${result.filename}\n保存路径: ${result.path}\n记录�? ${result.records} 条`, { type: 'success' });
+        addMessage('ai', '文件已成功下载到您的桌面，您可以直接打开查看�?, { type: 'info' });
       } catch (error) {
         addMessage('ai', `生成Excel文件失败: ${error.message}`, { type: 'error' });
       }
     }
     
     async function performDataCleaning(message) {
-      addMessage('ai', '正在清洗数据...\n\n我将处理以下问题：\n- 空值处理\n- 重复值删除\n- 异常值识别\n- 数据格式统一\n\n处理完成后，我将提供清洗报告�?);
+      addMessage('ai', '正在清洗数据...\n\n我将处理以下问题：\n- 空值处理\n- 重复值删除\n- 异常值识别\n- 数据格式统一\n\n处理完成后，我将提供清洗报告�?);
       
       setTimeout(() => {
         const cleanedCount = Math.floor(Math.random() * 50) + 10;
-        addMessage('ai', `数据清洗完成！\n\n清洗结果：\n- 处理�?${cleanedCount} 条记录\n- 删除�?${Math.floor(Math.random() * 20)} 个重复值\n- 填充�?${Math.floor(Math.random() * 30)} 个空值\n- 修正�?${Math.floor(Math.random() * 15)} 个格式问题\n\n数据已准备好进行下一步分析。`);
+        addMessage('ai', `数据清洗完成！\n\n清洗结果：\n- 处理�?${cleanedCount} 条记录\n- 删除�?${Math.floor(Math.random() * 20)} 个重复值\n- 填充�?${Math.floor(Math.random() * 30)} 个空值\n- 修正�?${Math.floor(Math.random() * 15)} 个格式问题\n\n数据已准备好进行下一步分析。`);
       }, 2000);
     }
     
     async function performDataFilter(message) {
-      addMessage('ai', '正在筛选数�?..\n\n请告诉我您的筛选条件，例如：\n- 数值大�?00\n- 类别等于A类\n- 日期�?024�?月之后\n\n我将根据您的条件提取符合要求的数据�?);
+      addMessage('ai', '正在筛选数�?..\n\n请告诉我您的筛选条件，例如：\n- 数值大�?00\n- 类别等于A类\n- 日期�?024�?月之后\n\n我将根据您的条件提取符合要求的数据�?);
     }
     
     async function performDataSort(message) {
-      addMessage('ai', '正在排序数据...\n\n请告诉我：\n- 要排序的列名\n- 排序方式（升序或降序）\n\n我将按照您的要求对数据进行排序�?);
+      addMessage('ai', '正在排序数据...\n\n请告诉我：\n- 要排序的列名\n- 排序方式（升序或降序）\n\n我将按照您的要求对数据进行排序�?);
     }
     
     async function performDataMerge(message) {
-      addMessage('ai', '正在合并数据...\n\n请告诉我合并方式：\n- 横向合并（按列拼接）\n- 纵向合并（按行追加）\n- 基于键值合并\n\n我将按照您的方式合并数据�?);
+      addMessage('ai', '正在合并数据...\n\n请告诉我合并方式：\n- 横向合并（按列拼接）\n- 纵向合并（按行追加）\n- 基于键值合并\n\n我将按照您的方式合并数据�?);
     }
     
     async function performDataSplit(message) {
-      addMessage('ai', '正在拆分数据...\n\n请告诉我拆分方式：\n- 按条件拆分\n- 按列拆分\n- 随机拆分\n\n我将按照您的方式拆分数据�?);
+      addMessage('ai', '正在拆分数据...\n\n请告诉我拆分方式：\n- 按条件拆分\n- 按列拆分\n- 随机拆分\n\n我将按照您的方式拆分数据�?);
     }
     
     async function performDataPivot(message) {
-      addMessage('ai', '正在创建数据透视�?..\n\n请告诉我：\n- 行字段（维度）\n- 列字段（指标）\n- 聚合方式（求和、计数、平均值等）\n\n我将创建透视表并显示结果�?);
+      addMessage('ai', '正在创建数据透视�?..\n\n请告诉我：\n- 行字段（维度）\n- 列字段（指标）\n- 聚合方式（求和、计数、平均值等）\n\n我将创建透视表并显示结果�?);
     }
     
     async function performDataVisualization(message) {
-      addMessage('ai', '正在创建数据可视化图�?..\n\n请告诉我您希望创建什么类型的图表：\n- 柱状图\n- 折线图\n- 饼图\n- 散点图\n- 热力图\n\n我将创建相应的图表并显示�?);
+      addMessage('ai', '正在创建数据可视化图�?..\n\n请告诉我您希望创建什么类型的图表：\n- 柱状图\n- 折线图\n- 饼图\n- 散点图\n- 热力图\n\n我将创建相应的图表并显示�?);
     }
     
     async function performDataStatistics(message) {
-      addMessage('ai', '正在计算描述性统�?..\n\n我将为您提供：\n- 均值、中位数、众数\n- 标准差、方差\n- 偏度、峰度\n- 四分位数\n\n统计结果将很快显示�?);
+      addMessage('ai', '正在计算描述性统�?..\n\n我将为您提供：\n- 均值、中位数、众数\n- 标准差、方差\n- 偏度、峰度\n- 四分位数\n\n统计结果将很快显示�?);
       
       setTimeout(() => {
-        addMessage('ai', `描述性统计完成！\n\n统计结果：\n- 均值：${Math.floor(Math.random() * 100) + 50}\n- 中位数：${Math.floor(Math.random() * 100) + 40}\n- 标准差：${Math.floor(Math.random() * 20) + 10}\n- 方差�?{Math.floor(Math.random() * 500) + 100}\n- 偏度�?{(Math.random() * 2 - 1).toFixed(2)}\n- 峰度�?{(Math.random() * 2 - 1).toFixed(2)}\n\n数据分布特征已识别。`);
+        addMessage('ai', `描述性统计完成！\n\n统计结果：\n- 均值：${Math.floor(Math.random() * 100) + 50}\n- 中位数：${Math.floor(Math.random() * 100) + 40}\n- 标准差：${Math.floor(Math.random() * 20) + 10}\n- 方差�?{Math.floor(Math.random() * 500) + 100}\n- 偏度�?{(Math.random() * 2 - 1).toFixed(2)}\n- 峰度�?{(Math.random() * 2 - 1).toFixed(2)}\n\n数据分布特征已识别。`);
       }, 2000);
     }
     
     async function performDataCorrelation(message) {
-      addMessage('ai', '正在分析数据相关�?..\n\n我将计算各列之间的相关系数矩阵，帮助您了解数据之间的关系�?);
+      addMessage('ai', '正在分析数据相关�?..\n\n我将计算各列之间的相关系数矩阵，帮助您了解数据之间的关系�?);
       
       setTimeout(() => {
-        addMessage('ai', `相关性分析完成！\n\n相关系数矩阵：\n| �? | �? | �? |\n|------|------|------|\n| 1.00 | 0.75 | 0.32 |\n| 0.75 | 1.00 | 0.58 |\n| 0.32 | 0.58 | 1.00 |\n\n发现：\n- �?和列2有强正相关\n- �?与其他列相关性较弱\n\n建议进一步分析因果关系。`);
+        addMessage('ai', `相关性分析完成！\n\n相关系数矩阵：\n| �? | �? | �? |\n|------|------|------|\n| 1.00 | 0.75 | 0.32 |\n| 0.75 | 1.00 | 0.58 |\n| 0.32 | 0.58 | 1.00 |\n\n发现：\n- �?和列2有强正相关\n- �?与其他列相关性较弱\n\n建议进一步分析因果关系。`);
       }, 2000);
     }
     
     async function performDataTrend(message) {
-      addMessage('ai', '正在分析数据趋势...\n\n我将提供：\n- 移动平均线\n- 趋势分析\n- 季节性检测\n- 预测结果\n\n趋势分析将很快显示�?);
+      addMessage('ai', '正在分析数据趋势...\n\n我将提供：\n- 移动平均线\n- 趋势分析\n- 季节性检测\n- 预测结果\n\n趋势分析将很快显示�?);
       
       setTimeout(() => {
-        addMessage('ai', `趋势分析完成！\n\n趋势特征：\n- 整体趋势�?{Math.random() > 0.5 ? '上升' : '下降'}\n- 变化率：${(Math.random() * 10 - 5).toFixed(2)}%\n- 季节性：${Math.random() > 0.5 ? '存在' : '不存�?}\n- 预测下期�?{Math.floor(Math.random() * 100) + 50}\n\n建议关注趋势变化。`);
+        addMessage('ai', `趋势分析完成！\n\n趋势特征：\n- 整体趋势�?{Math.random() > 0.5 ? '上升' : '下降'}\n- 变化率：${(Math.random() * 10 - 5).toFixed(2)}%\n- 季节性：${Math.random() > 0.5 ? '存在' : '不存�?}\n- 预测下期�?{Math.floor(Math.random() * 100) + 50}\n\n建议关注趋势变化。`);
       }, 2000);
     }
     
     async function performDataAnomaly(message) {
-      addMessage('ai', '正在检测异常�?..\n\n我将使用统计方法识别数据中的离群点�?);
+      addMessage('ai', '正在检测异常�?..\n\n我将使用统计方法识别数据中的离群点�?);
       
       setTimeout(() => {
         const anomalyCount = Math.floor(Math.random() * 20) + 5;
-        addMessage('ai', `异常检测完成！\n\n检测结果：\n- 发现 ${anomalyCount} 个异常值\n- 异常率：${(anomalyCount / 100 * 100).toFixed(1)}%\n- 主要异常类型�?{Math.random() > 0.5 ? '高值异�? : '低值异�?}\n\n建议：\n- 检查异常值的合理性\n- 考虑是否需要修正或删除\n- 分析异常产生的原因`);
+        addMessage('ai', `异常检测完成！\n\n检测结果：\n- 发现 ${anomalyCount} 个异常值\n- 异常率：${(anomalyCount / 100 * 100).toFixed(1)}%\n- 主要异常类型�?{Math.random() > 0.5 ? '高值异�? : '低值异�?}\n\n建议：\n- 检查异常值的合理性\n- 考虑是否需要修正或删除\n- 分析异常产生的原因`);
       }, 2000);
     }
     
     async function performDataFormula(message) {
-      addMessage('ai', '正在应用公式计算...\n\n请告诉我：\n- 要应用的公式\n- 目标列\n- 计算方式\n\n我将执行计算并显示结果�?);
+      addMessage('ai', '正在应用公式计算...\n\n请告诉我：\n- 要应用的公式\n- 目标列\n- 计算方式\n\n我将执行计算并显示结果�?);
     }
     
     async function performDataTransform(message) {
-      addMessage('ai', '正在转换数据格式...\n\n请告诉我：\n- 要转换的列\n- 目标格式\n- 转换规则\n\n我将按照您的要求转换数据�?);
+      addMessage('ai', '正在转换数据格式...\n\n请告诉我：\n- 要转换的列\n- 目标格式\n- 转换规则\n\n我将按照您的要求转换数据�?);
     }
     
     async function performDataValidation(message) {
-      addMessage('ai', '正在验证数据...\n\n我将检查：\n- 数据类型是否正确\n- 格式是否符合要求\n- 是否存在业务规则冲突\n\n验证结果将很快显示�?);
+      addMessage('ai', '正在验证数据...\n\n我将检查：\n- 数据类型是否正确\n- 格式是否符合要求\n- 是否存在业务规则冲突\n\n验证结果将很快显示�?);
       
       setTimeout(() => {
         const validationIssues = Math.floor(Math.random() * 10) + 1;
-        addMessage('ai', `数据验证完成！\n\n验证结果：\n- 发现 ${validationIssues} 个问题\n- 数据类型正确性：${Math.random() > 0.3 ? '通过' : '需要修�?}\n- 格式一致性：${Math.random() > 0.3 ? '通过' : '需要修�?}\n- 业务规则符合性：${Math.random() > 0.3 ? '通过' : '需要修�?}\n\n建议修正发现的问题。`);
+        addMessage('ai', `数据验证完成！\n\n验证结果：\n- 发现 ${validationIssues} 个问题\n- 数据类型正确性：${Math.random() > 0.3 ? '通过' : '需要修�?}\n- 格式一致性：${Math.random() > 0.3 ? '通过' : '需要修�?}\n- 业务规则符合性：${Math.random() > 0.3 ? '通过' : '需要修�?}\n\n建议修正发现的问题。`);
       }, 2000);
     }
     
     async function performDataSampling(message) {
-      addMessage('ai', '正在进行数据采样...\n\n请告诉我采样方式：\n- 随机采样\n- 分层采样\n- 时间序列采样\n- 采样比例\n\n我将按照您的要求进行采样�?);
+      addMessage('ai', '正在进行数据采样...\n\n请告诉我采样方式：\n- 随机采样\n- 分层采样\n- 时间序列采样\n- 采样比例\n\n我将按照您的要求进行采样�?);
     }
 
     async function performDataModify(message) {
       addMessage('ai', '正在修改原Excel文件...', { type: 'loading' });
       
       setTimeout(() => {
-        // 模拟修改Excel文件的过�?        const modifiedCount = Math.floor(Math.random() * 50) + 10;
-        const modifiedFilePath = `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${selectedFiles[0].name}`;
-        addMessage('ai', `原Excel文件修改完成！\n\n修改结果：\n- 修改�?${modifiedCount} 个单元格\n- 更新�?${Math.floor(Math.random() * 20)} 条记录\n- 调整�?${Math.floor(Math.random() * 10)} 列数据\n- 文件路径�?{modifiedFilePath}\n\n文件已保存，您可以在原位置查看修改后的文件。`, { type: 'success' });
+        // 模拟修改Excel文件的过�?        const modifiedCount = Math.floor(Math.random() * 50) + 10;
+        const modifiedFilePath = `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${selectedFiles[0].name}`;
+        addMessage('ai', `原Excel文件修改完成！\n\n修改结果：\n- 修改�?${modifiedCount} 个单元格\n- 更新�?${Math.floor(Math.random() * 20)} 条记录\n- 调整�?${Math.floor(Math.random() * 10)} 列数据\n- 文件路径�?{modifiedFilePath}\n\n文件已保存，您可以在原位置查看修改后的文件。`, { type: 'success' });
       }, 2000);
     }
 
     async function performDataDeliverable(message) {
-      addMessage('ai', '正在生成交付�?..', { type: 'loading' });
+      addMessage('ai', '正在生成交付�?..', { type: 'loading' });
       
-      // 检测用户请求的交付件类�?      const lowerMessage = message.toLowerCase();
+      // 检测用户请求的交付件类�?      const lowerMessage = message.toLowerCase();
       let deliverableType = 'csv';
       
       if (lowerMessage.includes('pdf')) {
@@ -4332,7 +4332,7 @@
       setTimeout(() => {
         const timestamp = new Date().getTime();
         const filename = `分析结果_${timestamp}.${deliverableType}`;
-        const filepath = `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${filename}`;
+        const filepath = `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${filename}`;
         
         addMessage('ai', {
           filename: filename,
@@ -4341,7 +4341,7 @@
           type: 'file'
         });
         
-        addMessage('ai', `交付件生成成功！已生�?${deliverableType.toUpperCase()} 格式的文件。\n文件路径�?{filepath}`, { type: 'success' });
+        addMessage('ai', `交付件生成成功！已生�?${deliverableType.toUpperCase()} 格式的文件。\n文件路径�?{filepath}`, { type: 'success' });
       }, 2000);
     }
 
@@ -4349,17 +4349,17 @@
       addMessage('ai', '正在与大模型交互...', { type: 'loading' });
       
       setTimeout(() => {
-        // 模拟大模型交互过�?        addMessage('ai', '大模型分析完成！\n\n根据模型输出，我已经：\n- 识别了数据中的关键模式\n- 生成了分析建议\n- 准备了修改方案\n\n请告诉我您希望如何应用这些建议到Excel文件中�?);
+        // 模拟大模型交互过�?        addMessage('ai', '大模型分析完成！\n\n根据模型输出，我已经：\n- 识别了数据中的关键模式\n- 生成了分析建议\n- 准备了修改方案\n\n请告诉我您希望如何应用这些建议到Excel文件中�?);
         
         // 显示一个简单的表单，让用户选择如何应用大模型的建议
         addMessage('ai', {
-          title: '应用大模型建�?,
+          title: '应用大模型建�?,
           form: `
             <div style="margin-bottom: 10px;">
               <label style="margin-right: 10px;">
-                <input type="radio" name="applyMethod" value="modify" checked> 修改原文�?              </label>
+                <input type="radio" name="applyMethod" value="modify" checked> 修改原文�?              </label>
               <label style="margin-right: 10px;">
-                <input type="radio" name="applyMethod" value="new"> 生成新文�?              </label>
+                <input type="radio" name="applyMethod" value="new"> 生成新文�?              </label>
             </div>`
         });
       }, 2000);
@@ -4367,7 +4367,7 @@
     
     // 运营人员常用的Excel分析功能
     async function performSalesAnalysis(message) {
-      addMessage('ai', '正在进行销售数据分�?..', { type: 'loading' });
+      addMessage('ai', '正在进行销售数据分�?..', { type: 'loading' });
       
       setTimeout(() => {
         const totalSales = Math.floor(Math.random() * 1000000) + 500000;
@@ -4375,7 +4375,7 @@
         const topProduct = `产品${Math.floor(Math.random() * 20) + 1}`;
         const topCategory = ['电子产品', '服装', '食品', '家居用品'][Math.floor(Math.random() * 4)];
         
-        addMessage('ai', `销售数据分析完成！\n\n分析结果：\n- 总销售额�?{totalSales.toLocaleString()} 元\n- 订单数：${Math.floor(Math.random() * 1000) + 500} 单\n- 平均客单价：${averageOrder.toLocaleString()} 元\n- 销售额最高产品：${topProduct}\n- 销售额最高类别：${topCategory}\n- 同比增长�?{(Math.random() * 30 - 5).toFixed(1)}%\n\n建议：\n- 重点推广 ${topCategory} 类别产品\n- 优化 ${topProduct} 的库存管理\n- 针对客单价较低的产品组合销售策略`, { type: 'success' });
+        addMessage('ai', `销售数据分析完成！\n\n分析结果：\n- 总销售额�?{totalSales.toLocaleString()} 元\n- 订单数：${Math.floor(Math.random() * 1000) + 500} 单\n- 平均客单价：${averageOrder.toLocaleString()} 元\n- 销售额最高产品：${topProduct}\n- 销售额最高类别：${topCategory}\n- 同比增长�?{(Math.random() * 30 - 5).toFixed(1)}%\n\n建议：\n- 重点推广 ${topCategory} 类别产品\n- 优化 ${topProduct} 的库存管理\n- 针对客单价较低的产品组合销售策略`, { type: 'success' });
       }, 2000);
     }
     
@@ -4388,7 +4388,7 @@
         const conversionRate = (Math.random() * 5 + 1).toFixed(2);
         const avgSession = (Math.random() * 5 + 1).toFixed(1);
         
-        addMessage('ai', `用户行为分析完成！\n\n分析结果：\n- 总用户数�?{totalUsers.toLocaleString()} 人\n- 活跃用户数：${activeUsers.toLocaleString()} 人\n- 转化率：${conversionRate}%\n- 平均会话时长�?{avgSession} 分钟\n- 复购率：${(Math.random() * 40 + 10).toFixed(1)}%\n- 客单价：${Math.floor(Math.random() * 500) + 100} 元\n\n建议：\n- 针对活跃用户推出会员专属优惠\n- 优化转化漏斗，提高转化率\n- 分析流失用户原因，制定召回策略`, { type: 'success' });
+        addMessage('ai', `用户行为分析完成！\n\n分析结果：\n- 总用户数�?{totalUsers.toLocaleString()} 人\n- 活跃用户数：${activeUsers.toLocaleString()} 人\n- 转化率：${conversionRate}%\n- 平均会话时长�?{avgSession} 分钟\n- 复购率：${(Math.random() * 40 + 10).toFixed(1)}%\n- 客单价：${Math.floor(Math.random() * 500) + 100} 元\n\n建议：\n- 针对活跃用户推出会员专属优惠\n- 优化转化漏斗，提高转化率\n- 分析流失用户原因，制定召回策略`, { type: 'success' });
       }, 2000);
     }
     
@@ -4401,7 +4401,7 @@
         const excessStock = Math.floor(totalProducts * (Math.random() * 0.2 + 0.05));
         const avgStockDays = Math.floor(Math.random() * 60) + 30;
         
-        addMessage('ai', `库存分析完成！\n\n分析结果：\n- 总产品数�?{totalProducts} 种\n- 低库存产品：${lowStock} 种\n- 高库存产品：${excessStock} 种\n- 平均库存天数�?{avgStockDays} 天\n- 库存周转率：${(Math.random() * 10 + 5).toFixed(2)}\n- 缺货率：${(Math.random() * 5 + 0.5).toFixed(1)}%\n\n建议：\n- 及时补货 ${lowStock} 种低库存产品\n- 针对 ${excessStock} 种高库存产品制定促销策略\n- 优化库存管理，降低库存成本`, { type: 'success' });
+        addMessage('ai', `库存分析完成！\n\n分析结果：\n- 总产品数�?{totalProducts} 种\n- 低库存产品：${lowStock} 种\n- 高库存产品：${excessStock} 种\n- 平均库存天数�?{avgStockDays} 天\n- 库存周转率：${(Math.random() * 10 + 5).toFixed(2)}\n- 缺货率：${(Math.random() * 5 + 0.5).toFixed(1)}%\n\n建议：\n- 及时补货 ${lowStock} 种低库存产品\n- 针对 ${excessStock} 种高库存产品制定促销策略\n- 优化库存管理，降低库存成本`, { type: 'success' });
       }, 2000);
     }
     
@@ -4414,7 +4414,7 @@
         const roi = (Math.random() * 10 + 1).toFixed(2);
         const cpa = Math.floor(Math.random() * 200) + 50;
         
-        addMessage('ai', `营销效果分析完成！\n\n分析结果：\n- 总营销活动数：${totalCampaigns} 个\n- 有效活动数：${effectiveCampaigns} 个\n- 投资回报�?ROI)�?{roi}:1\n- 获客成本(CPA)�?{cpa} 元\n- 活动平均转化率：${(Math.random() * 8 + 1).toFixed(2)}%\n- 营销费用占比�?{(Math.random() * 15 + 5).toFixed(1)}%\n\n建议：\n- 增加对有效活动的投入\n- 优化获客成本较高的渠道\n- 制定更精准的目标受众策略`, { type: 'success' });
+        addMessage('ai', `营销效果分析完成！\n\n分析结果：\n- 总营销活动数：${totalCampaigns} 个\n- 有效活动数：${effectiveCampaigns} 个\n- 投资回报�?ROI)�?{roi}:1\n- 获客成本(CPA)�?{cpa} 元\n- 活动平均转化率：${(Math.random() * 8 + 1).toFixed(2)}%\n- 营销费用占比�?{(Math.random() * 15 + 5).toFixed(1)}%\n\n建议：\n- 增加对有效活动的投入\n- 优化获客成本较高的渠道\n- 制定更精准的目标受众策略`, { type: 'success' });
       }, 2000);
     }
     
@@ -4422,16 +4422,16 @@
       addMessage('ai', '正在进行客户分群分析...', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `客户分群分析完成！\n\n分析结果：\n- 高价值客户：${Math.floor(Math.random() * 500) + 100} �?(${(Math.random() * 10 + 5).toFixed(1)}%)\n- 中等价值客户：${Math.floor(Math.random() * 1500) + 800} �?(${(Math.random() * 30 + 20).toFixed(1)}%)\n- 低价值客户：${Math.floor(Math.random() * 3000) + 1500} �?(${(Math.random() * 40 + 30).toFixed(1)}%)\n- 潜在客户�?{Math.floor(Math.random() * 2000) + 1000} �?(${(Math.random() * 20 + 10).toFixed(1)}%)\n\n建议：\n- 为高价值客户提供专属服务和个性化优惠\n- 针对中等价值客户制定升级策略\n- 低价值客户进行激活和转化\n- 潜在客户进行精准营销`, { type: 'success' });
+        addMessage('ai', `客户分群分析完成！\n\n分析结果：\n- 高价值客户：${Math.floor(Math.random() * 500) + 100} �?(${(Math.random() * 10 + 5).toFixed(1)}%)\n- 中等价值客户：${Math.floor(Math.random() * 1500) + 800} �?(${(Math.random() * 30 + 20).toFixed(1)}%)\n- 低价值客户：${Math.floor(Math.random() * 3000) + 1500} �?(${(Math.random() * 40 + 30).toFixed(1)}%)\n- 潜在客户�?{Math.floor(Math.random() * 2000) + 1000} �?(${(Math.random() * 20 + 10).toFixed(1)}%)\n\n建议：\n- 为高价值客户提供专属服务和个性化优惠\n- 针对中等价值客户制定升级策略\n- 低价值客户进行激活和转化\n- 潜在客户进行精准营销`, { type: 'success' });
       }, 2000);
     }
     
     // 运营人员常用的Excel操作函数
     async function performPivotTable(message) {
-      addMessage('ai', '正在创建数据透视�?..', { type: 'loading' });
+      addMessage('ai', '正在创建数据透视�?..', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `数据透视表创建完成！\n\n创建结果：\n- 行字段：${['日期', '产品类别', '地区', '客户类型'][Math.floor(Math.random() * 4)]}\n- 列字段：${['月份', '季度', '年份'][Math.floor(Math.random() * 3)]}\n- 值字段：销售额, 订单�? 平均客单价\n- 汇总方式：求和, 计数, 平均值\n\n透视表已保存到新生成的Excel文件中，您可以直接打开查看。`, { type: 'success' });
+        addMessage('ai', `数据透视表创建完成！\n\n创建结果：\n- 行字段：${['日期', '产品类别', '地区', '客户类型'][Math.floor(Math.random() * 4)]}\n- 列字段：${['月份', '季度', '年份'][Math.floor(Math.random() * 3)]}\n- 值字段：销售额, 订单�? 平均客单价\n- 汇总方式：求和, 计数, 平均值\n\n透视表已保存到新生成的Excel文件中，您可以直接打开查看。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4439,7 +4439,7 @@
       addMessage('ai', '正在设置条件格式...', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `条件格式设置完成！\n\n设置结果：\n- 应用范围�?{Math.floor(Math.random() * 1000) + 500} 个单元格\n- 规则类型：\n  1. 数值大�?${Math.floor(Math.random() * 500) + 100}：绿色填充\n  2. 数值小�?${Math.floor(Math.random() * 100) + 50}：红色填充\n  3. 数值在 ${Math.floor(Math.random() * 200) + 100} �?${Math.floor(Math.random() * 400) + 200} 之间：黄色填充\n  4. 重复值：橙色填充\n\n条件格式已应用到Excel文件中，数据趋势一目了然。`, { type: 'success' });
+        addMessage('ai', `条件格式设置完成！\n\n设置结果：\n- 应用范围�?{Math.floor(Math.random() * 1000) + 500} 个单元格\n- 规则类型：\n  1. 数值大�?${Math.floor(Math.random() * 500) + 100}：绿色填充\n  2. 数值小�?${Math.floor(Math.random() * 100) + 50}：红色填充\n  3. 数值在 ${Math.floor(Math.random() * 200) + 100} �?${Math.floor(Math.random() * 400) + 200} 之间：黄色填充\n  4. 重复值：橙色填充\n\n条件格式已应用到Excel文件中，数据趋势一目了然。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4450,7 +4450,7 @@
         const operationType = ['批量修改', '批量更新', '批量删除', '批量替换'][Math.floor(Math.random() * 4)];
         const affectedRows = Math.floor(Math.random() * 500) + 100;
         
-        addMessage('ai', `批量操作完成！\n\n操作结果：\n- 操作类型�?{operationType}\n- 影响行数�?{affectedRows} 行\n- 操作列数�?{Math.floor(Math.random() * 10) + 1} 列\n- 操作耗时�?{(Math.random() * 5 + 1).toFixed(1)} 秒\n\n批量操作已成功执行，数据已更新。`, { type: 'success' });
+        addMessage('ai', `批量操作完成！\n\n操作结果：\n- 操作类型�?{operationType}\n- 影响行数�?{affectedRows} 行\n- 操作列数�?{Math.floor(Math.random() * 10) + 1} 列\n- 操作耗时�?{(Math.random() * 5 + 1).toFixed(1)} 秒\n\n批量操作已成功执行，数据已更新。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4458,7 +4458,7 @@
       addMessage('ai', '正在设置数据验证规则...', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `数据验证规则设置完成！\n\n设置结果：\n- 应用范围�?{Math.floor(Math.random() * 1000) + 500} 个单元格\n- 规则类型：\n  1. 数值范围验证：1-1000\n  2. 日期范围验证�?024�?�?日至今\n  3. 文本长度验证：最�?0字符\n  4. 列表验证：下拉选择\n\n数据验证规则已应用，可有效防止错误数据输入。`, { type: 'success' });
+        addMessage('ai', `数据验证规则设置完成！\n\n设置结果：\n- 应用范围�?{Math.floor(Math.random() * 1000) + 500} 个单元格\n- 规则类型：\n  1. 数值范围验证：1-1000\n  2. 日期范围验证�?024�?�?日至今\n  3. 文本长度验证：最�?0字符\n  4. 列表验证：下拉选择\n\n数据验证规则已应用，可有效防止错误数据输入。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4466,7 +4466,7 @@
       addMessage('ai', '正在使用VLOOKUP函数...', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `VLOOKUP函数应用完成！\n\n应用结果：\n- 查找范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 匹配成功率：${(Math.random() * 20 + 80).toFixed(1)}%\n- 匹配数据量：${Math.floor(Math.random() * 800) + 400} 条\n- 查找列：${['产品ID', '客户ID', '订单�?, '员工ID'][Math.floor(Math.random() * 4)]}\n- 返回列：${['产品名称', '客户名称', '订单日期', '员工姓名'][Math.floor(Math.random() * 4)]}\n\n数据匹配已完成，可用于数据关联和整合。`, { type: 'success' });
+        addMessage('ai', `VLOOKUP函数应用完成！\n\n应用结果：\n- 查找范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 匹配成功率：${(Math.random() * 20 + 80).toFixed(1)}%\n- 匹配数据量：${Math.floor(Math.random() * 800) + 400} 条\n- 查找列：${['产品ID', '客户ID', '订单�?, '员工ID'][Math.floor(Math.random() * 4)]}\n- 返回列：${['产品名称', '客户名称', '订单日期', '员工姓名'][Math.floor(Math.random() * 4)]}\n\n数据匹配已完成，可用于数据关联和整合。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4475,7 +4475,7 @@
       
       setTimeout(() => {
         const sumResult = Math.floor(Math.random() * 1000000) + 100000;
-        addMessage('ai', `SUMIF函数计算完成！\n\n计算结果：\n- 计算范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 符合条件�?{Math.floor(Math.random() * 500) + 200} 条\n- 求和结果�?{sumResult.toLocaleString()} 元\n- 条件列：${['类别', '地区', '客户类型', '产品类型'][Math.floor(Math.random() * 4)]}\n- 条件值：${['A�?, '华东', 'VIP', '热销'][Math.floor(Math.random() * 4)]}\n\n条件求和已完成，结果已保存到Excel文件中。`, { type: 'success' });
+        addMessage('ai', `SUMIF函数计算完成！\n\n计算结果：\n- 计算范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 符合条件�?{Math.floor(Math.random() * 500) + 200} 条\n- 求和结果�?{sumResult.toLocaleString()} 元\n- 条件列：${['类别', '地区', '客户类型', '产品类型'][Math.floor(Math.random() * 4)]}\n- 条件值：${['A�?, '华东', 'VIP', '热销'][Math.floor(Math.random() * 4)]}\n\n条件求和已完成，结果已保存到Excel文件中。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4484,7 +4484,7 @@
       
       setTimeout(() => {
         const countResult = Math.floor(Math.random() * 1000) + 100;
-        addMessage('ai', `COUNTIF函数计算完成！\n\n计算结果：\n- 计算范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 计数结果�?{countResult} 条\n- 条件列：${['状�?, '类型', '等级', '地区'][Math.floor(Math.random() * 4)]}\n- 条件值：${['已完�?, 'A�?, '高级', '华北'][Math.floor(Math.random() * 4)]}\n\n条件计数已完成，结果已保存到Excel文件中。`, { type: 'success' });
+        addMessage('ai', `COUNTIF函数计算完成！\n\n计算结果：\n- 计算范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 计数结果�?{countResult} 条\n- 条件列：${['状�?, '类型', '等级', '地区'][Math.floor(Math.random() * 4)]}\n- 条件值：${['已完�?, 'A�?, '高级', '华北'][Math.floor(Math.random() * 4)]}\n\n条件计数已完成，结果已保存到Excel文件中。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4493,7 +4493,7 @@
       
       setTimeout(() => {
         const averageResult = Math.floor(Math.random() * 5000) + 500;
-        addMessage('ai', `AVERAGEIF函数计算完成！\n\n计算结果：\n- 计算范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 符合条件�?{Math.floor(Math.random() * 500) + 200} 条\n- 平均值结果：${averageResult.toLocaleString()} 元\n- 条件列：${['类别', '地区', '客户类型', '产品类型'][Math.floor(Math.random() * 4)]}\n- 条件值：${['B�?, '华南', '普�?, '常规'][Math.floor(Math.random() * 4)]}\n\n条件平均值计算已完成，结果已保存到Excel文件中。`, { type: 'success' });
+        addMessage('ai', `AVERAGEIF函数计算完成！\n\n计算结果：\n- 计算范围�?{Math.floor(Math.random() * 1000) + 500} 行数据\n- 符合条件�?{Math.floor(Math.random() * 500) + 200} 条\n- 平均值结果：${averageResult.toLocaleString()} 元\n- 条件列：${['类别', '地区', '客户类型', '产品类型'][Math.floor(Math.random() * 4)]}\n- 条件值：${['B�?, '华南', '普�?, '常规'][Math.floor(Math.random() * 4)]}\n\n条件平均值计算已完成，结果已保存到Excel文件中。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4504,7 +4504,7 @@
       setTimeout(() => {
         const docType = ['Word', 'PDF', 'Excel', 'PowerPoint'][Math.floor(Math.random() * 4)];
         const operation = ['读取', '编辑', '转换', '保存'][Math.floor(Math.random() * 4)];
-        addMessage('ai', `${docType}文档${operation}操作完成！\n\n操作结果：\n- 文档类型�?{docType}\n- 操作类型�?{operation}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 3 + 1).toFixed(1)} 秒\n\n文档�?{operation}完成，您可以继续其他操作。`, { type: 'success' });
+        addMessage('ai', `${docType}文档${operation}操作完成！\n\n操作结果：\n- 文档类型�?{docType}\n- 操作类型�?{operation}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 3 + 1).toFixed(1)} 秒\n\n文档�?{operation}完成，您可以继续其他操作。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4512,8 +4512,8 @@
       addMessage('ai', '正在管理邮件...', { type: 'loading' });
       
       setTimeout(() => {
-        const action = ['发�?, '读取', '搜索', '整理'][Math.floor(Math.random() * 4)];
-        addMessage('ai', `邮件${action}操作完成！\n\n操作结果：\n- 操作类型�?{action}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 2 + 0.5).toFixed(1)} 秒\n\n邮件�?{action}完成，您可以继续其他操作。`, { type: 'success' });
+        const action = ['发�?, '读取', '搜索', '整理'][Math.floor(Math.random() * 4)];
+        addMessage('ai', `邮件${action}操作完成！\n\n操作结果：\n- 操作类型�?{action}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 2 + 0.5).toFixed(1)} 秒\n\n邮件�?{action}完成，您可以继续其他操作。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4523,7 +4523,7 @@
       setTimeout(() => {
         const action = ['创建', '更新', '删除', '查看'][Math.floor(Math.random() * 4)];
         const eventType = ['会议', '提醒', '任务', '活动'][Math.floor(Math.random() * 4)];
-        addMessage('ai', `日程${action}操作完成！\n\n操作结果：\n- 操作类型�?{action}\n- 日程类型�?{eventType}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 1.5 + 0.5).toFixed(1)} 秒\n\n日程�?{action}完成，您可以继续其他操作。`, { type: 'success' });
+        addMessage('ai', `日程${action}操作完成！\n\n操作结果：\n- 操作类型�?{action}\n- 日程类型�?{eventType}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 1.5 + 0.5).toFixed(1)} 秒\n\n日程�?{action}完成，您可以继续其他操作。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4532,7 +4532,7 @@
       
       setTimeout(() => {
         const action = ['创建', '完成', '更新', '查看'][Math.floor(Math.random() * 4)];
-        addMessage('ai', `任务${action}操作完成！\n\n操作结果：\n- 操作类型�?{action}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 1 + 0.3).toFixed(1)} 秒\n\n任务�?{action}完成，您可以继续其他操作。`, { type: 'success' });
+        addMessage('ai', `任务${action}操作完成！\n\n操作结果：\n- 操作类型�?{action}\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 1 + 0.3).toFixed(1)} 秒\n\n任务�?{action}完成，您可以继续其他操作。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4540,11 +4540,11 @@
       addMessage('ai', '正在执行计算...', { type: 'loading' });
       
       setTimeout(() => {
-        // 简单的数学表达式计�?        let result = 0;
+        // 简单的数学表达式计�?        let result = 0;
         let expression = '2 + 2 * 3';
         
         try {
-          // 提取消息中的数学表达�?          const match = message.match(/计算\s*(.*)/);
+          // 提取消息中的数学表达�?          const match = message.match(/计算\s*(.*)/);
           if (match && match[1]) {
             expression = match[1];
             result = eval(expression);
@@ -4555,7 +4555,7 @@
           result = '计算错误';
         }
         
-        addMessage('ai', `计算完成！\n\n计算结果：\n- 表达式：${expression}\n- 结果�?{result}\n- 计算时间�?{(Math.random() * 0.5 + 0.1).toFixed(2)} 秒\n\n计算已完成，您可以继续其他计算。`, { type: 'success' });
+        addMessage('ai', `计算完成！\n\n计算结果：\n- 表达式：${expression}\n- 结果�?{result}\n- 计算时间�?{(Math.random() * 0.5 + 0.1).toFixed(2)} 秒\n\n计算已完成，您可以继续其他计算。`, { type: 'success' });
       }, 1000);
     }
     
@@ -4563,13 +4563,13 @@
       addMessage('ai', '正在执行网络搜索...', { type: 'loading' });
       
       setTimeout(() => {
-        // 提取搜索关键�?        let query = '办公自动化工�?;
+        // 提取搜索关键�?        let query = '办公自动化工�?;
         const match = message.match(/搜索\s*(.*)/);
         if (match && match[1]) {
           query = match[1];
         }
         
-        addMessage('ai', `网络搜索完成！\n\n搜索结果：\n- 搜索关键词：${query}\n- 搜索状态：成功\n- 处理时间�?{(Math.random() * 3 + 1).toFixed(1)} 秒\n- 相关结果�? 条\n\n1. 搜索结果1：https://example.com/result1\n2. 搜索结果2：https://example.com/result2\n3. 搜索结果3：https://example.com/result3\n\n搜索已完成，您可以查看相关结果。`, { type: 'success' });
+        addMessage('ai', `网络搜索完成！\n\n搜索结果：\n- 搜索关键词：${query}\n- 搜索状态：成功\n- 处理时间�?{(Math.random() * 3 + 1).toFixed(1)} 秒\n- 相关结果�? 条\n\n1. 搜索结果1：https://example.com/result1\n2. 搜索结果2：https://example.com/result2\n3. 搜索结果3：https://example.com/result3\n\n搜索已完成，您可以查看相关结果。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4585,8 +4585,8 @@
             content = match[1];
           }
           
-          // 调用钉钉发�?          const result = await officeBot.sendToDingTalk(content);
-          addMessage('ai', `钉钉消息发送完成！\n\n发送结果：\n- 消息内容�?{content}\n- 发送状态：${result.success ? '成功' : '失败'}\n- 处理时间�?{(Math.random() * 2 + 1).toFixed(1)} 秒\n- 消息ID�?{result.data ? result.data.messageId : 'N/A'}\n\n钉钉消息已发送，您可以在钉钉中查看。`, { type: 'success' });
+          // 调用钉钉发�?          const result = await officeBot.sendToDingTalk(content);
+          addMessage('ai', `钉钉消息发送完成！\n\n发送结果：\n- 消息内容�?{content}\n- 发送状态：${result.success ? '成功' : '失败'}\n- 处理时间�?{(Math.random() * 2 + 1).toFixed(1)} 秒\n- 消息ID�?{result.data ? result.data.messageId : 'N/A'}\n\n钉钉消息已发送，您可以在钉钉中查看。`, { type: 'success' });
         } catch (error) {
           addMessage('ai', `钉钉消息发送失败：${error.message}`, { type: 'error' });
         }
@@ -4597,7 +4597,7 @@
       addMessage('ai', '正在获取系统信息...', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `系统信息获取完成！\n\n系统信息：\n- 操作系统�?{navigator.platform}\n- 浏览器：${navigator.userAgent.substring(0, 50)}...\n- 语言�?{navigator.language}\n- 时间�?{new Date().toLocaleString()}\n- 在线状态：${navigator.onLine ? '在线' : '离线'}\n\n系统信息已获取，您可以继续其他操作。`, { type: 'success' });
+        addMessage('ai', `系统信息获取完成！\n\n系统信息：\n- 操作系统�?{navigator.platform}\n- 浏览器：${navigator.userAgent.substring(0, 50)}...\n- 语言�?{navigator.language}\n- 时间�?{new Date().toLocaleString()}\n- 在线状态：${navigator.onLine ? '在线' : '离线'}\n\n系统信息已获取，您可以继续其他操作。`, { type: 'success' });
       }, 1000);
     }
     
@@ -4605,7 +4605,7 @@
       addMessage('ai', '正在处理办公任务...', { type: 'loading' });
       
       setTimeout(() => {
-        addMessage('ai', `办公任务处理完成！\n\n处理结果：\n- 任务类型：办公通用\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 2 + 1).toFixed(1)} 秒\n\n作为您的办公通用助手，我可以帮助您处理Excel分析、文档处理、邮件管理、日程安排、任务管理、网络搜索、计算和钉钉集成等多种办公任务。\n\n请问您具体需要哪方面的办公帮助？`, { type: 'success' });
+        addMessage('ai', `办公任务处理完成！\n\n处理结果：\n- 任务类型：办公通用\n- 处理状态：成功\n- 处理时间�?{(Math.random() * 2 + 1).toFixed(1)} 秒\n\n作为您的办公通用助手，我可以帮助您处理Excel分析、文档处理、邮件管理、日程安排、任务管理、网络搜索、计算和钉钉集成等多种办公任务。\n\n请问您具体需要哪方面的办公帮助？`, { type: 'success' });
       }, 2000);
     }
     
@@ -4613,8 +4613,8 @@
       addMessage('ai', '正在创建图表...', { type: 'loading' });
       
       setTimeout(() => {
-        const chartType = ['柱状�?, '折线�?, '饼图', '散点�?, '热力�?, '雷达�?][Math.floor(Math.random() * 6)];
-        addMessage('ai', `图表创建完成！\n\n创建结果：\n- 图表类型�?{chartType}\n- 数据系列�?{Math.floor(Math.random() * 5) + 1} 个\n- 数据点：${Math.floor(Math.random() * 100) + 20} 个\n- 图表标题�?{['销售趋�?, '用户分布', '库存分析', '营销效果', '客户细分'][Math.floor(Math.random() * 5)]}\n\n图表已创建并嵌入到Excel文件中，您可以直接打开查看。`, { type: 'success' });
+        const chartType = ['柱状�?, '折线�?, '饼图', '散点�?, '热力�?, '雷达�?][Math.floor(Math.random() * 6)];
+        addMessage('ai', `图表创建完成！\n\n创建结果：\n- 图表类型�?{chartType}\n- 数据系列�?{Math.floor(Math.random() * 5) + 1} 个\n- 数据点：${Math.floor(Math.random() * 100) + 20} 个\n- 图表标题�?{['销售趋�?, '用户分布', '库存分析', '营销效果', '客户细分'][Math.floor(Math.random() * 5)]}\n\n图表已创建并嵌入到Excel文件中，您可以直接打开查看。`, { type: 'success' });
       }, 2000);
     }
     
@@ -4622,34 +4622,34 @@
       addMessage('ai', '正在导入数据...', { type: 'loading' });
       
       setTimeout(() => {
-        const importType = ['CSV文件', '文本文件', '数据�?, 'Web数据', '其他Excel文件'][Math.floor(Math.random() * 5)];
+        const importType = ['CSV文件', '文本文件', '数据�?, 'Web数据', '其他Excel文件'][Math.floor(Math.random() * 5)];
         const importedRows = Math.floor(Math.random() * 2000) + 500;
-        addMessage('ai', `数据导入完成！\n\n导入结果：\n- 导入来源�?{importType}\n- 导入行数�?{importedRows} 行\n- 导入列数�?{Math.floor(Math.random() * 20) + 5} 列\n- 导入耗时�?{(Math.random() * 10 + 2).toFixed(1)} 秒\n- 数据质量�?{(Math.random() * 15 + 85).toFixed(1)}% 完整\n\n数据已成功导入到Excel文件中，可直接使用。`, { type: 'success' });
+        addMessage('ai', `数据导入完成！\n\n导入结果：\n- 导入来源�?{importType}\n- 导入行数�?{importedRows} 行\n- 导入列数�?{Math.floor(Math.random() * 20) + 5} 列\n- 导入耗时�?{(Math.random() * 10 + 2).toFixed(1)} 秒\n- 数据质量�?{(Math.random() * 15 + 85).toFixed(1)}% 完整\n\n数据已成功导入到Excel文件中，可直接使用。`, { type: 'success' });
       }, 2000);
     }
     
     // 处理问候语
     async function performGreeting(message) {
-      // 直接返回问候回答，不需要加载动�?      addMessage('ai', '您好！我是您的Excel分析助手，随时为您提供数据分析和处理服务。请问有什么我可以帮助您的吗？', { type: 'info' });
+      // 直接返回问候回答，不需要加载动�?      addMessage('ai', '您好！我是您的Excel分析助手，随时为您提供数据分析和处理服务。请问有什么我可以帮助您的吗？', { type: 'info' });
     }
     
-    // 处理状态询�?    async function performStatusCheck(message) {
-      // 直接返回状态回答，不需要加载动�?      addMessage('ai', '是的，我能听到您说话，系统运行正常。我是您的Excel分析助手，随时为您服务。请问您需要什么帮助？', { type: 'info' });
+    // 处理状态询�?    async function performStatusCheck(message) {
+      // 直接返回状态回答，不需要加载动�?      addMessage('ai', '是的，我能听到您说话，系统运行正常。我是您的Excel分析助手，随时为您服务。请问您需要什么帮助？', { type: 'info' });
     }
     
     // 处理帮助请求
     async function performHelp(message) {
-      // 直接返回帮助信息，不需要加载动�?      addMessage('ai', '我是您的Excel分析助手，主要功能包括：\n1. Excel文件上传和分析\n2. 数据清洗、转换和筛选\n3. 销售、用户、库存等业务分析\n4. 数据透视表和图表创建\n5. 生成Excel报告和其他交付件\n\n请问您需要具体的什么帮助？', { type: 'info' });
+      // 直接返回帮助信息，不需要加载动�?      addMessage('ai', '我是您的Excel分析助手，主要功能包括：\n1. Excel文件上传和分析\n2. 数据清洗、转换和筛选\n3. 销售、用户、库存等业务分析\n4. 数据透视表和图表创建\n5. 生成Excel报告和其他交付件\n\n请问您需要具体的什么帮助？', { type: 'info' });
     }
     
     // 应用大模型建议的函数
     function applyAIRecommendations() {
       const selectedMethod = document.querySelector('input[name="applyMethod"]:checked').value;
-      addMessage('ai', `正在应用大模型建议，方法�?{selectedMethod === 'modify' ? '修改原文�? : '生成新文�?}...`, { type: 'loading' });
+      addMessage('ai', `正在应用大模型建议，方法�?{selectedMethod === 'modify' ? '修改原文�? : '生成新文�?}...`, { type: 'loading' });
       
       setTimeout(() => {
-        const filePath = selectedMethod === 'modify' ? `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${selectedFiles[0].name}` : `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/AI建议应用结果_${new Date().getTime()}.xlsx`;
-        addMessage('ai', `大模型建议应用完成！\n\n应用结果：\n- 应用方法�?{selectedMethod === 'modify' ? '修改原文�? : '生成新文�?}\n- 更新数据量：${Math.floor(Math.random() * 500) + 100} 条\n- 调整列数�?{Math.floor(Math.random() * 10) + 1} 列\n- 应用耗时�?{(Math.random() * 5 + 1).toFixed(1)} 秒\n- 文件路径�?{filePath}\n\n${selectedMethod === 'modify' ? '原文件已更新，您可以在原位置查看修改后的文件�? : '新文件已生成，您可以直接打开查看�?}`, { type: 'success' });
+        const filePath = selectedMethod === 'modify' ? `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/${selectedFiles[0].name}` : `C:/Users/${window.navigator.userAgent.split('Windows NT')[1] ? 'User' : '王玉�?}/Desktop/AI建议应用结果_${new Date().getTime()}.xlsx`;
+        addMessage('ai', `大模型建议应用完成！\n\n应用结果：\n- 应用方法�?{selectedMethod === 'modify' ? '修改原文�? : '生成新文�?}\n- 更新数据量：${Math.floor(Math.random() * 500) + 100} 条\n- 调整列数�?{Math.floor(Math.random() * 10) + 1} 列\n- 应用耗时�?{(Math.random() * 5 + 1).toFixed(1)} 秒\n- 文件路径�?{filePath}\n\n${selectedMethod === 'modify' ? '原文件已更新，您可以在原位置查看修改后的文件�? : '新文件已生成，您可以直接打开查看�?}`, { type: 'success' });
       }, 2000);
     }
     
@@ -4669,7 +4669,7 @@
         const overview = await generateDataOverview(excelDataList, columnNamesList);
         addMessage('ai', overview, { type: 'analysis' });
         
-        // 3. 生成数据可视化图�?        addMessage('ai', '正在生成数据可视化图�?..', { type: 'loading' });
+        // 3. 生成数据可视化图�?        addMessage('ai', '正在生成数据可视化图�?..', { type: 'loading' });
         setTimeout(() => {
           addMessage('ai', {
             chartData: excelDataList,
@@ -4685,7 +4685,7 @@
         const statistics = await generateDetailedStatistics(excelDataList, columnNamesList);
         addMessage('ai', statistics, { type: 'analysis' });
         
-        // 5. 生成数据洞察和建�?        const insights = generateDataInsights(excelDataList, columnNamesList);
+        // 5. 生成数据洞察和建�?        const insights = generateDataInsights(excelDataList, columnNamesList);
         addMessage('ai', insights, { type: 'analysis' });
         
         // 6. 生成Excel报告文件
@@ -4718,11 +4718,11 @@
         setTimeout(() => {
           let overview = `# 数据概览\n\n`;
           overview += `## 基本信息\n`;
-          overview += `- 文件数量�?{dataList.length} 个\n`;
-          overview += `- 总记录数�?{dataList.reduce((sum, data) => sum + data.length, 0)} 条\n`;
+          overview += `- 文件数量�?{dataList.length} 个\n`;
+          overview += `- 总记录数�?{dataList.reduce((sum, data) => sum + data.length, 0)} 条\n`;
           overview += `- 数据列：${columnNamesList[0] ? columnNamesList[0].join(', ') : '未知'}\n\n`;
           
-          // 计算每个文件的统计信�?          dataList.forEach((data, index) => {
+          // 计算每个文件的统计信�?          dataList.forEach((data, index) => {
             const columnNames = columnNamesList[index];
             const values = data.map(item => item.value);
             const maxValue = Math.max(...values);
@@ -4751,27 +4751,27 @@
             const columnNames = columnNamesList[index];
             const values = data.map(item => item.value);
             
-            // 计算基本统计�?            const maxValue = Math.max(...values);
+            // 计算基本统计�?            const maxValue = Math.max(...values);
             const minValue = Math.min(...values);
             const avgValue = Math.round(values.reduce((sum, val) => sum + val, 0) / values.length);
             const sumValue = values.reduce((sum, val) => sum + val, 0);
             
-            // 计算标准�?            const variance = values.reduce((sum, val) => sum + Math.pow(val - avgValue, 2), 0) / values.length;
+            // 计算标准�?            const variance = values.reduce((sum, val) => sum + Math.pow(val - avgValue, 2), 0) / values.length;
             const stdDev = Math.round(Math.sqrt(variance));
             
-            // 计算分位�?            values.sort((a, b) => a - b);
+            // 计算分位�?            values.sort((a, b) => a - b);
             const q1 = values[Math.floor(values.length * 0.25)];
             const q2 = values[Math.floor(values.length * 0.5)];
             const q3 = values[Math.floor(values.length * 0.75)];
             
             statistics += `## 文件 ${index + 1}: ${selectedFiles[index].name}\n`;
-            statistics += `- 求和�?{sumValue}\n`;
+            statistics += `- 求和�?{sumValue}\n`;
             statistics += `- 平均值：${avgValue}\n`;
             statistics += `- 最大值：${maxValue}\n`;
             statistics += `- 最小值：${minValue}\n`;
             statistics += `- 标准差：${stdDev}\n`;
             statistics += `- 四分位数：Q1=${q1}, Q2=${q2}, Q3=${q3}\n`;
-            statistics += `- 数据范围�?{maxValue - minValue}\n\n`;
+            statistics += `- 数据范围�?{maxValue - minValue}\n\n`;
           });
           
           resolve(statistics);
@@ -4779,18 +4779,18 @@
       });
     }
     
-    // 生成数据洞察和建�?    function generateDataInsights(dataList, columnNamesList) {
+    // 生成数据洞察和建�?    function generateDataInsights(dataList, columnNamesList) {
       let insights = `# 数据洞察与建议\n\n`;
       
       // 分析数据趋势
       insights += `## 数据趋势分析\n`;
-      insights += `- 整体趋势�?{Math.random() > 0.5 ? '上升' : '下降'}\n`;
+      insights += `- 整体趋势�?{Math.random() > 0.5 ? '上升' : '下降'}\n`;
       insights += `- 变化率：${(Math.random() * 20 - 5).toFixed(1)}%\n`;
-      insights += `- 季节性：${Math.random() > 0.5 ? '存在明显季节�? : '无明显季节�?}\n\n`;
+      insights += `- 季节性：${Math.random() > 0.5 ? '存在明显季节�? : '无明显季节�?}\n\n`;
       
       // 分析数据分布
       insights += `## 数据分布分析\n`;
-      insights += `- 分布类型�?{['正态分�?, '偏态分�?, '均匀分布', '双峰分布'][Math.floor(Math.random() * 4)]}\n`;
+      insights += `- 分布类型�?{['正态分�?, '偏态分�?, '均匀分布', '双峰分布'][Math.floor(Math.random() * 4)]}\n`;
       insights += `- 集中度：${Math.random() > 0.5 ? '高度集中' : '相对分散'}\n`;
       insights += `- 异常值：${Math.floor(Math.random() * 10) + 1} 个\n\n`;
       
@@ -4816,14 +4816,14 @@
       let summary = `# 分析报告总结\n\n`;
       summary += `## 报告信息\n`;
       summary += `- 报告类型：Excel数据分析报告\n`;
-      summary += `- 分析时间�?{new Date().toLocaleString()}\n`;
-      summary += `- 分析文件�?{selectedFiles.map(file => file.name).join(', ')}\n\n`;
+      summary += `- 分析时间�?{new Date().toLocaleString()}\n`;
+      summary += `- 分析文件�?{selectedFiles.map(file => file.name).join(', ')}\n\n`;
       
       summary += `## 核心发现\n`;
-      summary += `- 数据总量�?{dataList.reduce((sum, data) => sum + data.length, 0)} 条记录\n`;
-      summary += `- 数据质量�?{Math.floor(Math.random() * 20) + 80}% 完整\n`;
-      summary += `- 主要趋势�?{Math.random() > 0.5 ? '上升' : '下降'}\n`;
-      summary += `- 关键指标：平均�?${Math.floor(Math.random() * 500) + 100}\n\n`;
+      summary += `- 数据总量�?{dataList.reduce((sum, data) => sum + data.length, 0)} 条记录\n`;
+      summary += `- 数据质量�?{Math.floor(Math.random() * 20) + 80}% 完整\n`;
+      summary += `- 主要趋势�?{Math.random() > 0.5 ? '上升' : '下降'}\n`;
+      summary += `- 关键指标：平均�?${Math.floor(Math.random() * 500) + 100}\n\n`;
       
       summary += `## 建议行动\n`;
       summary += `1. 定期更新数据分析报告，跟踪业务变化\n`;
@@ -4860,7 +4860,7 @@
     IntentRecognizer.getPromptForIntent = (function(original) {
       return function(intent) {
         if (intent === 'generate_report') {
-          return '我将帮您生成完整的Excel数据分析报告，包括数据概览、详细统计、可视化图表和业务建议。请告诉我您希望重点分析哪些方面的数据�?;
+          return '我将帮您生成完整的Excel数据分析报告，包括数据概览、详细统计、可视化图表和业务建议。请告诉我您希望重点分析哪些方面的数据�?;
         }
         return original.call(IntentRecognizer, intent);
       };
@@ -4877,8 +4877,8 @@
         this.thoughtProcess = ThoughtProcess;
         this.memorySystem = new MemorySystem(); // 直接创建记忆系统实例
         this.planningSystem = new PlanningSystem(this.memorySystem); // 直接创建规划系统实例
-        this.reflectionSystem = new ReflectionSystem(this.memorySystem); // 直接创建反思系统实�?        this.dingTalk = new DingTalkService(); // 钉钉集成服务
-        this.llmService = new LLMService(); // 大模型交互服�?        this.conversationHistory = []; // 对话历史
+        this.reflectionSystem = new ReflectionSystem(this.memorySystem); // 直接创建反思系统实�?        this.dingTalk = new DingTalkService(); // 钉钉集成服务
+        this.llmService = new LLMService(); // 大模型交互服�?        this.conversationHistory = []; // 对话历史
         this.userPreferences = new Map(); // 用户偏好
         this.currentTaskId = null; // 当前执行的任务ID
         this.conversationId = `conv_${Date.now()}`; // 对话ID
@@ -4908,7 +4908,7 @@
         // 1. 添加消息到记忆中
         const memoryId = this.memorySystem.addShortTermMemory(message, 'conversation');
         
-        // 2. 构建上下�?        const context = {
+        // 2. 构建上下�?        const context = {
           ...contextData,
           file: selectedFiles[0],
           dataList: excelDataList,
@@ -4920,7 +4920,7 @@
           messageCount: this.messageCount
         };
         
-        // 3. 使用大模型进行多轮对�?        addMessage('ai', '正在思�?..', { type: 'loading' });
+        // 3. 使用大模型进行多轮对�?        addMessage('ai', '正在思�?..', { type: 'loading' });
         
         try {
           // 执行多轮对话
@@ -4932,18 +4932,18 @@
               // 显示大模型的响应
               addMessage('ai', result.content, { type: 'success' });
               
-              // 将响应添加到记忆�?              this.memorySystem.addShortTermMemory(result.content, 'llm_response');
+              // 将响应添加到记忆�?              this.memorySystem.addShortTermMemory(result.content, 'llm_response');
             } else if (result.type === 'tool_execution') {
               // 显示工具执行结果
               for (const toolResult of result.results) {
                 if (toolResult.status === 'success') {
-                  addMessage('ai', `�?${toolResult.name} 执行成功`, { type: 'success' });
+                  addMessage('ai', `�?${toolResult.name} 执行成功`, { type: 'success' });
                   
-                  // 将工具执行结果添加到记忆�?                  this.memorySystem.addShortTermMemory(`工具 ${toolResult.name} 执行成功: ${JSON.stringify(toolResult.result)}`, 'tool_success');
+                  // 将工具执行结果添加到记忆�?                  this.memorySystem.addShortTermMemory(`工具 ${toolResult.name} 执行成功: ${JSON.stringify(toolResult.result)}`, 'tool_success');
                 } else {
-                  addMessage('ai', `�?${toolResult.name} 执行失败: ${toolResult.error}`, { type: 'error' });
+                  addMessage('ai', `�?${toolResult.name} 执行失败: ${toolResult.error}`, { type: 'error' });
                   
-                  // 将工具执行失败添加到记忆�?                  this.memorySystem.addShortTermMemory(`工具 ${toolResult.name} 执行失败: ${toolResult.error}`, 'tool_failure');
+                  // 将工具执行失败添加到记忆�?                  this.memorySystem.addShortTermMemory(`工具 ${toolResult.name} 执行失败: ${toolResult.error}`, 'tool_failure');
                 }
               }
             }
@@ -4972,7 +4972,7 @@
           console.error('与大模型交互失败:', error);
           addMessage('ai', `与大模型交互失败: ${error.message}`, { type: 'error' });
           
-          // 将错误添加到记忆�?          this.memorySystem.addShortTermMemory(`与大模型交互失败: ${error.message}`, 'error');
+          // 将错误添加到记忆�?          this.memorySystem.addShortTermMemory(`与大模型交互失败: ${error.message}`, 'error');
           
           return {
             error: error.message,
@@ -4984,9 +4984,9 @@
           // 记录错误到记忆中
           this.memorySystem.addShortTermMemory(`执行失败: ${error.message}`, 'error');
           
-          // 反思错�?          const errorReflection = this.reflectionSystem.reflectOnExperience(`执行失败: ${error.message}`, context);
+          // 反思错�?          const errorReflection = this.reflectionSystem.reflectOnExperience(`执行失败: ${error.message}`, context);
           
-          // 更新上下文状�?          this.updateContextState(intent, { prompt: `执行失败: ${error.message}` }, context, error);
+          // 更新上下文状�?          this.updateContextState(intent, { prompt: `执行失败: ${error.message}` }, context, error);
           
           return {
             thought: thought,
@@ -5007,16 +5007,16 @@
         }
       }
       
-      // 分析对话上下�?      analyzeConversationContext(message) {
+      // 分析对话上下�?      analyzeConversationContext(message) {
         const analysis = {
           messageLength: message.length,
-          isQuestion: message.includes('?') || message.includes('�?),
-          isCommand: message.includes('�?) || message.includes('帮我') || message.includes('需�?),
+          isQuestion: message.includes('?') || message.includes('�?),
+          isCommand: message.includes('�?) || message.includes('帮我') || message.includes('需�?),
           isFollowUp: this.isFollowUpMessage(message),
           keywords: this.extractKeywords(message),
           sentiment: this.analyzeSentiment(message),
           topics: this.identifyTopics(message),
-          previousMessages: this.conversationHistory.slice(-3), // 最�?条消�?          timeSinceLastMessage: this.calculateTimeSinceLastMessage()
+          previousMessages: this.conversationHistory.slice(-3), // 最�?条消�?          timeSinceLastMessage: this.calculateTimeSinceLastMessage()
         };
         
         // 分析消息类型
@@ -5033,23 +5033,23 @@
         return analysis;
       }
       
-      // 判断是否是后续消�?      isFollowUpMessage(message) {
-        const followUpKeywords = ['是的', '�?, '好的', '可以', '不行', '�?, '不是', '另外', '还有', '然后', '接着', '�?, '�?];
+      // 判断是否是后续消�?      isFollowUpMessage(message) {
+        const followUpKeywords = ['是的', '�?, '好的', '可以', '不行', '�?, '不是', '另外', '还有', '然后', '接着', '�?, '�?];
         return followUpKeywords.some(keyword => message.includes(keyword));
       }
       
-      // 提取关键�?      extractKeywords(message) {
-        const stopWords = ['�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '一', '一�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '着', '没有', '�?, '�?, '自己', '�?];
+      // 提取关键�?      extractKeywords(message) {
+        const stopWords = ['�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '一', '一�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '�?, '着', '没有', '�?, '�?, '自己', '�?];
         const words = message.split(/\s+/).filter(word => 
           word.length > 1 && !stopWords.includes(word)
         );
-        return words.slice(0, 5); // 最�?个关键词
+        return words.slice(0, 5); // 最�?个关键词
       }
       
       // 分析情感
       analyzeSentiment(message) {
-        const positiveWords = ['�?, '优秀', '满意', '喜欢', '�?, '�?, '�?, '准确', '成功', '完成'];
-        const negativeWords = ['�?, '�?, '错误', '不满�?, '不喜�?, '失败', '问题', '困难', '不行', '无法'];
+        const positiveWords = ['�?, '优秀', '满意', '喜欢', '�?, '�?, '�?, '准确', '成功', '完成'];
+        const negativeWords = ['�?, '�?, '错误', '不满�?, '不喜�?, '失败', '问题', '困难', '不行', '无法'];
         
         let positiveCount = 0;
         let negativeCount = 0;
@@ -5083,7 +5083,7 @@
         if (message.includes('清洗') || message.includes('清理') || message.includes('整理')) {
           topics.push('cleaning');
         }
-        if (message.includes('图表') || message.includes('可视�?) || message.includes('画图')) {
+        if (message.includes('图表') || message.includes('可视�?) || message.includes('画图')) {
           topics.push('visualization');
         }
         
@@ -5114,13 +5114,13 @@
         return query;
       }
       
-      // 结合上下文识别意�?      recognizeIntentWithContext(message, contextAnalysis) {
+      // 结合上下文识别意�?      recognizeIntentWithContext(message, contextAnalysis) {
         let intent = this.intentRecognizer.recognizeIntent(message);
         
-        // 如果是后续消息，考虑之前的意�?        if (contextAnalysis.isFollowUp && this.conversationHistory.length > 0) {
+        // 如果是后续消息，考虑之前的意�?        if (contextAnalysis.isFollowUp && this.conversationHistory.length > 0) {
           const lastMessage = this.conversationHistory[this.conversationHistory.length - 1];
           if (lastMessage.intent) {
-            // 保持之前的意�?            intent = {
+            // 保持之前的意�?            intent = {
               ...intent,
               type: lastMessage.intent.type,
               description: lastMessage.intent.description,
@@ -5130,7 +5130,7 @@
           }
         }
         
-        // 基于情感调整置信�?        if (contextAnalysis.sentiment === 'negative') {
+        // 基于情感调整置信�?        if (contextAnalysis.sentiment === 'negative') {
           intent.confidence = Math.max(intent.confidence - 0.1, 0.1);
         }
         
@@ -5139,8 +5139,8 @@
       
       // 处理多轮对话
       handleMultiTurnConversation(message, context, intent) {
-        // 如果是后续消息，更新上下�?        if (context.contextAnalysis && context.contextAnalysis.isFollowUp) {
-          // 查找之前的期望信�?          const expectedInfo = this.context.getExpectedInfo();
+        // 如果是后续消息，更新上下�?        if (context.contextAnalysis && context.contextAnalysis.isFollowUp) {
+          // 查找之前的期望信�?          const expectedInfo = this.context.getExpectedInfo();
           if (expectedInfo) {
             context.expectedInfo = expectedInfo;
             context.followUpResponse = message;
@@ -5158,13 +5158,13 @@
         }
       }
       
-      // 生成带上下文的响�?      generateResponseWithContext(intent, results, reflection, contextAnalysis) {
+      // 生成带上下文的响�?      generateResponseWithContext(intent, results, reflection, contextAnalysis) {
         let prompt = this.intentRecognizer.getPromptForIntent(intent.type);
         
-        // 根据上下文调整响�?        if (contextAnalysis.messageType === 'question') {
-          prompt = `您好�?{prompt} 请问您具体想了解什么？`;
+        // 根据上下文调整响�?        if (contextAnalysis.messageType === 'question') {
+          prompt = `您好�?{prompt} 请问您具体想了解什么？`;
         } else if (contextAnalysis.messageType === 'command') {
-          prompt = `好的，我�?{prompt.toLowerCase()}`;
+          prompt = `好的，我�?{prompt.toLowerCase()}`;
         } else if (contextAnalysis.messageType === 'follow_up') {
           prompt = `明白了，${prompt}`;
         }
@@ -5180,8 +5180,8 @@
           });
         }
         
-        // 添加反思洞察到响应�?        if (reflection && reflection.insights && reflection.insights.length > 0) {
-          resultSummary += '\n**洞察�?*\n';
+        // 添加反思洞察到响应�?        if (reflection && reflection.insights && reflection.insights.length > 0) {
+          resultSummary += '\n**洞察�?*\n';
           reflection.insights.forEach((insight, index) => {
             resultSummary += `${index + 1}. ${insight}\n`;
           });
@@ -5189,7 +5189,7 @@
         
         // 添加改进建议
         if (reflection && reflection.improvements && reflection.improvements.length > 0) {
-          resultSummary += '\n**改进建议�?*\n';
+          resultSummary += '\n**改进建议�?*\n';
           reflection.improvements.forEach((improvement, index) => {
             resultSummary += `${index + 1}. ${improvement.description}\n`;
           });
@@ -5205,11 +5205,11 @@
         };
       }
       
-      // 生成带上下文的后续问�?      generateFollowUpQuestionsWithContext(intent, contextAnalysis) {
+      // 生成带上下文的后续问�?      generateFollowUpQuestionsWithContext(intent, contextAnalysis) {
         let questions = IntentRecognizer.getFollowUpQuestions(intent.type) || [];
         
-        // 根据上下文调整后续问�?        if (contextAnalysis.messageType === 'question') {
-          // 如果用户问了问题，提供更具体的后续问�?          questions = questions.map(q => `您是�?{q}`);
+        // 根据上下文调整后续问�?        if (contextAnalysis.messageType === 'question') {
+          // 如果用户问了问题，提供更具体的后续问�?          questions = questions.map(q => `您是�?{q}`);
         } else if (contextAnalysis.messageType === 'command') {
           // 如果用户下了命令，提供执行相关的后续问题
           questions = questions.map(q => `执行过程中，${q}`);
@@ -5218,7 +5218,7 @@
         return questions;
       }
       
-      // 更新上下文状�?      updateContextState(intent, response, context, error = null) {
+      // 更新上下文状�?      updateContextState(intent, response, context, error = null) {
         // 清除期望信息
         if (context.expectedInfo) {
           this.context.clearContext();
@@ -5255,8 +5255,8 @@
           });
         }
         
-        // 添加反思洞察到响应�?        if (reflection && reflection.insights && reflection.insights.length > 0) {
-          resultSummary += '\n**洞察�?*\n';
+        // 添加反思洞察到响应�?        if (reflection && reflection.insights && reflection.insights.length > 0) {
+          resultSummary += '\n**洞察�?*\n';
           reflection.insights.forEach((insight, index) => {
             resultSummary += `${index + 1}. ${insight}\n`;
           });
@@ -5264,7 +5264,7 @@
         
         // 添加改进建议
         if (reflection && reflection.improvements && reflection.improvements.length > 0) {
-          resultSummary += '\n**改进建议�?*\n';
+          resultSummary += '\n**改进建议�?*\n';
           reflection.improvements.forEach((improvement, index) => {
             resultSummary += `${index + 1}. ${improvement.description}\n`;
           });
@@ -5278,26 +5278,26 @@
       
       // 生成后续问题
       generateFollowUpQuestions(intent, context, response) {
-        // 首先获取意图对应的后续问�?        let questions = IntentRecognizer.getFollowUpQuestions(intent.type) || [];
+        // 首先获取意图对应的后续问�?        let questions = IntentRecognizer.getFollowUpQuestions(intent.type) || [];
         
         // 如果响应中已经包含后续问题，使用响应中的问题
         if (response && response.followUpQuestions) {
           questions = response.followUpQuestions;
         }
         
-        // 根据上下文调整后续问�?        if (context.contextAnalysis) {
+        // 根据上下文调整后续问�?        if (context.contextAnalysis) {
           if (context.contextAnalysis.messageType === 'question') {
-            // 如果用户问了问题，提供更具体的后续问�?            questions = questions.map(q => `您是�?{q}`);
+            // 如果用户问了问题，提供更具体的后续问�?            questions = questions.map(q => `您是�?{q}`);
           } else if (context.contextAnalysis.messageType === 'command') {
             // 如果用户下了命令，提供执行相关的后续问题
             questions = questions.map(q => `执行过程中，${q}`);
           }
         }
         
-        // 针对Excel相关意图添加特定的后续问�?        if (intent.type === 'data_export' || intent.type === 'generate_excel') {
+        // 针对Excel相关意图添加特定的后续问�?        if (intent.type === 'data_export' || intent.type === 'generate_excel') {
           questions.push('您希望文件保存为什么名称？');
-          questions.push('您需要在文件中包含哪些列�?);
-          questions.push('您希望对数据进行什么格式的处理�?);
+          questions.push('您需要在文件中包含哪些列�?);
+          questions.push('您希望对数据进行什么格式的处理�?);
         }
         
         return questions;
@@ -5404,13 +5404,13 @@
       }
     }
 
-    // 为报告生成意图添加后续问�?    IntentRecognizer.getFollowUpQuestions = (function(original) {
+    // 为报告生成意图添加后续问�?    IntentRecognizer.getFollowUpQuestions = (function(original) {
       return function(intent) {
         if (intent === 'generate_report') {
           return [
             '您希望分析多长时间范围内的数据？',
             '您关注哪些关键业务指标？',
-            '您需要在报告中包含哪些类型的图表�?
+            '您需要在报告中包含哪些类型的图表�?
           ];
         }
         return original.call(IntentRecognizer, intent);
@@ -5422,12 +5422,12 @@
       const messageDiv = document.createElement('div');
       messageDiv.className = `message ${type}-message`;
       
-      // 添加消息出现的动画效�?      messageDiv.style.opacity = '0';
+      // 添加消息出现的动画效�?      messageDiv.style.opacity = '0';
       messageDiv.style.transform = 'translateY(10px)';
       messageDiv.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
       messageDiv.style.animation = 'fadeIn 0.3s ease forwards';
       
-      // 根据选项添加不同类型的内�?      if (options.type === 'loading') {
+      // 根据选项添加不同类型的内�?      if (options.type === 'loading') {
         messageDiv.innerHTML = `
           <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: rgba(102, 126, 234, 0.05); border-radius: 8px;">
             <div style="width: 20px; height: 20px; border: 2px solid #667eea; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
@@ -5439,7 +5439,7 @@
         messageDiv.innerHTML = `
           <div style="background: rgba(255, 107, 107, 0.05); border-left: 4px solid #ff6b6b; border-radius: 8px; padding: 12px;">
             <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <span style="font-size: 18px; margin-top: -2px;">�?/span>
+              <span style="font-size: 18px; margin-top: -2px;">�?/span>
               <div>
                 <div style="font-weight: 600; color: #ff6b6b; margin-bottom: 4px;">操作失败</div>
                 <div style="font-size: 14px; color: #555; line-height: 1.4;">${content}</div>
@@ -5451,7 +5451,7 @@
         messageDiv.innerHTML = `
           <div style="background: rgba(78, 205, 196, 0.05); border-left: 4px solid #4ecdc4; border-radius: 8px; padding: 12px;">
             <div style="display: flex; align-items: flex-start; gap: 10px;">
-              <span style="font-size: 18px; margin-top: -2px;">�?/span>
+              <span style="font-size: 18px; margin-top: -2px;">�?/span>
               <div>
                 <div style="font-weight: 600; color: #4ecdc4; margin-bottom: 4px;">操作成功</div>
                 <div style="font-size: 14px; color: #555; line-height: 1.4;">${content}</div>
@@ -5479,7 +5479,7 @@
               <div style="font-weight: 600; color: #667eea; font-size: 16px;">文件生成</div>
             </div>
             <div style="margin-bottom: 8px; font-size: 14px;">
-              <span style="font-weight: 500; color: #555;">文件�?</span> 
+              <span style="font-weight: 500; color: #555;">文件�?</span> 
               <span style="color: #333;">${content.filename}</span>
             </div>
             <div style="margin-bottom: 8px; font-size: 14px;">
@@ -5487,11 +5487,11 @@
               <span style="color: #333; font-family: monospace;">${content.path}</span>
             </div>
             ${content.records ? `<div style="margin-bottom: 8px; font-size: 14px;">
-              <span style="font-weight: 500; color: #555;">记录�?</span> 
-              <span style="color: #333;">${content.records} �?/span>
+              <span style="font-weight: 500; color: #555;">记录�?</span> 
+              <span style="color: #333;">${content.records} �?/span>
             </div>` : ''}
             ${content.columns ? `<div style="margin-bottom: 12px; font-size: 14px;">
-              <span style="font-weight: 500; color: #555;">包含�?</span> 
+              <span style="font-weight: 500; color: #555;">包含�?</span> 
               <span style="color: #333;">${content.columns.join(', ')}</span>
             </div>` : ''}
             <button onclick="openFile('${content.path}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">
@@ -5504,7 +5504,7 @@
           <div style="background: white; border-radius: 10px; padding: 16px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
               <span style="font-size: 20px;">📊</span>
-              <div style="font-weight: 600; color: #667eea; font-size: 16px;">数据可视�?/div>
+              <div style="font-weight: 600; color: #667eea; font-size: 16px;">数据可视�?/div>
             </div>
             <div id="chart-${Date.now()}" style="width: 100%; height: 350px; border-radius: 8px; overflow: hidden;"></div>
           </div>
@@ -5545,7 +5545,7 @@
                   <div style="font-weight: 600; color: #667eea; font-size: 16px;">文件生成</div>
                 </div>
                 <div style="margin-bottom: 8px; font-size: 14px;">
-                  <span style="font-weight: 500; color: #555;">文件�?</span> 
+                  <span style="font-weight: 500; color: #555;">文件�?</span> 
                   <span style="color: #333;">${content.filename}</span>
                 </div>
                 <div style="margin-bottom: 8px; font-size: 14px;">
@@ -5553,12 +5553,12 @@
                   <span style="color: #333; font-family: monospace;">${content.path}</span>
                 </div>
                 ${content.columns ? `<div style="margin-bottom: 8px; font-size: 14px;">
-                  <span style="font-weight: 500; color: #555;">包含�?</span> 
+                  <span style="font-weight: 500; color: #555;">包含�?</span> 
                   <span style="color: #333;">${content.columns.join(', ')}</span>
                 </div>` : ''}
                 ${content.records ? `<div style="margin-bottom: 12px; font-size: 14px;">
-                  <span style="font-weight: 500; color: #555;">记录�?</span> 
-                  <span style="color: #333;">${content.records} �?/span>
+                  <span style="font-weight: 500; color: #555;">记录�?</span> 
+                  <span style="color: #333;">${content.records} �?/span>
                 </div>` : ''}
                 <button onclick="openFile('${content.path}')" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">
                   打开文件
@@ -5574,7 +5574,7 @@
             `;
           }
         } else {
-          // 支持Markdown格式的文本消�?          const formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          // 支持Markdown格式的文本消�?          const formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                                          .replace(/\n/g, '<br>');
           messageDiv.innerHTML = `
             <div style="font-size: 14px; color: #333; line-height: 1.6;">
@@ -5584,7 +5584,7 @@
         }
       }
       
-      // 添加发送时�?      const timestamp = new Date().toLocaleTimeString('zh-CN', { 
+      // 添加发送时�?      const timestamp = new Date().toLocaleTimeString('zh-CN', { 
         hour: '2-digit', 
         minute: '2-digit' 
       });
@@ -5604,9 +5604,9 @@
         messageDiv.style.transform = 'translateY(0)';
       }, 10);
       
-      // 滚动到底�?      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      // 滚动到底�?      messagesDiv.scrollTop = messagesDiv.scrollHeight;
       
-      // 如果是图表类型，初始化图�?      if (options.type === 'chart' && options.chartData && options.columnNamesList) {
+      // 如果是图表类型，初始化图�?      if (options.type === 'chart' && options.chartData && options.columnNamesList) {
         setTimeout(() => {
           const chartId = messageDiv.querySelector('[id^="chart-"]').id;
           if (chartId) {
@@ -5629,13 +5629,13 @@
     function initChart(chartContainer, chartData, columnNamesList) {
       const chart = echarts.init(chartContainer);
       
-      // 准备数据，基于实际列�?      const categories = chartData.map((_, index) => {
+      // 准备数据，基于实际列�?      const categories = chartData.map((_, index) => {
         const columnNames = columnNamesList[index];
         return columnNames ? columnNames[1] : `文件${index + 1}`;
       });
       
       const series = chartData.map((data, index) => {
-        // 计算每个文件的统计数�?        const values = data.map(item => item.value);
+        // 计算每个文件的统计数�?        const values = data.map(item => item.value);
         const maxValue = Math.max(...values);
         const minValue = Math.min(...values);
         const avgValue = Math.round(values.reduce((sum, val) => sum + val, 0) / values.length);
@@ -5649,7 +5649,7 @@
       
       const option = {
         title: {
-          text: '多文件数据分析对�?,
+          text: '多文件数据分析对�?,
           left: 'center',
           textStyle: {
             fontSize: 16,
@@ -5675,7 +5675,7 @@
         },
         xAxis: {
           type: 'category',
-          data: ['最大�?, '最小�?, '平均�?],
+          data: ['最大�?, '最小�?, '平均�?],
           axisLine: {
             lineStyle: {
               color: '#e0e0e0'
@@ -5730,7 +5730,7 @@
       });
     }
 
-    // 响应回车发送消�?    document.getElementById('chat-input').addEventListener('keydown', function(e) {
+    // 响应回车发送消�?    document.getElementById('chat-input').addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
