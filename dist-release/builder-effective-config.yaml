@@ -1,0 +1,10 @@
+directories:
+  output: dist-release
+  buildResources: build
+appId: com.desk-mate.app
+productName: 桌面Excel分析助手
+forceCodeSigning: false
+win:
+  target: portable
+files: []
+electronVersion: 28.3.3
