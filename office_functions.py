@@ -220,19 +220,20 @@ class OfficeFunctions:
         列出目录内容
         
         Args:
-            directory: 目录路径，默认为桌面
+            directory: 目录路径（可选），默认为桌面
             
         Returns:
             目录内容信息
         """
         try:
+            # 如果没有指定目录，默认使用桌面
             if not directory:
-                # 默认使用桌面
                 if self.system == "Windows":
                     directory = os.path.join(os.path.expanduser("~"), "Desktop")
                 else:
-                    directory = os.path.join(os.path.expanduser("~"), "Desktop")
+                    directory = os.path.expanduser("~")
             
+            # 检查目录是否存在
             if not os.path.exists(directory):
                 return {
                     'success': False,
@@ -354,14 +355,19 @@ class OfficeFunctions:
                 'error': str(e)
             }
     
-    def copy_excel_file(self, source_file: str, data: List[Dict[str, Any]], output_file: str = None) -> Dict[str, Any]:
+    def copy_excel_file(self, source_file: str, data: List[Dict[str, Any]], output_file: str = None, 
+                        columns: List[str] = None, rows: List[int] = None, 
+                        sheet_name: str = 'Sheet1') -> Dict[str, Any]:
         """
-        复制Excel文件
+        复制Excel文件，支持按行列细分数据
         
         Args:
             source_file: 源文件路径
             data: Excel数据
             output_file: 输出文件路径（可选）
+            columns: 要写入的列名列表（可选）
+            rows: 要写入的行号列表（可选）
+            sheet_name: 工作表名称（可选）
             
         Returns:
             复制结果
@@ -382,20 +388,29 @@ class OfficeFunctions:
             import pandas as pd
             df = pd.DataFrame(data)
             
+            # 如果指定了列，只写入这些列
+            if columns:
+                df = df[columns]
+            
+            # 如果指定了行，只写入这些行
+            if rows:
+                df = df.iloc[rows]
+            
             # 根据文件扩展名选择保存格式
             if output_file.endswith('.xlsx'):
-                df.to_excel(output_file, index=False, engine='openpyxl')
+                df.to_excel(output_file, index=False, engine='openpyxl', sheet_name=sheet_name)
             elif output_file.endswith('.xls'):
-                df.to_excel(output_file, index=False, engine='xlwt')
+                df.to_excel(output_file, index=False, engine='xlwt', sheet_name=sheet_name)
             else:
                 # 默认使用xlsx格式
-                df.to_excel(output_file, index=False, engine='openpyxl')
+                df.to_excel(output_file, index=False, engine='openpyxl', sheet_name=sheet_name)
             
             return {
                 'success': True,
                 'source_file': os.path.abspath(source_file),
                 'output_file': os.path.abspath(output_file),
-                'rows': len(data),
+                'rows': len(df),
+                'columns': len(df.columns) if columns else len(data[0]) if data else 0,
                 'size': os.path.getsize(output_file)
             }
             

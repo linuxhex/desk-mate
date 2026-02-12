@@ -565,11 +565,8 @@
             // 调用后端读取Excel
             const excelResult = await window.electronAPI.readExcelFile(file.path);
             if (excelResult.success) {
-              excelDataList.push({
-                fileName: file.name,
-                data: excelResult.data,
-                columns: excelResult.columns
-              });
+              // 直接传递data，而不是包装成对象
+              excelDataList.push(excelResult.data);
               addMessage('ai', '✅ Excel文件已读取: ' + file.name + '\n列名: ' + excelResult.columns.join(', ') + '\n数据行数: ' + excelResult.data.length);
             } else {
               addMessage('ai', '❌ 读取Excel文件失败: ' + excelResult.error);

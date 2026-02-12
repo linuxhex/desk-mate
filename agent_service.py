@@ -17,6 +17,9 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from functools import lru_cache
+import hashlib
+import time as time_module
 
 # 导入功能模块
 try:
@@ -603,8 +606,12 @@ Python版本：{data.get('python_version', 'N/A')}
 - 只有当用户需要查看桌面或文件夹内容时，才调用list_directory
 - 只有当用户需要读取未上传的文件时，才调用read_file
 - 当用户要求生成图表时，自动调用generate_smart_chart功能，系统会根据数据特征自动选择最优图表类型
-
-当用户需要以下操作时，请使用以下格式调用功能：
+- **数据准确性要求**：分析Excel数据时，必须基于表格中真实存在的数据进行分析，绝对禁止编造不存在的数据（如"今日头条"、"百度"等）
+- 如果表格中没有某列或某行，明确告知用户，不要编造数据
+- 分析结果必须准确反映表格内容，不要编造任何数据
+- **一次性处理要求**：必须一次性处理全部数据，绝对禁止分批处理数据，避免数据丢失
+- **结果汇总要求**：如果需要分批处理，必须汇总所有分批的结果，只在所有分批完成后才在对话框展示最终结果
+- 当用户需要以下操作时，请使用以下格式调用功能：
 
 查看桌面或文件夹内容：
 <function_call>{"function": "list_directory", "parameters": {"path": "路径"}}</function_call>
@@ -616,7 +623,7 @@ Python版本：{data.get('python_version', 'N/A')}
 <function_call>{"function": "create_file", "parameters": {"file_path": "文件路径", "content": "文件内容"}}</function_call>
 
 复制Excel文件（用于已上传的Excel文件）：
-<function_call>{"function": "copy_excel_file", "parameters": {"source_file": "源文件路径", "data": [数据列表], "output_file": "输出文件路径（可选）"}}</function_call>
+<function_call>{"function": "copy_excel_file", "parameters": {"source_file": "源文件路径", "data": [数据列表], "output_file": "输出文件路径（可选）", "columns": "要写入的列名列表（可选）", "rows": "要写入的行号列表（可选）", "sheet_name": "工作表名称（可选）"}}</function_call>
 
 分析Excel数据（用于已上传的Excel文件）：
 <function_call>{"function": "analyze_excel_data", "parameters": {"data": [数据列表], "analysis_type": "recruitment"}}</function_call>
