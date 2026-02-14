@@ -1,7 +1,0 @@
-{
-  "message": "查看我的桌面有哪些文件",
-  "context": {},
-  "api_key": "iNjoFN6OE1BS_tio6SWa478Dw6DPbIuKpccEOp7wKOh_f3xf6eDxS0EGgHTYYJG-j3tp-TdGuNATgl0l2WJ0wQ",
-  "api_endpoint": "https://api.modelarts-maas.com/openai/v1/chat/completions",
-  "model": "qwen3-coder-480b-a35b-instruct"
-}
