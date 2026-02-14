@@ -226,11 +226,12 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      webviewTag: true
     }
   });
 
-  mainWindow.loadFile('index_final.html');
+  mainWindow.loadFile('index.html');
 }
 
 app.whenReady().then(async () => {
@@ -385,9 +386,9 @@ ipcMain.handle('create-excel-file', async (event, data) => {
 
 // 调用Python智能体
 ipcMain.handle('call-python-agent', async (event, data) => {
-  const { message, context = {} } = data;
+  const { message, context = {}, api_key, api_endpoint, model } = data;
   
-  console.log('收到调用Python智能体的请求:', { message, context });
+  console.log('收到调用Python智能体的请求:', { message, context, api_key, api_endpoint, model });
   
   try {
     // 检查Python服务是否运行
@@ -406,7 +407,7 @@ ipcMain.handle('call-python-agent', async (event, data) => {
     }
     
     // 使用HTTP请求调用Python服务
-    const result = await callPythonService(message, context);
+    const result = await callPythonService(message, context, api_key, api_endpoint, model);
     return result;
   } catch (error) {
     console.error('调用Python服务失败:', error);
@@ -429,6 +430,34 @@ ipcMain.handle('open-file', async (event, data) => {
     return { success: true };
   } catch (error) {
     console.error('打开文件失败:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// 打开AI平台
+ipcMain.handle('open-ai-platform', async (event, data) => {
+  const { platform } = data;
+  
+  console.log('打开AI平台:', platform);
+  
+  const platformUrls = {
+    'kimi': 'https://kimi.moonshot.cn/',
+    'deepseek': 'https://chat.deepseek.com/',
+    'yuanbao': 'https://yuanbao.tencent.com/',
+    'doubao': 'https://doubao.com/'
+  };
+  
+  const url = platformUrls[platform];
+  if (!url) {
+    return { success: false, error: '不支持的平台' };
+  }
+  
+  try {
+    const { shell } = require('electron');
+    await shell.openExternal(url);
+    return { success: true };
+  } catch (error) {
+    console.error('打开AI平台失败:', error);
     return { success: false, error: error.message };
   }
 });

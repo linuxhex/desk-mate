@@ -97,19 +97,100 @@ agents = {}  # 存储不同会话的智能体实例
 class OfficeAgentService:
     """办公智能体服务"""
     
-    def __init__(self, api_key: str, api_endpoint: str, model: str):
+    # AI平台配置
+    AI_PLATFORMS = {
+        'qwen': {
+            'name': '千问（Qwen）',
+            'api_key': 'iNjoFN6OE1BS_tio6SWa478Dw6DPbIuKpccEOp7wKOh_f3xf6eDxS0EGgHTYYJG-j3tp-TdGuNATgl0l2WJ0wQ',
+            'api_endpoint': 'https://api.modelarts-maas.com/openai/v1/chat/completions',
+            'model': 'qwen3-coder-480b-a35b-instruct',
+            'description': '中文理解能力强，适合办公场景',
+            'strengths': ['Excel数据分析', '中文文档处理', '办公任务']
+        },
+        'deepseek': {
+            'name': 'DeepSeek',
+            'api_key': '',  # 需要用户配置
+            'api_endpoint': 'https://api.deepseek.com/v1/chat/completions',
+            'model': 'deepseek-chat',
+            'description': '代码能力强，适合技术任务',
+            'strengths': ['代码生成', '技术问题解决', '编程辅助']
+        },
+        'kimi': {
+            'name': 'Kimi',
+            'api_key': '',  # 需要用户配置
+            'api_endpoint': 'https://api.moonshot.cn/v1/chat/completions',
+            'model': 'moonshot-v1-8k',
+            'description': '长文本处理能力强，适合文档分析',
+            'strengths': ['长文档分析', '内容总结', '深度理解']
+        },
+        'yuanbao': {
+            'name': '元宝',
+            'api_key': '',  # 需要用户配置
+            'api_endpoint': 'https://api.yuanbao.tencent.com/v1/chat/completions',
+            'model': 'yuanbao-chat',
+            'description': '综合能力强，适合多场景',
+            'strengths': ['多任务处理', '智能对话', '内容创作']
+        },
+        'doubao': {
+            'name': '豆包',
+            'api_key': '',  # 需要用户配置
+            'api_endpoint': 'https://api.doubao.com/v1/chat/completions',
+            'model': 'doubao-chat',
+            'description': '交互能力强，适合日常对话',
+            'strengths': ['日常对话', '知识问答', '娱乐互动']
+        }
+    }
+    
+    def __init__(self, api_key: str = None, api_endpoint: str = None, model: str = None, platform: str = 'qwen'):
         """
         初始化办公智能体
         
         Args:
-            api_key: API密钥
-            api_endpoint: API endpoint
-            model: 使用的模型
+            api_key: API密钥（可选）
+            api_endpoint: API endpoint（可选）
+            model: 使用的模型（可选）
+            platform: 使用的平台（默认为千问）
         """
-        self.api_key = api_key
-        self.api_endpoint = api_endpoint
-        self.model = model
+        # 如果指定了平台，使用平台的配置
+        if platform in self.AI_PLATFORMS:
+            platform_config = self.AI_PLATFORMS[platform]
+            self.api_key = platform_config['api_key']
+            self.api_endpoint = platform_config['api_endpoint']
+            self.model = platform_config['model']
+            self.current_platform = platform
+        else:
+            # 向后兼容：使用传入的参数
+            self.api_key = api_key or 'iNjoFN6OE1BS_tio6SWa478Dw6DPbIuKpccEOp7wKOh_f3xf6eDxS0EGgHTYYJG-j3tp-TdGuNATgl0l2WJ0wQ'
+            self.api_endpoint = api_endpoint or 'https://api.modelarts-maas.com/openai/v1/chat/completions'
+            self.model = model or 'qwen3-coder-480b-a35b-instruct'
+            self.current_platform = 'qwen'
+        
         self.conversation_history = []
+    
+    def recommend_platform(self, user_message: str) -> str:
+        """
+        根据用户消息推荐最适合的AI平台
+        
+        Args:
+            user_message: 用户消息
+            
+        Returns:
+            推荐的平台名称
+        """
+        message_lower = user_message.lower()
+        
+        # 根据关键词推荐平台
+        if any(keyword in message_lower for keyword in ['代码', '编程', 'bug', 'debug', '开发', '技术']):
+            return 'deepseek'
+        elif any(keyword in message_lower for keyword in ['文档', '总结', '长文本', '论文', '报告']):
+            return 'kimi'
+        elif any(keyword in message_lower for keyword in ['日常', '聊天', '娱乐', '闲聊', '笑话']):
+            return 'doubao'
+        elif any(keyword in message_lower for keyword in ['创作', '写作', '文案', '内容']):
+            return 'yuanbao'
+        else:
+            # 默认使用千问
+            return 'qwen'
     
     def detect_simple_function(self, user_message: str) -> Optional[Dict[str, Any]]:
         """
@@ -122,21 +203,6 @@ class OfficeAgentService:
             功能调用信息，如果不是简单功能则返回None
         """
         message_lower = user_message.lower()
-        
-        # 检测天气查询
-        if '天气' in message_lower or '气温' in message_lower:
-            # 提取城市名
-            cities = ['南京', '北京', '上海', '广州', '深圳', '杭州', '成都', '武汉', '西安', '重庆']
-            city = '南京'  # 默认城市
-            for c in cities:
-                if c in user_message:
-                    city = c
-                    break
-            
-            return {
-                'function': 'get_weather',
-                'parameters': {'city': city}
-            }
         
         # 检测系统信息查询
         if '系统信息' in message_lower or '电脑配置' in message_lower:
@@ -327,17 +393,20 @@ class OfficeAgentService:
         else:
             return {'success': False, 'error': f'未知功能: {function_name}'}
     
-    def format_function_result(self, function_name: str, result: Dict[str, Any]) -> str:
+    def format_function_result(self, function_name: str, result: Dict[str, Any], parameters: Dict[str, Any] = None) -> str:
         """
         格式化功能结果为用户友好的文本
         
         Args:
             function_name: 功能名称
             result: 执行结果
+            parameters: 功能参数（可选）
             
         Returns:
             格式化的文本
         """
+        if parameters is None:
+            parameters = {}
         if not result.get('success'):
             return f"执行失败: {result.get('error', '未知错误')}"
         
@@ -394,6 +463,29 @@ Python版本：{data.get('python_version', 'N/A')}
                     output += f"  ... 还有 {len(files) - 10} 个文件\n"
             
             return output
+        
+        elif function_name == 'generate_smart_chart':
+            # 处理图表生成结果
+            print(f"图表生成结果: {result}")
+            if result.get('success'):
+                # 检查是否有漏斗数据
+                funnel_data = result.get('funnel_data')
+                
+                # 构建图表配置
+                chart_config = {
+                    'chart_type': result.get('chart_type', 'unknown'),
+                    'title': result.get('title', ''),
+                    'reason': result.get('reason', ''),
+                    'data': funnel_data if funnel_data else parameters.get('data', [])  # 如果有漏斗数据，使用漏斗数据
+                }
+                # 使用ECHARTS:标记，让前端使用ECharts渲染
+                import json as json_module
+                chart_json = json_module.dumps(chart_config, ensure_ascii=False)
+                formatted_result = f"[ECHARTS:{chart_json}:END_ECHARTS]"
+                print(f"格式化后的图表结果: {formatted_result[:200]}...")
+                return formatted_result
+            else:
+                return f"图表生成失败: {result.get('error', '未知错误')}"
         
         else:
             return json.dumps(result, ensure_ascii=False, indent=2)
@@ -587,7 +679,21 @@ Python版本：{data.get('python_version', 'N/A')}
         
         # 第二步：对于复杂功能，调用API
         print("未检测到简单功能，准备调用API...")
-        system_prompt = """你是一个专业的办公助手，擅长处理Excel数据、文档、邮件等办公任务。
+        
+        # 智能推荐平台
+        recommended_platform = self.recommend_platform(user_message)
+        if recommended_platform != self.current_platform:
+            print(f"智能推荐切换到平台: {recommended_platform}")
+            # 切换到推荐的平台
+            if recommended_platform in self.AI_PLATFORMS:
+                platform_config = self.AI_PLATFORMS[recommended_platform]
+                self.api_key = platform_config['api_key']
+                self.api_endpoint = platform_config['api_endpoint']
+                self.model = platform_config['model']
+                self.current_platform = recommended_platform
+                print(f"已切换到平台: {platform_config['name']}")
+        
+        system_prompt = f"""你是一个专业的办公助手，擅长处理Excel数据、文档、邮件等办公任务。
 
 你的能力包括：
 1. Excel数据分析和可视化
@@ -605,7 +711,10 @@ Python版本：{data.get('python_version', 'N/A')}
 - 如果用户上传了Excel文件，数据已经在上下文信息中，请直接分析数据，不要调用read_file或list_directory
 - 只有当用户需要查看桌面或文件夹内容时，才调用list_directory
 - 只有当用户需要读取未上传的文件时，才调用read_file
-- 当用户要求生成图表时，自动调用generate_smart_chart功能，系统会根据数据特征自动选择最优图表类型
+- **图表生成要求**：当用户要求分析数据或生成图表时，必须自动调用generate_smart_chart功能，系统会根据数据特征自动选择最优图表类型（柱状图、饼图、折线图、散点图、雷达图、漏斗图、表格等）
+- **图表结果处理**：generate_smart_chart功能会返回[ECHARTS:...:END_ECHARTS]格式的数据，这是图表配置数据，前端会自动渲染图表，**AI不需要处理图表数据，只需要直接返回给用户即可，不要说"遇到了技术问题"**
+- **重要提示**：当功能执行结果包含[ECHARTS:...:END_ECHARTS]格式的数据时，这是图表配置数据，前端会自动渲染图表，AI只需要简单说明"图表已生成"即可，不要说"遇到了技术问题"或"技术问题"
+- **特别说明**：[ECHARTS:...:END_ECHARTS]格式的数据是图表配置数据，前端会自动识别并渲染图表，AI不需要处理这些数据，只需要直接返回给用户即可，不要说"遇到了技术问题"或"技术问题"，不要尝试解析或处理这些数据
 - **数据准确性要求**：分析Excel数据时，必须基于表格中真实存在的数据进行分析，绝对禁止编造不存在的数据（如"今日头条"、"百度"等）
 - 如果表格中没有某列或某行，明确告知用户，不要编造数据
 - 分析结果必须准确反映表格内容，不要编造任何数据
@@ -627,6 +736,11 @@ Python版本：{data.get('python_version', 'N/A')}
 
 分析Excel数据（用于已上传的Excel文件）：
 <function_call>{"function": "analyze_excel_data", "parameters": {"data": [数据列表], "analysis_type": "recruitment"}}</function_call>
+
+**生成图表（用于已上传的Excel文件，当用户要求分析数据或生成图表时，必须调用此功能）：**
+<function_call>{"function": "generate_smart_chart", "parameters": {"data": [数据列表], "context": "分析上下文", "title": "图表标题"}}</function_call>
+
+**重要：当用户要求分析数据或生成图表时，必须调用generate_smart_chart功能，而不是analyze_excel_data功能！**
 
 创建包含分析结果的Excel文件：
 <function_call>{"function": "create_analysis_excel", "parameters": {"data": [数据列表], "analysis_result": {分析结果}, "output_file": "输出文件路径"}}</function_call>
@@ -691,47 +805,100 @@ Python版本：{data.get('python_version', 'N/A')}
         print(f"API响应长度: {len(response)}")
         print(f"API响应前200字符: {response[:200]}")
         
-        # 检查是否有功能调用
+        # 检查是否有功能调用（支持两种格式：<function_call>和直接JSON）
+        function_calls = []
+        
+        # 格式1: <function_call>{"function": "xxx", "parameters": {}}</function_call>
         if '<function_call>' in response and office_functions:
-            print("检测到功能调用...")
-            # 解析功能调用
+            print("检测到<function_call>格式的功能调用...")
             function_calls = re.findall(r'<function_call>(.*?)</function_call>', response, re.DOTALL)
-            
-            if function_calls:
-                print(f"发现 {len(function_calls)} 个功能调用")
-                # 执行功能调用
-                function_results = []
+        
+        # 格式2: 直接的JSON格式 {"function": "xxx", "parameters": {}}
+        elif '{' in response and '"function"' in response:
+            print("检测到JSON格式的功能调用...")
+            # 尝试提取JSON格式的函数调用
+            # 查找包含"function"的JSON对象
+            json_start = response.find('{"function"')
+            if json_start != -1:
+                # 找到匹配的结束位置
+                json_end = json_start
+                brace_count = 0
+                for i in range(json_start, len(response)):
+                    if response[i] == '{':
+                        brace_count += 1
+                    elif response[i] == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            json_end = i + 1
+                            break
                 
-                for call_str in function_calls:
+                if json_end > json_start:
+                    json_str = response[json_start:json_end]
                     try:
-                        call_data = json.loads(call_str)
-                        function_name = call_data.get('function')
-                        parameters = call_data.get('parameters', {})
-                        
-                        print(f"\n调用功能: {function_name}")
-                        print(f"参数: {json.dumps(parameters, ensure_ascii=False, indent=2)}")
-                        
-                        # 执行功能
-                        result = self.execute_function(function_name, parameters)
-                        
-                        print(f"执行结果: {json.dumps(result, ensure_ascii=False, indent=2)}")
-                        
-                        function_results.append({
-                            'function': function_name,
-                            'result': result
-                        })
+                        # 验证是否是有效的JSON
+                        json_data = json.loads(json_str)
+                        if 'function' in json_data:
+                            function_calls.append(json_str)
+                            print(f"找到有效的函数调用JSON: {json_str[:100]}...")
                     except Exception as e:
-                        print(f"功能调用失败: {str(e)}")
-                        function_results.append({
-                            'function': 'unknown',
-                            'result': {'success': False, 'error': str(e)}
-                        })
+                        print(f"JSON解析失败: {e}")
+        
+        if function_calls:
+            print(f"发现 {len(function_calls)} 个功能调用")
+            # 执行功能调用
+            function_results = []
+            
+            for call_str in function_calls:
+                try:
+                    # 处理不同格式的函数调用
+                    if call_str.startswith('{'):
+                        # 直接JSON格式
+                        call_data = json.loads(call_str)
+                    else:
+                        # <function_call>格式
+                        call_data = json.loads(call_str)
+                    
+                    function_name = call_data.get('function')
+                    parameters = call_data.get('parameters', {})
+                    
+                    print(f"\n调用功能: {function_name}")
+                    print(f"参数: {json.dumps(parameters, ensure_ascii=False, indent=2)}")
+                    
+                    # 执行功能
+                    result = self.execute_function(function_name, parameters)
+                    
+                    print(f"执行结果: {json.dumps(result, ensure_ascii=False, indent=2)}")
+                    
+                    # 格式化功能结果
+                    formatted_result = self.format_function_result(function_name, result, parameters)
+                    print(f"格式化后的结果: {formatted_result[:200] if len(formatted_result) > 200 else formatted_result}")
+                        
+                    function_results.append({
+                        'function': function_name,
+                        'result': formatted_result
+                    })
+                except Exception as e:
+                    print(f"功能调用失败: {str(e)}")
+                    function_results.append({
+                        'function': 'unknown',
+                        'result': {'success': False, 'error': str(e)}
+                    })
                 
                 # 将功能结果添加到消息中，再次调用API
                 function_result_str = "\n\n功能执行结果：\n"
                 for fr in function_results:
                     function_result_str += f"\n功能: {fr['function']}\n"
-                    function_result_str += f"结果: {json.dumps(fr['result'], ensure_ascii=False, indent=2)}\n"
+                    # 检查结果是否包含[ECHARTS:...:END_ECHARTS]格式的数据
+                    if isinstance(fr['result'], str) and '[ECHARTS:' in fr['result'] and ':END_ECHARTS]' in fr['result']:
+                        # 如果结果已经是ECHARTS格式的字符串，直接返回
+                        print(f"检测到图表数据，直接返回给前端")
+                        print(f"返回的图表数据: {fr['result'][:200]}...")
+                        return fr['result']
+                    # 否则，格式化结果
+                    result_str = json.dumps(fr['result'], ensure_ascii=False, indent=2) if isinstance(fr['result'], dict) else str(fr['result'])
+                    function_result_str += f"结果: {result_str}\n"
+                
+                print(f"功能结果字符串: {function_result_str[:500]}...")
                 
                 messages.append({'role': 'assistant', 'content': response})
                 messages.append({'role': 'user', 'content': function_result_str + "\n请根据这些结果回答用户的问题。"})

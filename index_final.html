@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DeskMate - 智能办公助手</title>
+  <!-- 添加ECharts库 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -305,7 +307,7 @@
         <span>分析</span>
       </div>
       
-      <div class="sidebar-item">
+      <div class="sidebar-item" onclick="showSettings()">
         <span class="sidebar-icon">⚙️</span>
         <span>设置</span>
       </div>
@@ -313,6 +315,11 @@
       <div class="file-list">
         <div style="font-size: 11px; color: #8b949e; margin-bottom: 8px; font-weight: 500;">已上传文件</div>
         <div id="file-items"></div>
+      </div>
+      
+      <div class="file-list">
+        <div style="font-size: 11px; color: #8b949e; margin-bottom: 8px; font-weight: 500;">AI平台</div>
+        <div id="platform-selector"></div>
       </div>
     </div>
     
@@ -344,10 +351,56 @@
   </div>
   
   <script>
-    // 千问API配置 - 从localStorage读取
-    let QWEN_API_KEY = localStorage.getItem('qwen_api_key') || 'iNjoFN6OE1BS_tio6SWa478Dw6DPbIuKpccEOp7wKOh_f3xf6eDxS0EGgHTYYJG-j3tp-TdGuNATgl0l2WJ0wQ';
-    let QWEN_API_ENDPOINT = localStorage.getItem('qwen_api_endpoint') || 'https://api.modelarts-maas.com/openai/v1/chat/completions';
-    let QWEN_MODEL = localStorage.getItem('qwen_model') || 'qwen3-coder-480b-a35b-instruct';
+    // AI平台配置
+    const AI_PLATFORMS = {
+      'qwen': {
+        name: '千问（Qwen）',
+        apiKey: localStorage.getItem('qwen_api_key') || 'iNjoFN6OE1BS_tio6SWa478Dw6DPbIuKpccEOp7wKOh_f3xf6eDxS0EGgHTYYJG-j3tp-TdGuNATgl0l2WJ0wQ',
+        endpoint: localStorage.getItem('qwen_api_endpoint') || 'https://api.modelarts-maas.com/openai/v1/chat/completions',
+        model: localStorage.getItem('qwen_model') || 'qwen3-coder-480b-a35b-instruct',
+        description: '中文理解能力强，适合办公场景',
+        strengths: ['Excel数据分析', '中文文档处理', '办公任务']
+      },
+      'deepseek': {
+        name: 'DeepSeek',
+        apiKey: localStorage.getItem('deepseek_api_key') || '',
+        endpoint: localStorage.getItem('deepseek_api_endpoint') || 'https://api.deepseek.com/v1/chat/completions',
+        model: localStorage.getItem('deepseek_model') || 'deepseek-chat',
+        description: '代码能力强，适合技术任务',
+        strengths: ['代码生成', '技术问题解决', '编程辅助']
+      },
+      'kimi': {
+        name: 'Kimi',
+        apiKey: localStorage.getItem('kimi_api_key') || '',
+        endpoint: localStorage.getItem('kimi_api_endpoint') || 'https://api.moonshot.cn/v1/chat/completions',
+        model: localStorage.getItem('kimi_model') || 'moonshot-v1-8k',
+        description: '长文本处理能力强，适合文档分析',
+        strengths: ['长文档分析', '内容总结', '深度理解']
+      },
+      'yuanbao': {
+        name: '元宝',
+        apiKey: localStorage.getItem('yuanbao_api_key') || '',
+        endpoint: localStorage.getItem('yuanbao_api_endpoint') || 'https://api.yuanbao.tencent.com/v1/chat/completions',
+        model: localStorage.getItem('yuanbao_model') || 'yuanbao-chat',
+        description: '综合能力强，适合多场景',
+        strengths: ['多任务处理', '智能对话', '内容创作']
+      },
+      'doubao': {
+        name: '豆包',
+        apiKey: localStorage.getItem('doubao_api_key') || '',
+        endpoint: localStorage.getItem('doubao_api_endpoint') || 'https://api.doubao.com/v1/chat/completions',
+        model: localStorage.getItem('doubao_model') || 'doubao-chat',
+        description: '交互能力强，适合日常对话',
+        strengths: ['日常对话', '知识问答', '娱乐互动']
+      }
+    };
+    
+    let currentPlatform = localStorage.getItem('current_platform') || 'qwen';
+    
+    // 千问API配置 - 从localStorage读取（向后兼容）
+    let QWEN_API_KEY = AI_PLATFORMS.qwen.apiKey;
+    let QWEN_API_ENDPOINT = AI_PLATFORMS.qwen.endpoint;
+    let QWEN_MODEL = AI_PLATFORMS.qwen.model;
     
     // 全局变量
     let selectedFiles = [];
@@ -355,6 +408,62 @@
     let columnNamesList = [];
     let conversationHistory = [];
     let isProcessing = false;
+    
+    // 初始化平台选择器
+    function initPlatformSelector() {
+      const platformSelector = document.getElementById('platform-selector');
+      platformSelector.innerHTML = '';
+      
+      Object.keys(AI_PLATFORMS).forEach(platformKey => {
+        const platform = AI_PLATFORMS[platformKey];
+        const isActive = platformKey === currentPlatform;
+        
+        const platformItem = document.createElement('div');
+        platformItem.className = 'file-item';
+        platformItem.style.background = isActive ? '#1f6feb' : '#0d1117';
+        platformItem.style.cursor = 'pointer';
+        platformItem.innerHTML = `
+          <div>
+            <div class="file-name" style="color: ${isActive ? '#ffffff' : '#c9d1d9'};">${platform.name}</div>
+            <div class="file-size" style="font-size: 11px; color: #8b949e;">${platform.description}</div>
+          </div>
+        `;
+        
+        platformItem.onclick = () => selectPlatform(platformKey);
+        platformSelector.appendChild(platformItem);
+      });
+    }
+    
+    // 选择平台
+    function selectPlatform(platformKey) {
+      currentPlatform = platformKey;
+      localStorage.setItem('current_platform', platformKey);
+      
+      // 更新UI
+      initPlatformSelector();
+      addMessage('ai', `✅ 已切换到 ${AI_PLATFORMS[platformKey].name} 平台`);
+    }
+    
+    // 打开AI平台
+    async function openAIPlatform(platformKey) {
+      const platform = AI_PLATFORMS[platformKey];
+      if (!platform) {
+        addMessage('ai', '❌ 不支持的平台');
+        return;
+      }
+      
+      try {
+        const result = await window.electronAPI.openAIPlatform(platformKey);
+        if (result.success) {
+          addMessage('ai', `✅ 已打开 ${platform.name} 平台`);
+        } else {
+          addMessage('ai', `❌ 打开平台失败: ${result.error}`);
+        }
+      } catch (error) {
+        console.error('打开平台失败:', error);
+        addMessage('ai', `❌ 打开平台失败: ${error.message}`);
+      }
+    }
     
     // 添加消息到聊天界面
     function addMessage(type, content) {
@@ -372,7 +481,204 @@
         `;
       } else {
         // 检查是否包含图表数据
-        if (content.includes('[CHART:') && content.includes(':END_CHART]')) {
+        if (content.includes('[ECHARTS:') && content.includes(':END_ECHARTS]')) {
+          // 提取图表配置数据
+          const chartMatch = content.match(/\[ECHARTS:(.*?):END_ECHARTS\]/);
+          console.log('========== 图表渲染诊断开始 ==========');
+          console.log('检测到ECHARTS数据:', content.substring(0, 200));
+          console.log('chartMatch:', chartMatch);
+          if (chartMatch) {
+            try {
+              const chartConfig = JSON.parse(chartMatch[1]);
+              console.log('chartConfig:', chartConfig);
+              const formattedContent = content.replace(/\[ECHARTS:.*?:END_ECHARTS\]/g, '').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+              
+              // 创建图表容器
+              const chartId = 'chart-' + Date.now();
+              console.log('创建图表容器，ID:', chartId);
+              messageDiv.innerHTML = `
+                <div style="font-size: 14px;">
+                  ${formattedContent}
+                  <div id="${chartId}" style="width: 100%; height: 400px; margin-top: 16px;"></div>
+                </div>
+              `;
+              
+              // 使用ECharts渲染图表
+              setTimeout(() => {
+                const chartDom = document.getElementById(chartId);
+                console.log('chartDom:', chartDom);
+                console.log('echarts类型:', typeof echarts);
+                console.log('echarts对象:', echarts);
+                if (chartDom && typeof echarts !== 'undefined') {
+                  const myChart = echarts.init(chartDom);
+                  console.log('myChart:', myChart);
+                  
+                  // 根据图表类型生成ECharts配置
+                  let option = {};
+                  const data = chartConfig.data || [];
+                  const chartType = chartConfig.chart_type || 'bar';
+                  const title = chartConfig.title || '';
+                  
+                  console.log('chartType:', chartType);
+                  console.log('data:', data);
+                  console.log('data长度:', data.length);
+                  
+                  if (chartType === 'bar') {
+                    // 柱状图
+                    const xAxisData = data.map((item, index) => item[Object.keys(item)[0]] || `项目${index + 1}`);
+                    const yAxisData = data.map((item, index) => item[Object.keys(item)[1]] || 0);
+                    option = {
+                      title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                      tooltip: { trigger: 'axis' },
+                      xAxis: { type: 'category', data: xAxisData, axisLabel: { color: '#c9d1d9' } },
+                      yAxis: { type: 'value', axisLabel: { color: '#c9d1d9' } },
+                      series: [{ type: 'bar', data: yAxisData, itemStyle: { color: '#58a6ff' } }]
+                    };
+                  } else if (chartType === 'pie') {
+                    // 饼图
+                    const pieData = data.map((item, index) => ({
+                      name: item[Object.keys(item)[0]] || `项目${index + 1}`,
+                      value: item[Object.keys(item)[1]] || 0
+                    }));
+                    option = {
+                      title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                      tooltip: { trigger: 'item' },
+                      series: [{
+                        type: 'pie',
+                        radius: '50%',
+                        data: pieData,
+                        label: { color: '#c9d1d9' }
+                      }]
+                    };
+                  } else if (chartType === 'line') {
+                    // 折线图
+                    const xAxisData = data.map((item, index) => item[Object.keys(item)[0]] || `项目${index + 1}`);
+                    const yAxisData = data.map((item, index) => item[Object.keys(item)[1]] || 0);
+                    option = {
+                      title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                      tooltip: { trigger: 'axis' },
+                      xAxis: { type: 'category', data: xAxisData, axisLabel: { color: '#c9d1d9' } },
+                      yAxis: { type: 'value', axisLabel: { color: '#c9d1d9' } },
+                      series: [{ type: 'line', data: yAxisData, itemStyle: { color: '#58a6ff' } }]
+                    };
+                  } else if (chartType === 'scatter') {
+                    // 散点图
+                    const scatterData = data.map((item, index) => [
+                      item[Object.keys(item)[0]] || index,
+                      item[Object.keys(item)[1]] || 0
+                    ]);
+                    option = {
+                      title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                      tooltip: { trigger: 'item' },
+                      xAxis: { axisLabel: { color: '#c9d1d9' } },
+                      yAxis: { axisLabel: { color: '#c9d1d9' } },
+                      series: [{ type: 'scatter', data: scatterData, itemStyle: { color: '#58a6ff' } }]
+                    };
+                  } else if (chartType === 'radar') {
+                    // 雷达图
+                    const indicator = data.map((item, index) => ({
+                      name: item[Object.keys(item)[0]] || `项目${index + 1}`,
+                      max: Math.max(...data.map(d => d[Object.keys(d)[1]] || 0)) * 1.2
+                    }));
+                    const radarData = data.map((item, index) => item[Object.keys(item)[1]] || 0);
+                    option = {
+                      title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                      tooltip: {},
+                      radar: { indicator: indicator, axisName: { color: '#c9d1d9' } },
+                      series: [{ type: 'radar', data: [{ value: radarData, name: title }], itemStyle: { color: '#58a6ff' } }]
+                    };
+                  } else if (chartType === 'funnel') {
+                                // 漏斗图
+                                // 检查数据是否已经是漏斗图格式
+                                let funnelData = [];
+                                if (data && data.length > 0) {
+                                  if (data[0].name && data[0].value) {
+                                    // 数据已经是漏斗图格式
+                                    funnelData = data;
+                                  } else {
+                                    // 转换数据格式
+                                    funnelData = data.map((item, index) => ({
+                                      name: item[Object.keys(item)[0]] || `项目${index + 1}`,
+                                      value: item[Object.keys(item)[1]] || 0
+                                    }));
+                                  }
+                                }
+                                option = {
+                                  title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                                  tooltip: {
+                                    trigger: 'item',
+                                    formatter: function(params) {
+                                      return `${params.name}: ${params.value} (${params.data.rate || 0}%)`;
+                                    }
+                                  },
+                                  series: [{
+                                    type: 'funnel',
+                                    data: funnelData,
+                                    label: {
+                                      color: '#c9d1d9',
+                                      formatter: function(params) {
+                                        return `${params.name}\n${params.value} (${params.data.rate || 0}%)`;
+                                      }
+                                    },
+                                    itemStyle: {
+                                      color: '#58a6ff',
+                                      opacity: 0.8
+                                    }
+                                  }]
+                                };
+                  } else if (chartType === 'table') {
+                    // 表格
+                    const columns = Object.keys(data[0] || {});
+                    const tableHtml = `
+                      <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+                        <thead>
+                          <tr style="background: #21262d;">
+                            ${columns.map(col => `<th style="padding: 12px; text-align: left; border: 1px solid #30363d; color: #c9d1d9;">${col}</th>`).join('')}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${data.map((row, index) => `
+                            <tr style="background: ${index % 2 === 0 ? '#161b22' : '#21262d'};">
+                              ${columns.map(col => `<td style="padding: 12px; border: 1px solid #30363d; color: '#c9d1d9';">${row[col] || ''}</td>`).join('')}
+                            </tr>
+                          `).join('')}
+                        </tbody>
+                      </table>
+                    `;
+                    messageDiv.innerHTML = `
+                      <div style="font-size: 14px;">
+                        <h3 style="color: #c9d1d9; margin-bottom: 16px;">${title}</h3>
+                        ${tableHtml}
+                      </div>
+                    `;
+                    return; // 不使用ECharts渲染
+                  } else {
+                    // 默认柱状图
+                    const xAxisData = data.map((item, index) => item[Object.keys(item)[0]] || `项目${index + 1}`);
+                    const yAxisData = data.map((item, index) => item[Object.keys(item)[1]] || 0);
+                    option = {
+                      title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                      tooltip: { trigger: 'axis' },
+                      xAxis: { type: 'category', data: xAxisData, axisLabel: { color: '#c9d1d9' } },
+                      yAxis: { type: 'value', axisLabel: { color: '#c9d1d9' } },
+                      series: [{ type: 'bar', data: yAxisData, itemStyle: { color: '#58a6ff' } }]
+                    };
+                  }
+                  
+                  myChart.setOption(option);
+                }
+              }, 100);
+            } catch (e) {
+              // 如果解析失败，显示普通文本
+              const formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+              messageDiv.innerHTML = `
+                <div style="font-size: 14px;">
+                  ${formattedContent}
+                </div>
+              `;
+            }
+          }
+        } else if (content.includes('[CHART:') && content.includes(':END_CHART]')) {
           // 提取图表数据
           const chartMatch = content.match(/\[CHART:(.*?)\]/);
           if (chartMatch) {
@@ -459,17 +765,23 @@
       statusText.textContent = text;
     }
     
-    // 调用千问API
-    async function callQwenAPI(messages) {
+    // 调用AI平台API
+    async function callAIPlatformAPI(messages) {
+      const platform = AI_PLATFORMS[currentPlatform];
+      
+      if (!platform.apiKey) {
+        throw new Error(`请先配置 ${platform.name} 的API密钥`);
+      }
+      
       try {
-        const response = await fetch(QWEN_API_ENDPOINT, {
+        const response = await fetch(platform.endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + QWEN_API_KEY
+            'Authorization': 'Bearer ' + platform.apiKey
           },
           body: JSON.stringify({
-            model: QWEN_MODEL,
+            model: platform.model,
             messages: messages,
             temperature: 0.7,
             max_tokens: 2000
@@ -483,7 +795,7 @@
         const data = await response.json();
         return data.choices[0].message.content;
       } catch (error) {
-        console.error('调用千问API失败:', error);
+        console.error(`调用${platform.name}API失败:`, error);
         throw error;
       }
     }
@@ -519,23 +831,18 @@
       const loadingMessage = addMessage('ai', '正在思考...');
       
       try {
-        // 调用Python智能体
-        const result = await window.electronAPI.callPythonAgent(message, {
-          files: selectedFiles.map(f => f.name),
-          data: excelDataList
-        });
+        // 直接调用AI平台API
+        const result = await callAIPlatformAPI(conversationHistory.map(msg => ({
+          role: msg.type === 'user' ? 'user' : 'assistant',
+          content: msg.content
+        })));
         
         // 移除加载消息
         loadingMessage.remove();
         
         // 显示结果
-        if (result.success) {
-          addMessage('ai', result.result);
-          updateStatus('ready', '就绪');
-        } else {
-          addMessage('ai', '处理失败: ' + result.error);
-          updateStatus('error', '错误');
-        }
+        addMessage('ai', result);
+        updateStatus('ready', '就绪');
       } catch (error) {
         console.error('处理失败:', error);
         loadingMessage.remove();
@@ -625,6 +932,9 @@
     
     // 初始化
     window.addEventListener('DOMContentLoaded', function() {
+      // 初始化模型选择器
+      initModelSelector();
+      
       addMessage('ai', '👋 你好！我是DeskMate，你的智能办公助手。');
       addMessage('ai', '我可以帮你处理以下任务：');
       addMessage('ai', '• 📊 Excel数据分析和可视化');
@@ -634,6 +944,8 @@
       addMessage('ai', '• 🔍 网络搜索和信息查询');
       addMessage('ai', '');
       addMessage('ai', '⚠️ 注意：请先在设置中配置API密钥才能使用！');
+      addMessage('ai', '');
+      addMessage('ai', '🤖 支持多个AI模型：千问、DeepSeek、Kimi');
       addMessage('ai', '');
       addMessage('ai', '请上传文件或直接告诉我你的需求，我会尽力帮助你！');
       updateStatus('ready', '就绪');

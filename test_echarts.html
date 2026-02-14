@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECharts测试页面</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      padding: 20px;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .chart-container {
+      width: 100%;
+      height: 400px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    .log {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    button {
+      background: #238636;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>ECharts测试页面</h1>
+    <p>这个页面用于测试ECharts是否能正常工作</p>
+    
+    <button onclick="testBasicChart()">测试基础图表</button>
+    <button onclick="testEchartsData()">测试[ECHARTS:...]格式数据</button>
+    
+    <div id="chart1" class="chart-container"></div>
+    <div id="chart2" class="chart-container"></div>
+    
+    <div class="log" id="log"></div>
+  </div>
+  
+  <script>
+    function log(message) {
+      const logDiv = document.getElementById('log');
+      logDiv.innerHTML += message + '<br>';
+      console.log(message);
+    }
+    
+    function testBasicChart() {
+      log('========== 测试基础图表 ==========');
+      log('echarts类型: ' + typeof echarts);
+      log('echarts对象: ' + echarts);
+      
+      if (typeof echarts !== 'undefined') {
+        const chartDom = document.getElementById('chart1');
+        log('chartDom: ' + chartDom);
+        
+        const myChart = echarts.init(chartDom);
+        log('myChart: ' + myChart);
+        
+        const option = {
+          title: { text: '测试图表', left: 'center', textStyle: { color: '#c9d1d9' } },
+          tooltip: { trigger: 'axis' },
+          xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], axisLabel: { color: '#c9d1d9' } },
+          yAxis: { type: 'value', axisLabel: { color: '#c9d1d9' } },
+          series: [{ type: 'bar', data: [120, 200, 150, 80, 70, 110, 130], itemStyle: { color: '#58a6ff' } }]
+        };
+        
+        myChart.setOption(option);
+        log('✅ 基础图表渲染成功！');
+      } else {
+        log('❌ ECharts未加载！');
+      }
+    }
+    
+    function testEchartsData() {
+      log('========== 测试[ECHARTS:...]格式数据 ==========');
+      
+      // 模拟从Python服务返回的数据
+      const testData = [
+        {"城市": "北京", "数量": 100},
+        {"城市": "上海", "数量": 80},
+        {"城市": "广州", "数量": 60},
+        {"城市": "深圳", "数量": 50}
+      ];
+      
+      const chartConfig = {
+        chart_type: 'pie',
+        title: '测试饼图',
+        reason: '测试数据',
+        data: testData
+      };
+      
+      const chartJson = JSON.stringify(chartConfig);
+      const formattedResult = `[ECHARTS:${chartJson}:END_ECHARTS]`;
+      
+      log('模拟的数据: ' + formattedResult.substring(0, 100) + '...');
+      
+      // 模拟前端的处理逻辑
+      const content = formattedResult;
+      if (content.includes('[ECHARTS:') && content.includes(':END_ECHARTS]')) {
+        log('✅ 检测到[ECHARTS:...]格式数据');
+        
+        const chartMatch = content.match(/\[ECHARTS:(.*?):END_ECHARTS\]/);
+        log('chartMatch: ' + chartMatch);
+        
+        if (chartMatch) {
+          try {
+            const chartConfigParsed = JSON.parse(chartMatch[1]);
+            log('chartConfigParsed: ' + JSON.stringify(chartConfigParsed));
+            
+            const chartDom = document.getElementById('chart2');
+            log('chartDom: ' + chartDom);
+            
+            const myChart = echarts.init(chartDom);
+            log('myChart: ' + myChart);
+            
+            const data = chartConfigParsed.data || [];
+            const chartType = chartConfigParsed.chart_type || 'bar';
+            const title = chartConfigParsed.title || '';
+            
+            log('chartType: ' + chartType);
+            log('data: ' + JSON.stringify(data));
+            
+            let option = {};
+            
+            if (chartType === 'pie') {
+              const pieData = data.map((item, index) => ({
+                name: item[Object.keys(item)[0]] || `项目${index + 1}`,
+                value: item[Object.keys(item)[1]] || 0
+              }));
+              option = {
+                title: { text: title, left: 'center', textStyle: { color: '#c9d1d9' } },
+                tooltip: { trigger: 'item' },
+                series: [{
+                  type: 'pie',
+                  radius: '50%',
+                  data: pieData,
+                  label: { color: '#c9d1d9' }
+                }]
+              };
+            }
+            
+            myChart.setOption(option);
+            log('✅ [ECHARTS:...]格式数据渲染成功！');
+          } catch (e) {
+            log('❌ 解析失败: ' + e.message);
+          }
+        } else {
+          log('❌ 正则表达式匹配失败');
+        }
+      } else {
+        log('❌ 未检测到[ECHARTS:...]格式数据');
+      }
+    }
+    
+    // 页面加载完成后自动测试
+    window.onload = function() {
+      log('页面加载完成');
+      log('echarts类型: ' + typeof echarts);
+      if (typeof echarts !== 'undefined') {
+        log('✅ ECharts库已加载');
+      } else {
+        log('❌ ECharts库未加载');
+      }
+    };
+  </script>
+</body>
+</html>

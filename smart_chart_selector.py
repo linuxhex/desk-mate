@@ -168,6 +168,69 @@ class SmartChartSelector:
         
         return recommendation
     
+    def calculate_conversion_metrics(self, data: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        计算信息流线索跟进数据的转化指标
+        
+        Args:
+            data: 信息流线索跟进数据
+            
+        Returns:
+            包含转化指标的字典
+        """
+        try:
+            if not data:
+                return {
+                    'success': False,
+                    'error': '没有数据可供分析'
+                }
+            
+            total_leads = len(data)
+            
+            # 计算各阶段转化数
+            connected_count = sum(1 for item in data if item.get('是否接通') == '是')
+            wechat_count = sum(1 for item in data if item.get('是否加上微信') == '是')
+            intent_count = sum(1 for item in data if item.get('是否有效意向') == '是')
+            high_prob_count = sum(1 for item in data if item.get('是否高概率可成交客户') == '是')
+            
+            # 计算转化率
+            connected_rate = round((connected_count / total_leads) * 100, 2) if total_leads > 0 else 0
+            wechat_rate = round((wechat_count / connected_count) * 100, 2) if connected_count > 0 else 0
+            intent_rate = round((intent_count / wechat_count) * 100, 2) if wechat_count > 0 else 0
+            high_prob_rate = round((high_prob_count / intent_count) * 100, 2) if intent_count > 0 else 0
+            
+            # 为漏斗图准备数据
+            funnel_data = [
+                {'name': '总线索量', 'value': total_leads, 'rate': 100},
+                {'name': '接通', 'value': connected_count, 'rate': connected_rate},
+                {'name': '添加微信', 'value': wechat_count, 'rate': wechat_rate},
+                {'name': '有效意向', 'value': intent_count, 'rate': intent_rate},
+                {'name': '高概率成交', 'value': high_prob_count, 'rate': high_prob_rate}
+            ]
+            
+            return {
+                'success': True,
+                'total_leads': total_leads,
+                'connected_count': connected_count,
+                'wechat_count': wechat_count,
+                'intent_count': intent_count,
+                'high_prob_count': high_prob_count,
+                'connected_rate': connected_rate,
+                'wechat_rate': wechat_rate,
+                'intent_rate': intent_rate,
+                'high_prob_rate': high_prob_rate,
+                'funnel_data': funnel_data
+            }
+            
+        except Exception as e:
+            print(f"计算转化指标失败: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
     def generate_smart_chart(self, data: List[Dict[str, Any]], context: str = "", title: str = "") -> Dict[str, Any]:
         """
         智能生成图表
@@ -181,14 +244,40 @@ class SmartChartSelector:
             包含base64编码图片的字典
         """
         try:
-            # 分析数据并推荐图表
-            analysis = self.analyze_data_and_suggest_chart(data, context)
+            print(f"开始生成图表，数据行数: {len(data) if data else 0}")
             
-            if not analysis.get('success'):
-                return analysis
+            # 检查是否是信息流线索跟进数据
+            is_funnel_data = False
+            funnel_data = None
             
-            recommendation = analysis['recommendation']
-            chart_type = recommendation['chart_type']
+            # 检查数据中是否包含转化漏斗相关字段
+            if data and all(key in data[0] for key in ['是否接通', '是否加上微信', '是否有效意向', '是否高概率可成交客户']):
+                is_funnel_data = True
+                # 计算转化指标
+                conversion_result = self.calculate_conversion_metrics(data)
+                if conversion_result.get('success'):
+                    funnel_data = conversion_result['funnel_data']
+                    print(f"计算转化指标成功，漏斗数据: {funnel_data}")
+            
+            if is_funnel_data and funnel_data:
+                # 强制使用漏斗图
+                chart_type = 'funnel'
+                reason = '数据包含转化漏斗信息，推荐使用漏斗图'
+            else:
+                # 分析数据并推荐图表
+                analysis = self.analyze_data_and_suggest_chart(data, context)
+                
+                print(f"数据分析结果: {analysis.get('success')}")
+                
+                if not analysis.get('success'):
+                    print(f"数据分析失败: {analysis.get('error')}")
+                    return analysis
+                
+                recommendation = analysis['recommendation']
+                chart_type = recommendation['chart_type']
+                reason = recommendation['reason']
+            
+            print(f"推荐的图表类型: {chart_type}")
             
             # 生成图表
             df = pd.DataFrame(data)
@@ -203,6 +292,9 @@ class SmartChartSelector:
                 self._create_smart_pie_chart(ax, df, context)
             elif chart_type == 'scatter':
                 self._create_smart_scatter_chart(ax, df, context)
+            elif chart_type == 'funnel':
+                # 创建漏斗图
+                self._create_smart_funnel_chart(ax, funnel_data, context)
             
             # 设置标题
             if title:
@@ -218,15 +310,21 @@ class SmartChartSelector:
             image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
             plt.close(fig)
             
+            print(f"图表生成成功，图片数据长度: {len(image_base64)}")
+            
             return {
                 'success': True,
                 'chart_type': chart_type,
                 'image': image_base64,
                 'title': title,
-                'reason': recommendation['reason']
+                'reason': reason,
+                'funnel_data': funnel_data  # 添加漏斗数据，供前端使用
             }
             
         except Exception as e:
+            print(f"图表生成失败: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return {
                 'success': False,
                 'error': str(e)
@@ -298,3 +396,36 @@ class SmartChartSelector:
             ax.set_xlabel(x_col, fontsize=12)
             ax.set_ylabel(y_col, fontsize=12)
             ax.grid(True, alpha=0.3)
+    
+    def _create_smart_funnel_chart(self, ax, funnel_data, context: str):
+        """创建智能漏斗图"""
+        if not funnel_data:
+            return
+        
+        # 提取数据
+        labels = [item['name'] for item in funnel_data]
+        values = [item['value'] for item in funnel_data]
+        
+        # 创建水平条形图模拟漏斗图
+        y_pos = range(len(labels))
+        
+        # 计算条形宽度（模拟漏斗效果）
+        max_value = max(values)
+        widths = [v / max_value for v in values]
+        
+        # 绘制漏斗图
+        bars = ax.barh(y_pos, values, height=0.6, color='#58a6ff', alpha=0.8)
+        
+        # 设置标签和标题
+        ax.set_yticks(y_pos)
+        ax.set_yticklabels(labels, fontsize=12)
+        ax.set_xlabel('数量', fontsize=12)
+        
+        # 添加数值标签
+        for i, (bar, value) in enumerate(zip(bars, values)):
+            ax.text(value + 5, bar.get_y() + bar.get_height()/2, f'{value} ({funnel_data[i]["rate"]}%)',
+                    va='center', fontsize=10, color='#c9d1d9')
+        
+        # 设置背景和网格
+        ax.set_facecolor('#21262d')
+        ax.grid(axis='x', alpha=0.3)
