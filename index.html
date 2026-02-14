@@ -344,11 +344,6 @@
       flex-direction: column;
     }
     
-    /* 千问平台适配 */
-    #webview-qwen {
-      /* 千问平台已经适配好了 */
-    }
-    
     /* DeepSeek平台适配 */
     #webview-deepseek {
       padding-top: 0;
@@ -366,6 +361,16 @@
     
     /* 豆包平台适配 */
     #webview-doubao {
+      padding-top: 0;
+    }
+    
+    /* 智谱平台适配 */
+    #webview-zhipu {
+      padding-top: 0;
+    }
+    
+    /* MiniMax平台适配 */
+    #webview-minimax {
       padding-top: 0;
     }
     
@@ -432,25 +437,18 @@
           </div>
         </div>
         
-        <webview id="webview-qwen" class="platform-webview" src="https://qianwen.aliyun.com/" partition="persist:qwen" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-deepseek" class="platform-webview" src="https://chat.deepseek.com/" partition="persist:deepseek" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-kimi" class="platform-webview" src="https://kimi.moonshot.cn/" partition="persist:kimi" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-yuanbao" class="platform-webview" src="https://yuanbao.tencent.com/" partition="persist:yuanbao" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-doubao" class="platform-webview" src="https://doubao.com/" partition="persist:doubao" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
+        <webview id="webview-zhipu" class="platform-webview" src="https://chatglm.cn/" partition="persist:zhipu" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
+        <webview id="webview-minimax" class="platform-webview" src="https://www.hailuo.ai/" partition="persist:minimax" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
       </div>
     </div>
   </div>
   
   <script>
-    // AI平台配置
     const AI_PLATFORMS = {
-      'qwen': {
-        name: '千问（Qwen）',
-        url: 'https://tongyi.aliyun.com/qianwen/',
-        description: '中文理解能力强，适合办公场景',
-        strengths: ['Excel数据分析', '中文文档处理', '办公任务'],
-        icon: 'icons/qwen.png'
-      },
       'deepseek': {
         name: 'DeepSeek',
         url: 'https://chat.deepseek.com/',
@@ -478,12 +476,27 @@
         description: '交互能力强，适合日常对话',
         strengths: ['日常对话', '知识问答', '娱乐互动'],
         icon: 'icons/doubao.png'
+      },
+      'zhipu': {
+        name: '智谱',
+        url: 'https://chatglm.cn/',
+        description: 'GLM模型，综合能力强',
+        strengths: ['智能对话', '知识问答', '内容创作'],
+        icon: 'icons/zhipu.png'
+      },
+      'minimax': {
+        name: 'MiniMax',
+        url: 'https://www.hailuo.ai/',
+        description: '海螺AI，多模态能力强',
+        strengths: ['多模态理解', '语音交互', '创意生成'],
+        icon: 'icons/minimax.png'
       }
     };
     
-    let currentPlatform = localStorage.getItem('current_platform') || 'qwen';
+    let currentPlatform = localStorage.getItem('current_platform') || 'deepseek';
     let selectedFiles = [];
     let conversationHistory = JSON.parse(localStorage.getItem('conversation_history') || '[]');
+    let sharedConversationContext = JSON.parse(localStorage.getItem('shared_conversation_context') || '[]');
     let isProcessing = false;
     let sidebarCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
     
@@ -556,13 +569,15 @@
       });
     }
     
-    // 选择平台
     function selectPlatform(platformKey) {
+      const previousPlatform = currentPlatform;
+      
+      saveCurrentConversationToContext();
+      
       currentPlatform = platformKey;
       localStorage.setItem('current_platform', platformKey);
       initPlatformSelector();
       
-      // 隐藏所有webview
       Object.keys(AI_PLATFORMS).forEach(key => {
         const webview = document.getElementById(`webview-${key}`);
         if (webview) {
@@ -570,20 +585,113 @@
         }
       });
       
-      // 显示选中的webview
       const webview = document.getElementById(`webview-${platformKey}`);
       if (webview) {
         webview.classList.add('active');
-        // 隐藏messages和input-container，而不是整个chat-container
         document.getElementById('messages').style.display = 'none';
         document.querySelector('.input-container').style.display = 'none';
         document.getElementById('return-btn').classList.add('active');
+        
+        injectConversationContext(webview);
       }
     }
     
-    // 显示对话界面
+    function saveCurrentConversationToContext() {
+      if (conversationHistory.length > 0) {
+        const recentMessages = conversationHistory.slice(-10);
+        sharedConversationContext = recentMessages.filter(msg => msg.type !== 'loading');
+        localStorage.setItem('shared_conversation_context', JSON.stringify(sharedConversationContext));
+        localStorage.setItem('last_conversation_time', new Date().toISOString());
+      }
+    }
+    
+    function injectConversationContext(webview) {
+      if (sharedConversationContext.length === 0) return;
+      
+      showContextPanel();
+    }
+    
+    function showContextPanel() {
+      let existingPanel = document.getElementById('context-panel');
+      if (existingPanel) {
+        existingPanel.remove();
+      }
+      
+      const contextText = sharedConversationContext
+        .map(msg => `${msg.type === 'user' ? '用户' : 'AI'}: ${msg.content}`)
+        .join('\n\n');
+      
+      const panel = document.createElement('div');
+      panel.id = 'context-panel';
+      panel.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: 350px;
+        max-height: 400px;
+        background: #ffffff;
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        overflow: hidden;
+      `;
+      
+      panel.innerHTML = `
+        <div style="padding: 12px 16px; background: #f6f8fa; border-bottom: 1px solid #d0d7de; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 600; font-size: 14px; color: #24292f;">📋 对话上下文 (${sharedConversationContext.length}条)</span>
+          <button onclick="document.getElementById('context-panel').remove()" style="background: none; border: none; cursor: pointer; font-size: 18px; color: #57606a;">✕</button>
+        </div>
+        <div style="padding: 12px 16px; max-height: 250px; overflow-y: auto; font-size: 13px; color: #24292f; line-height: 1.5; white-space: pre-wrap;">${escapeHtml(contextText.substring(0, 1000))}${contextText.length > 1000 ? '...' : ''}</div>
+        <div style="padding: 12px 16px; border-top: 1px solid #d0d7de; display: flex; gap: 8px;">
+          <button onclick="copyContextToClipboard()" style="flex: 1; padding: 8px 16px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px;">📋 复制全部上下文</button>
+          <button onclick="document.getElementById('context-panel').remove()" style="padding: 8px 16px; background: #f6f8fa; color: #24292f; border: 1px solid #d0d7de; border-radius: 6px; cursor: pointer; font-size: 13px;">关闭</button>
+        </div>
+      `;
+      
+      document.body.appendChild(panel);
+      
+      setTimeout(() => {
+        const panel = document.getElementById('context-panel');
+        if (panel) {
+          panel.style.opacity = '0.9';
+        }
+      }, 5000);
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function copyContextToClipboard() {
+      const contextText = sharedConversationContext
+        .map(msg => `${msg.type === 'user' ? '用户' : 'AI'}: ${msg.content}`)
+        .join('\n\n');
+      
+      navigator.clipboard.writeText(contextText).then(() => {
+        const panel = document.getElementById('context-panel');
+        if (panel) {
+          const btns = panel.querySelectorAll('button');
+          const copyBtn = btns[0];
+          if (copyBtn) {
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = '✅ 已复制到剪贴板';
+            copyBtn.style.background = '#1f6feb';
+            setTimeout(() => {
+              copyBtn.textContent = originalText;
+              copyBtn.style.background = '#238636';
+            }, 2000);
+          }
+        }
+      }).catch(err => {
+        console.error('复制失败:', err);
+      });
+    }
+    
     function showChat() {
-      // 隐藏所有webview
       Object.keys(AI_PLATFORMS).forEach(key => {
         const webview = document.getElementById(`webview-${key}`);
         if (webview) {
@@ -591,13 +699,15 @@
         }
       });
       
-      // 显示对话界面
       document.getElementById('messages').style.display = 'flex';
       document.querySelector('.input-container').style.display = 'block';
       document.getElementById('return-btn').classList.remove('active');
+      
+      if (sharedConversationContext.length > 0) {
+        showContextPanel();
+      }
     }
     
-    // 智能推荐平台
     function recommendPlatform(message) {
       const messageLower = message.toLowerCase();
       
@@ -609,8 +719,10 @@
         return 'doubao';
       } else if (messageLower.includes('创作') || messageLower.includes('写作') || messageLower.includes('文案') || messageLower.includes('内容')) {
         return 'yuanbao';
+      } else if (messageLower.includes('语音') || messageLower.includes('多模态') || messageLower.includes('创意')) {
+        return 'minimax';
       } else {
-        return 'qwen';
+        return 'zhipu';
       }
     }
     
@@ -742,7 +854,7 @@
         addMessage('ai', '• 📝 内容创作和总结');
         addMessage('ai', '• ❓ 问题解答和建议');
         addMessage('ai', '');
-        addMessage('ai', '🤖 支持多个AI平台：千问、DeepSeek、Kimi、元宝、豆包');
+        addMessage('ai', '🤖 支持多个AI平台：DeepSeek、Kimi、元宝、豆包、智谱、MiniMax');
         addMessage('ai', '💡 系统会根据你的需求自动推荐最适合的平台');
         addMessage('ai', '');
         addMessage('ai', '请告诉我你的需求，我会帮你打开最适合的平台！');
