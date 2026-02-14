@@ -227,7 +227,9 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
-      webviewTag: true
+      webviewTag: true,
+      webSecurity: false,
+      allowRunningInsecureContent: true
     }
   });
 

@@ -411,6 +411,39 @@
       font-weight: 600;
       color: #58a6ff;
     }
+    
+    .context-menu {
+      position: fixed;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100000;
+      min-width: 150px;
+      padding: 4px 0;
+    }
+    
+    .context-menu-item {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #24292f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .context-menu-item:hover {
+      background: #f6f8fa;
+    }
+    
+    .context-menu-item:first-child {
+      border-radius: 6px 6px 0 0;
+    }
+    
+    .context-menu-item:last-child {
+      border-radius: 0 0 6px 6px;
+    }
   </style>
 </head>
 <body>
@@ -497,6 +530,8 @@
     let selectedFiles = [];
     let conversationHistory = JSON.parse(localStorage.getItem('conversation_history') || '[]');
     let sharedConversationContext = JSON.parse(localStorage.getItem('shared_conversation_context') || '[]');
+    let platformInputDrafts = JSON.parse(localStorage.getItem('platform_input_drafts') || '{}');
+    let currentInputDraft = '';
     let isProcessing = false;
     let sidebarCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
     
@@ -572,6 +607,8 @@
     function selectPlatform(platformKey) {
       const previousPlatform = currentPlatform;
       
+      saveCurrentInputDraft(previousPlatform);
+      
       saveCurrentConversationToContext();
       
       currentPlatform = platformKey;
@@ -592,8 +629,75 @@
         document.querySelector('.input-container').style.display = 'none';
         document.getElementById('return-btn').classList.add('active');
         
+        restoreInputDraft(platformKey, webview);
+        
         injectConversationContext(webview);
       }
+    }
+    
+    function saveCurrentInputDraft(platformKey) {
+      const webview = document.getElementById(`webview-${platformKey}`);
+      if (!webview) return;
+      
+      try {
+        webview.executeJavaScript(`
+          (function() {
+            const selectors = [
+              'textarea',
+              'div[contenteditable="true"]',
+              'input[type="text"]'
+            ];
+            
+            for (const selector of selectors) {
+              const elements = document.querySelectorAll(selector);
+              for (const el of elements) {
+                const text = el.value || el.innerText || '';
+                if (text && text.trim() && text.length > 0) {
+                  return text.trim();
+                }
+              }
+            }
+            return '';
+          })()
+        `).then(draft => {
+          if (draft && draft.trim()) {
+            platformInputDrafts[platformKey] = {
+              content: draft,
+              timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('platform_input_drafts', JSON.stringify(platformInputDrafts));
+            console.log('已保存平台', platformKey, '的输入草稿');
+          }
+        }).catch(err => {
+          console.log('保存输入草稿时出错:', err.message);
+        });
+      } catch (e) {
+        console.log('保存输入草稿异常:', e);
+      }
+    }
+    
+    function restoreInputDraft(platformKey, webview) {
+      const draft = platformInputDrafts[platformKey];
+      if (!draft || !draft.content) return;
+      
+      if (sharedConversationContext.length === 0) {
+        sharedConversationContext = [{
+          type: 'user',
+          content: `[草稿] ${draft.content}`,
+          timestamp: new Date()
+        }];
+      } else {
+        const hasDraft = sharedConversationContext.some(msg => msg.content.includes('[草稿]'));
+        if (!hasDraft) {
+          sharedConversationContext.unshift({
+            type: 'user',
+            content: `[草稿] ${draft.content}`,
+            timestamp: new Date()
+          });
+        }
+      }
+      
+      showContextPanel();
     }
     
     function saveCurrentConversationToContext() {
@@ -692,6 +796,10 @@
     }
     
     function showChat() {
+      if (currentPlatform) {
+        saveCurrentInputDraft(currentPlatform);
+      }
+      
       Object.keys(AI_PLATFORMS).forEach(key => {
         const webview = document.getElementById(`webview-${key}`);
         if (webview) {
@@ -740,7 +848,7 @@
           </div>
         `;
       } else {
-        messageDiv.innerHTML = `<div style="font-size: 14px; white-space: pre-wrap;">${content}</div>`;
+        messageDiv.innerHTML = `<div style="font-size: 14px; white-space: pre-wrap; user-select: text;">${content}</div>`;
       }
       
       messagesDiv.appendChild(messageDiv);
@@ -840,7 +948,7 @@
             const messagesDiv = document.getElementById('messages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ' + msg.type;
-            messageDiv.innerHTML = `<div style="font-size: 14px; white-space: pre-wrap;">${msg.content}</div>`;
+            messageDiv.innerHTML = `<div style="font-size: 14px; white-space: pre-wrap; user-select: text;">${msg.content}</div>`;
             messagesDiv.appendChild(messageDiv);
           }
         });
@@ -860,8 +968,116 @@
         addMessage('ai', '请告诉我你的需求，我会帮你打开最适合的平台！');
       }
       
+      initContextMenu();
+      
       updateStatus('ready', '就绪');
     });
+    
+    // 初始化右键菜单
+    function initContextMenu() {
+      document.addEventListener('contextmenu', function(e) {
+        const existingMenu = document.querySelector('.context-menu');
+        if (existingMenu) {
+          existingMenu.remove();
+        }
+        
+        const selection = window.getSelection().toString();
+        
+        if (selection) {
+          e.preventDefault();
+          showContextMenu(e.clientX, e.clientY, selection);
+        }
+      });
+      
+      document.addEventListener('click', function(e) {
+        const existingMenu = document.querySelector('.context-menu');
+        if (existingMenu && !existingMenu.contains(e.target)) {
+          existingMenu.remove();
+        }
+      });
+    }
+    
+    function showContextMenu(x, y, selectedText) {
+      const menu = document.createElement('div');
+      menu.className = 'context-menu';
+      menu.style.left = x + 'px';
+      menu.style.top = y + 'px';
+      
+      menu.innerHTML = `
+        <div class="context-menu-item" onclick="copySelectedText()">
+          📋 复制
+        </div>
+        <div class="context-menu-item" onclick="copyToContextPanel()">
+          📝 添加到上下文
+        </div>
+      `;
+      
+      document.body.appendChild(menu);
+      
+      window._selectedTextForCopy = selectedText;
+      
+      const rect = menu.getBoundingClientRect();
+      if (rect.right > window.innerWidth) {
+        menu.style.left = (window.innerWidth - rect.width - 10) + 'px';
+      }
+      if (rect.bottom > window.innerHeight) {
+        menu.style.top = (window.innerHeight - rect.height - 10) + 'px';
+      }
+    }
+    
+    function copySelectedText() {
+      const selectedText = window._selectedTextForCopy;
+      if (selectedText) {
+        navigator.clipboard.writeText(selectedText).then(() => {
+          showNotification('✅ 已复制到剪贴板');
+        });
+      }
+      removeContextMenu();
+    }
+    
+    function copyToContextPanel() {
+      const selectedText = window._selectedTextForCopy;
+      if (selectedText) {
+        sharedConversationContext.push({
+          type: 'user',
+          content: `[选中内容] ${selectedText}`,
+          timestamp: new Date()
+        });
+        localStorage.setItem('shared_conversation_context', JSON.stringify(sharedConversationContext));
+        showNotification('✅ 已添加到上下文');
+      }
+      removeContextMenu();
+    }
+    
+    function removeContextMenu() {
+      const menu = document.querySelector('.context-menu');
+      if (menu) {
+        menu.remove();
+      }
+    }
+    
+    function showNotification(text) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #238636;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 100001;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      `;
+      notification.textContent = text;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 2000);
+    }
     
     // 监听回车键
     document.getElementById('chat-input').addEventListener('keypress', function(e) {
