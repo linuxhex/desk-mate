@@ -1,72 +1,28 @@
-# desk-mate - 桌面 Excel 分析助手
+# desk-mate - Electron + Python 数据助手 AI 约束
 
-## Tech Stack
-- Electron + Node.js + TypeScript
+## AI 启动加载机制 (Codex / Claude Code / Cursor)
+- `AGENTS.md`、`CLAUDE.md`、`.cursor/rules/main.mdc` 都只引用本文件。
+- AI 开始写代码前必须先确认 Node 与 Python 的边界。
 
-## Build Commands
-- `npm run dev` - 开发
-- `npm run build` - 构建
-- `npm run test` - 测试
+## 写代码前预检查 (MANDATORY)
+1. 确认改动层：`main.js/preload.js`、页面文件、`services/*`、Python 脚本。
+2. 列出数据链路：文件读取 -> AI 分析 -> 图表/导出。
+3. 明确新增字段在 JS 与 Python 两侧的传递方式。
+4. 限定最小改动，禁止顺带重构。
 
----
+## 字段加载清单 (MANDATORY)
+- 数据字段变更必须同步：Excel 解析结果、AI 输入上下文、图表渲染字段、导出字段。
+- JS <-> Python 交互参数必须定义明确结构，禁止裸字符串拼接协议。
+- API 配置字段（模型、地址、密钥）必须集中在服务层，禁止散落页面。
 
-## Architecture (IMPORTANT)
+## 工程特性约束
+- 主进程负责系统能力，渲染层只负责交互与展示。
+- Python 执行必须通过 `services/pythonService.js` 一类封装。
+- 文件读写必须做路径与扩展名校验。
 
-### 分层模型
-```
-src/
-├── controllers/   (API 入口)
-├── services/      (业务逻辑)
-├── models/        (数据模型)
-├── utils/         (工具函数)
-└── tests/         (测试用例)
-```
+## 验证要求
+- 前端/主进程改动：`npm run build`
+- Python 改动：`python3 -m py_compile *.py`
 
----
-
-## Code Style (IMPORTANT)
-
-### 命名规范
-- 文件: `kebab-case.ts` 或 `kebab-case.js`
-- 类名: `PascalCase`
-- 函数: `camelCase`
-- 常量: `UPPER_SNAKE_CASE`
-
-### 代码质量限制 (IMPORTANT)
-- 单函数 ≤ 80 行（超过必须拆分）
-- 单类 ≤ 500 行（超过必须拆分）
-- 嵌套层级 ≤ 3 层（使用提前 return）
-
-### 注释规范 (IMPORTANT)
-- ❌ 不要写冗余注释，代码本身应自解释
-- ✅ 只在必要时写注释：
-  - 复杂业务逻辑的 WHY（为什么这么做）
-  - 非显而易见的约束或边界条件
-  - 临时方案或待优化的 TODO
-- ❌ 禁止注释描述 WHAT（代码做了什么）
-
-### Map 使用限制 (IMPORTANT)
-- ✅ `Map` 只能在方法内部使用，作为临时数据结构
-- ❌ 禁止 `Map` 作为方法参数传递
-- ❌ 禁止 `Map` 作为方法返回值
-- ✅ 如需传递键值对，定义明确的 interface 或 type
-
----
-
-## Git Workflow (IMPORTANT)
-- 主分支: `master`
-- 功能分支: `feature/YYYYMMDD_XXX*`
-- 修复分支: `hotfix/YYYYMMDD_XXX*`
-- Commit 格式:
-  - `feat(scope): message` - 新功能
-  - `fix(scope): message` - Bug 修复
-  - `refactor(scope): message` - 重构
-  - `docs: message` - 文档更新
-  - `chore: message` - 构建/工具变动
-
----
-
-## Security (IMPORTANT)
-- Never commit API keys or secrets
-- Validate all user input
-- 文件访问需要用户确认
+## 安全约束
+- 禁止提交真实 API Key（当前仓内若存在历史明文，后续改动不得继续扩散）。
