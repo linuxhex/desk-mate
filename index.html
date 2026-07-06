@@ -35,6 +35,8 @@
       padding: 16px;
       transition: all 0.3s ease;
       position: relative;
+      flex-shrink: 0;
+      align-self: stretch;
     }
     
     .sidebar.collapsed {
@@ -374,6 +376,11 @@
       padding-top: 0;
     }
     
+    /* ChatGPT平台适配 */
+    #webview-chatgpt {
+      padding-top: 0;
+    }
+    
     .return-btn {
       position: absolute;
       top: 10px;
@@ -452,11 +459,6 @@
       <button class="sidebar-toggle" onclick="toggleSidebar()">◀</button>
       
       <div id="platform-selector"></div>
-      
-      <div class="sidebar-item active" onclick="showChat()">
-        <span class="sidebar-icon">💬</span>
-        <span>本地模型</span>
-      </div>
     </div>
     
     <div class="main-content">
@@ -476,12 +478,20 @@
         <webview id="webview-doubao" class="platform-webview" src="https://doubao.com/" partition="persist:doubao" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-zhipu" class="platform-webview" src="https://chatglm.cn/" partition="persist:zhipu" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-minimax" class="platform-webview" src="https://www.hailuo.ai/" partition="persist:minimax" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
+        <webview id="webview-chatgpt" class="platform-webview" src="https://chatgpt.com/" partition="persist:chatgpt" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
       </div>
     </div>
   </div>
   
   <script>
     const AI_PLATFORMS = {
+      'chatgpt': {
+        name: 'ChatGPT',
+        url: 'https://chatgpt.com/',
+        description: 'OpenAI 对话助手',
+        strengths: ['通用对话', '创作', '编程辅助'],
+        icon: 'icons/chatgpt.png'
+      },
       'deepseek': {
         name: 'DeepSeek',
         url: 'https://chat.deepseek.com/',
@@ -526,7 +536,7 @@
       }
     };
     
-    let currentPlatform = localStorage.getItem('current_platform') || 'deepseek';
+    let currentPlatform = localStorage.getItem('current_platform') || 'chatgpt';
     let selectedFiles = [];
     let conversationHistory = JSON.parse(localStorage.getItem('conversation_history') || '[]');
     let sharedConversationContext = JSON.parse(localStorage.getItem('shared_conversation_context') || '[]');
@@ -627,7 +637,8 @@
         webview.classList.add('active');
         document.getElementById('messages').style.display = 'none';
         document.querySelector('.input-container').style.display = 'none';
-        document.getElementById('return-btn').classList.add('active');
+        const returnBtn = document.getElementById('return-btn');
+        if (returnBtn) returnBtn.classList.add('active');
         
         restoreInputDraft(platformKey, webview);
         
@@ -809,7 +820,8 @@
       
       document.getElementById('messages').style.display = 'flex';
       document.querySelector('.input-container').style.display = 'block';
-      document.getElementById('return-btn').classList.remove('active');
+      const returnBtn = document.getElementById('return-btn');
+      if (returnBtn) returnBtn.classList.remove('active');
       
       if (sharedConversationContext.length > 0) {
         showContextPanel();
@@ -872,6 +884,7 @@
     function updateStatus(status, text) {
       const statusDot = document.getElementById('status-dot');
       const statusText = document.getElementById('status-text');
+      if (!statusDot || !statusText) return;
       
       statusDot.className = 'status-dot ' + (status === 'offline' ? 'offline' : '');
       statusText.textContent = text;
@@ -941,32 +954,9 @@
         toggleBtn.textContent = '▶';
       }
       
-      // 加载之前的对话历史
-      if (conversationHistory.length > 0) {
-        conversationHistory.forEach(msg => {
-          if (msg.type !== 'loading') {
-            const messagesDiv = document.getElementById('messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + msg.type;
-            messageDiv.innerHTML = `<div style="font-size: 14px; white-space: pre-wrap; user-select: text;">${msg.content}</div>`;
-            messagesDiv.appendChild(messageDiv);
-          }
-        });
-        addMessage('ai', '✅ 已加载之前的对话历史');
-      } else {
-        addMessage('ai', '👋 你好！我是DeskMate，你的智能办公助手。');
-        addMessage('ai', '我可以帮你处理以下任务：');
-        addMessage('ai', '• 📊 数据分析和处理');
-        addMessage('ai', '• 📄 文档处理和转换');
-        addMessage('ai', '• 💻 代码编写和调试');
-        addMessage('ai', '• 📝 内容创作和总结');
-        addMessage('ai', '• ❓ 问题解答和建议');
-        addMessage('ai', '');
-        addMessage('ai', '🤖 支持多个AI平台：DeepSeek、Kimi、元宝、豆包、智谱、MiniMax');
-        addMessage('ai', '💡 系统会根据你的需求自动推荐最适合的平台');
-        addMessage('ai', '');
-        addMessage('ai', '请告诉我你的需求，我会帮你打开最适合的平台！');
-      }
+      document.getElementById('messages').style.display = 'none';
+      document.querySelector('.input-container').style.display = 'none';
+      selectPlatform(currentPlatform);
       
       initContextMenu();
       

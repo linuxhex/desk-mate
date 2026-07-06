@@ -219,10 +219,12 @@ function callPythonService(message, context) {
 }
 
 function createWindow() {
+  const iconPath = path.join(__dirname, 'icons', process.platform === 'darwin' ? 'icon.icns' : 'app-icon.png');
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
