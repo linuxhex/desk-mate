@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   readExcelFile: (filePath) => ipcRenderer.invoke('read-excel-file', { filePath }),
   createExcelFile: (data, fileName) => ipcRenderer.invoke('create-excel-file', { data, fileName }),
   openFile: (filePath) => ipcRenderer.invoke('open-file', { filePath }),
-  openAIPlatform: (platform) => ipcRenderer.invoke('open-ai-platform', { platform })
+  openAIPlatform: (platform) => ipcRenderer.invoke('open-ai-platform', { platform }),
+  openExternalUrl: (url) => ipcRenderer.invoke('open-external-url', url)
 });

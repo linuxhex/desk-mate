@@ -235,6 +235,14 @@
       font-size: 16px;
     }
     
+    .sidebar-icon-img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+    
     .file-list {
       margin-top: 16px;
       padding: 12px;
@@ -376,7 +384,6 @@
       padding-top: 0;
     }
     
-    /* ChatGPT平台适配 */
     #webview-chatgpt {
       padding-top: 0;
     }
@@ -403,6 +410,10 @@
     
     .return-btn.active {
       display: block;
+    }
+    
+    .platform-toolbar {
+      display: none;
     }
     
     .platform-info {
@@ -477,8 +488,8 @@
         <webview id="webview-yuanbao" class="platform-webview" src="https://yuanbao.tencent.com/" partition="persist:yuanbao" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-doubao" class="platform-webview" src="https://doubao.com/" partition="persist:doubao" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
         <webview id="webview-zhipu" class="platform-webview" src="https://chatglm.cn/" partition="persist:zhipu" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
-        <webview id="webview-minimax" class="platform-webview" src="https://www.hailuo.ai/" partition="persist:minimax" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
-        <webview id="webview-chatgpt" class="platform-webview" src="https://chatgpt.com/" partition="persist:chatgpt" allowpopups useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
+        <webview id="webview-minimax" class="platform-webview" src="https://www.hailuo.ai/" partition="persist:minimax" allowpopups useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
+        <webview id="webview-chatgpt" class="platform-webview" src="https://chatgpt.com/" partition="persist:chatgpt" allowpopups useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"></webview>
       </div>
     </div>
   </div>
@@ -560,6 +571,9 @@
         sidebar.classList.remove('collapsed');
         toggleBtn.textContent = '◀';
       }
+      
+      // 等待侧边栏动画结束后再刷新 webview 布局
+      setTimeout(adjustWebviewSize, 320);
     }
     
     // 保存对话历史到localStorage
@@ -605,7 +619,7 @@
         const platformItem = document.createElement('div');
         platformItem.className = 'sidebar-item' + (isActive ? ' active' : '');
         platformItem.innerHTML = `
-          <img src="${platform.icon}" class="sidebar-icon" style="width: 20px; height: 20px; border-radius: 4px;" onerror="this.style.display='none'">
+          <img src="${platform.icon}" class="sidebar-icon-img" onerror="this.style.display='none'">
           <span>${platform.name}</span>
         `;
         
@@ -614,7 +628,7 @@
       });
     }
     
-    function selectPlatform(platformKey) {
+    async function selectPlatform(platformKey) {
       const previousPlatform = currentPlatform;
       
       saveCurrentInputDraft(previousPlatform);
@@ -632,16 +646,15 @@
         }
       });
       
+      document.getElementById('messages').style.display = 'none';
+      document.querySelector('.input-container').style.display = 'none';
+      const returnBtn = document.getElementById('return-btn');
+      if (returnBtn) returnBtn.classList.add('active');
+      
       const webview = document.getElementById(`webview-${platformKey}`);
       if (webview) {
         webview.classList.add('active');
-        document.getElementById('messages').style.display = 'none';
-        document.querySelector('.input-container').style.display = 'none';
-        const returnBtn = document.getElementById('return-btn');
-        if (returnBtn) returnBtn.classList.add('active');
-        
         restoreInputDraft(platformKey, webview);
-        
         injectConversationContext(webview);
       }
     }

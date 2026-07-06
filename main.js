@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, session, shell } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -11,6 +11,50 @@ const PYTHON_SERVICE_PORT = 5000;
 const PYTHON_SERVICE_URL = `http://localhost:${PYTHON_SERVICE_PORT}`;
 let pythonServiceProcess = null;
 let isPythonServiceRunning = false;
+
+let mainWindow = null;
+
+function getBrowserUserAgent() {
+  const chromeVersion = process.versions.chrome || '120.0.0.0';
+  return `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+}
+
+const STEALTH_SCRIPT = `
+  try {
+    Object.defineProperty(navigator, 'webdriver', { get: () => undefined, configurable: true });
+    if (!window.chrome) window.chrome = { runtime: {} };
+  } catch (e) {}
+`;
+
+app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
+
+function configurePlatformSessions() {
+  const ua = getBrowserUserAgent();
+  const partitions = ['persist:chatgpt', 'persist:kimi', 'persist:deepseek', 'persist:yuanbao', 'persist:doubao', 'persist:zhipu', 'persist:minimax'];
+
+  partitions.forEach((partition) => {
+    const platformSession = session.fromPartition(partition);
+    platformSession.setUserAgent(ua);
+    platformSession.setPermissionRequestHandler((_webContents, _permission, callback) => {
+      callback(true);
+    });
+    platformSession.webRequest.onBeforeSendHeaders((details, callback) => {
+      details.requestHeaders['User-Agent'] = ua;
+      callback({ requestHeaders: details.requestHeaders });
+    });
+  });
+}
+
+function setupWebviewGuest(contents) {
+  if (contents.getType() !== 'webview') {
+    return;
+  }
+
+  contents.setUserAgent(getBrowserUserAgent());
+  contents.on('dom-ready', () => {
+    contents.executeJavaScript(STEALTH_SCRIPT).catch(() => {});
+  });
+}
 
 // 启动Python服务
 function startPythonService() {
@@ -220,7 +264,7 @@ function callPythonService(message, context) {
 
 function createWindow() {
   const iconPath = path.join(__dirname, 'icons', process.platform === 'darwin' ? 'icon.icns' : 'app-icon.png');
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     autoHideMenuBar: true,
@@ -238,7 +282,19 @@ function createWindow() {
   mainWindow.loadFile('index.html');
 }
 
+ipcMain.handle('open-external-url', async (_event, url) => {
+  if (!url || typeof url !== 'string') {
+    return { success: false, error: '无效的 URL' };
+  }
+  await shell.openExternal(url);
+  return { success: true };
+});
+
 app.whenReady().then(async () => {
+  configurePlatformSessions();
+  app.on('web-contents-created', (_event, contents) => {
+    setupWebviewGuest(contents);
+  });
   createWindow();
 
   // 启动Python服务（带重试）
@@ -445,6 +501,7 @@ ipcMain.handle('open-ai-platform', async (event, data) => {
   console.log('打开AI平台:', platform);
   
   const platformUrls = {
+    'chatgpt': 'https://chatgpt.com/',
     'kimi': 'https://kimi.moonshot.cn/',
     'deepseek': 'https://chat.deepseek.com/',
     'yuanbao': 'https://yuanbao.tencent.com/',
