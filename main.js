@@ -14,9 +14,12 @@ let isPythonServiceRunning = false;
 
 let mainWindow = null;
 
+// 固定 UA，全平台一致，避免重启后登录态失效
+const BROWSER_USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.6099.291 Safari/537.36';
+
 function getBrowserUserAgent() {
-  const chromeVersion = process.versions.chrome || '120.0.0.0';
-  return `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+  return BROWSER_USER_AGENT;
 }
 
 const STEALTH_SCRIPT = `
@@ -27,6 +30,102 @@ const STEALTH_SCRIPT = `
 `;
 
 app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
+
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+}
+
+// ChatGPT：完全移除内部侧栏（rail + 展开面板 + 切换按钮）
+const CHATGPT_NO_SIDEBAR_CSS = `
+  #stage-sidebar-tiny-bar,
+  #stage-slideover-sidebar {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    flex: 0 0 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #stage-sidebar-tiny-bar + *,
+  #stage-slideover-sidebar + * {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  button[aria-label="Open sidebar"],
+  button[aria-label="Close sidebar"],
+  button[aria-label*="Open sidebar" i],
+  button[aria-label*="Close sidebar" i],
+  button[aria-label*="打开侧边栏"],
+  button[aria-label*="关闭侧边栏"],
+  [data-testid="open-sidebar-button"],
+  [data-testid="close-sidebar-button"] {
+    display: none !important;
+  }
+`;
+
+const chatgptCssKeys = new WeakMap();
+const guestInitialized = new WeakSet();
+
+function clearStaleIndexedDBLocks() {
+  if (!gotSingleInstanceLock) {
+    return;
+  }
+
+  const partitionsDir = path.join(app.getPath('userData'), 'Partitions');
+  if (!fs.existsSync(partitionsDir)) {
+    return;
+  }
+
+  for (const partitionDir of fs.readdirSync(partitionsDir)) {
+    const indexedDbDir = path.join(partitionsDir, partitionDir, 'IndexedDB');
+    if (!fs.existsSync(indexedDbDir)) {
+      continue;
+    }
+
+    for (const dbDir of fs.readdirSync(indexedDbDir)) {
+      const lockFile = path.join(indexedDbDir, dbDir, 'LOCK');
+      if (!fs.existsSync(lockFile)) {
+        continue;
+      }
+
+      try {
+        fs.unlinkSync(lockFile);
+      } catch {
+        // 仍有活跃进程占用，跳过
+      }
+    }
+  }
+}
+
+function isChatGPTWebview(contents) {
+  const url = contents.getURL() || '';
+  return /chatgpt\.com|chat\.openai\.com/.test(url);
+}
+
+function injectChatGPTSidebarCSS(contents) {
+  if (!isChatGPTWebview(contents)) {
+    return;
+  }
+
+  const previousKey = chatgptCssKeys.get(contents);
+  if (previousKey) {
+    contents.removeInsertedCSS(previousKey).catch(() => {});
+  }
+
+  contents
+    .insertCSS(CHATGPT_NO_SIDEBAR_CSS)
+    .then((key) => {
+      chatgptCssKeys.set(contents, key);
+    })
+    .catch(() => {});
+}
 
 function configurePlatformSessions() {
   const ua = getBrowserUserAgent();
@@ -51,8 +150,14 @@ function setupWebviewGuest(contents) {
   }
 
   contents.setUserAgent(getBrowserUserAgent());
-  contents.on('dom-ready', () => {
+
+  contents.on('did-finish-load', () => {
     contents.executeJavaScript(STEALTH_SCRIPT).catch(() => {});
+    if (guestInitialized.has(contents)) {
+      return;
+    }
+    guestInitialized.add(contents);
+    injectChatGPTSidebarCSS(contents);
   });
 }
 
@@ -290,30 +395,22 @@ ipcMain.handle('open-external-url', async (_event, url) => {
   return { success: true };
 });
 
-app.whenReady().then(async () => {
+app.whenReady().then(() => {
+  clearStaleIndexedDBLocks();
   configurePlatformSessions();
   app.on('web-contents-created', (_event, contents) => {
     setupWebviewGuest(contents);
   });
   createWindow();
 
-  // 启动Python服务（带重试）
-  let retries = 3;
-  while (retries > 0) {
-    try {
-      console.log(`正在启动Python服务...（剩余重试次数: ${retries}）`);
-      await startPythonService();
-      console.log('Python服务已成功启动');
-      break;
-    } catch (error) {
-      console.error(`启动Python服务失败（剩余重试次数: ${retries - 1}）:`, error);
-      retries--;
-      if (retries > 0) {
-        console.log('等待5秒后重试...');
-        await new Promise(resolve => setTimeout(resolve, 5000));
+  app.on('second-instance', () => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
       }
+      mainWindow.focus();
     }
-  }
+  });
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

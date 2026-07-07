@@ -1,12 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge } = require('electron');
 
-contextBridge.exposeInMainWorld('electronAPI', {
-  openFileDialog: () => ipcRenderer.invoke('open-file-dialog'),
-  saveFileDialog: () => ipcRenderer.invoke('save-file-dialog'),
-  callPythonAgent: (message, context) => ipcRenderer.invoke('call-python-agent', { message, context }),
-  readExcelFile: (filePath) => ipcRenderer.invoke('read-excel-file', { filePath }),
-  createExcelFile: (data, fileName) => ipcRenderer.invoke('create-excel-file', { data, fileName }),
-  openFile: (filePath) => ipcRenderer.invoke('open-file', { filePath }),
-  openAIPlatform: (platform) => ipcRenderer.invoke('open-ai-platform', { platform }),
-  openExternalUrl: (url) => ipcRenderer.invoke('open-external-url', url)
-});
+// 预留 IPC 接口，当前 UI 仅使用 webview，不主动调用
+contextBridge.exposeInMainWorld('electronAPI', {});
