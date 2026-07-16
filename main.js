@@ -36,41 +36,92 @@ if (!gotSingleInstanceLock) {
   app.quit();
 }
 
-// ChatGPT：完全移除内部侧栏（rail + 展开面板 + 切换按钮）
+// ChatGPT：收起的侧栏图标横向排列在顶部
 const CHATGPT_NO_SIDEBAR_CSS = `
-  #stage-sidebar-tiny-bar,
+  /* 只隐藏展开的侧边栏 */
   #stage-slideover-sidebar {
     display: none !important;
     width: 0 !important;
     min-width: 0 !important;
     max-width: 0 !important;
-    flex: 0 0 0 !important;
-    overflow: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
   }
 
-  #stage-sidebar-tiny-bar + *,
-  #stage-slideover-sidebar + * {
+  /* 保留收起的侧边栏，改为横向布局在顶部 */
+  #stage-sidebar-tiny-bar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 48px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    padding: 8px 16px !important;
+    background: #202123 !important;
+    z-index: 10000 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* 让图标横向排列 */
+  #stage-sidebar-tiny-bar > * {
+    margin: 4px 8px !important;
+  }
+
+  /* 调整主要内容区域 */
+  #stage-sidebar-tiny-bar + * {
     margin-left: 0 !important;
     padding-left: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+    padding-top: 56px !important;
   }
+`;
 
-  button[aria-label="Open sidebar"],
-  button[aria-label="Close sidebar"],
-  button[aria-label*="Open sidebar" i],
-  button[aria-label*="Close sidebar" i],
-  button[aria-label*="打开侧边栏"],
-  button[aria-label*="关闭侧边栏"],
-  [data-testid="open-sidebar-button"],
-  [data-testid="close-sidebar-button"] {
+// 智谱：隐藏侧边栏（基于真实DOM结构）
+const ZHIPU_SIDEBAR_CSS = `
+  /* 隐藏 Element UI 侧边栏 */
+  .el-aside,
+  .aside-container,
+  .aside-subjects,
+  .subjects.limitation {
     display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* 调整主内容区域 */
+  .el-container,
+  .el-main,
+  .detail-container,
+  .session-container,
+  .conversation-container {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+  }
+  
+  /* 确保页面完全填充 */
+  body,
+  html,
+  #app {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
   }
 `;
 
 const chatgptCssKeys = new WeakMap();
+const zhipuCssKeys = new WeakMap();
 const guestInitialized = new WeakSet();
 
 function clearStaleIndexedDBLocks() {
@@ -109,6 +160,11 @@ function isChatGPTWebview(contents) {
   return /chatgpt\.com|chat\.openai\.com/.test(url);
 }
 
+function isZhipuWebview(contents) {
+  const url = contents.getURL() || '';
+  return url.includes('chatglm');
+}
+
 function injectChatGPTSidebarCSS(contents) {
   if (!isChatGPTWebview(contents)) {
     return;
@@ -123,8 +179,122 @@ function injectChatGPTSidebarCSS(contents) {
     .insertCSS(CHATGPT_NO_SIDEBAR_CSS)
     .then((key) => {
       chatgptCssKeys.set(contents, key);
+      console.log('✅ ChatGPT 侧边栏 CSS 注入成功');
+    })
+    .catch((error) => {
+      console.error('❌ ChatGPT 侧边栏 CSS 注入失败:', error);
+      // 延迟重试一次
+      setTimeout(() => {
+        contents.insertCSS(CHATGPT_NO_SIDEBAR_CSS)
+          .then((key) => chatgptCssKeys.set(contents, key))
+          .catch(() => console.error('重试失败'));
+      }, 2000);
+    });
+}
+
+function injectZhipuSidebarCSS(contents) {
+  if (!isZhipuWebview(contents)) {
+    return;
+  }
+
+  const previousKey = zhipuCssKeys.get(contents);
+  if (previousKey) {
+    contents.removeInsertedCSS(previousKey).catch(() => {});
+  }
+
+  contents
+    .insertCSS(ZHIPU_SIDEBAR_CSS)
+    .then((key) => {
+      zhipuCssKeys.set(contents, key);
     })
     .catch(() => {});
+
+  contents.executeJavaScript(`
+    (function() {
+      function hideZhipuSidebar() {
+        const sidebarSelectors = [
+          '.el-aside',
+          '.aside-container',
+          '.aside-subjects',
+          '.subjects.limitation'
+        ];
+        
+        let hiddenCount = 0;
+        
+        sidebarSelectors.forEach(selector => {
+          document.querySelectorAll(selector).forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.width > 0) {
+              el.style.setProperty('display', 'none', 'important');
+              el.style.setProperty('width', '0', 'important');
+              el.style.setProperty('min-width', '0', 'important');
+              el.style.setProperty('max-width', '0', 'important');
+              hiddenCount++;
+            }
+          });
+        });
+        
+        if (hiddenCount > 0) {
+          const contentSelectors = [
+            '.el-container',
+            '.el-main',
+            '.detail-container',
+            '.session-container',
+            '.conversation-container'
+          ];
+          
+          contentSelectors.forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => {
+              el.style.setProperty('margin-left', '0', 'important');
+              el.style.setProperty('padding-left', '0', 'important');
+              el.style.setProperty('width', '100%', 'important');
+              el.style.setProperty('max-width', '100%', 'important');
+              el.style.setProperty('flex', '1', 'important');
+            });
+          });
+          
+          document.querySelectorAll('.el-container').forEach(parent => {
+            const visibleChildren = Array.from(parent.children).filter(c => c.style.display !== 'none');
+            if (visibleChildren.length > 0) {
+              visibleChildren.forEach(child => {
+                child.style.setProperty('flex', '1', 'important');
+                child.style.setProperty('width', '100%', 'important');
+              });
+            }
+          });
+        }
+      }
+
+      function startMonitoring() {
+        let runCount = 0;
+        const maxInitialRuns = 30;
+        
+        function run() {
+          runCount++;
+          hideZhipuSidebar();
+          
+          if (runCount < maxInitialRuns) {
+            setTimeout(run, 500);
+          }
+        }
+        
+        run();
+        
+        if (document.body) {
+          const observer = new MutationObserver(() => {
+            setTimeout(hideZhipuSidebar, 200);
+          });
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true
+          });
+        }
+      }
+
+      setTimeout(startMonitoring, 5000);
+    })();
+  `).catch(() => {});
 }
 
 function configurePlatformSessions() {
@@ -151,13 +321,21 @@ function setupWebviewGuest(contents) {
 
   contents.setUserAgent(getBrowserUserAgent());
 
-  contents.on('did-finish-load', () => {
+  function injectSidebarStyles() {
     contents.executeJavaScript(STEALTH_SCRIPT).catch(() => {});
-    if (guestInitialized.has(contents)) {
-      return;
-    }
-    guestInitialized.add(contents);
-    injectChatGPTSidebarCSS(contents);
+
+    setTimeout(() => {
+      injectChatGPTSidebarCSS(contents);
+      injectZhipuSidebarCSS(contents);
+    }, 3000);
+  }
+
+  contents.on('did-finish-load', () => {
+    injectSidebarStyles();
+  });
+
+  contents.on('did-navigate-in-page', () => {
+    injectSidebarStyles();
   });
 }
 
